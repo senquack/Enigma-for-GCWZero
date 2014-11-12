@@ -1,0 +1,9 @@
+K 10
+svn:ignore
+V 36
+Makefile
+Makefile.in
+.deps
+liblua.a
+
+END

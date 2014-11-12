@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Relaxing at the sea" el:subtitle="" el:id="devnull08"/>
+      <el:version el:score="1" el:release="1" el:revision="24" el:status="released"/>
+      <el:author el:name="/dev/null" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2008 dev0</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10"/>
+      <el:modes el:easy="true" el:single="true" el:network="false"/>
+      <el:comments>
+        <el:credits el:showinfo="true" el:showstart="true">Thanks to Meditation Master Daydreamer for faith-healing the level which terribly suffered from cuts.</el:credits>
+      </el:comments>
+      <el:score el:easy="4:59" el:difficult="9:59"/>
+    </el:info>
+    <el:luamain><![CDATA[
+wo["FollowMethod"] = FOLLOW_SCROLL
+
+ti["  "] = {"fl_water"}
+ti[" c"] = {"fl_concrete"}
+ti[" h"] = {"fl_hay"}
+ti[" l"] = {"fl_lawn"}
+ti[" r"] = {"fl_rock"}
+ti[" s"] = {"fl_sand"}
+ti[" v"] = {"fl_gravel", friction = 5.0}
+ti[" V"] = {"fl_gravel", friction = 12.5}
+ti[". "] = {"st_disco_light"}
+ti[": "] = {"st_disco_medium"}
+ti["p "] = {"st_box_rock"}
+ti["w "] = {"st_box_wood"}
+ti["R "] = {"st_darkgray"}
+ti["% "] = {"it_document", text = "text1"}
+ti["7 "] = {"it_meditation_hollow", essential = DISPENSABLE}
+ti["8 "] = {"it_meditation_hollow", essential = INDISPENSABLE} .. ti["p "]
+ti["9 "] = {"it_meditation_hollow", essential = INDISPENSABLE}
+ti["P "] = cond(wo["IsDifficult"], ti["p "], ti[" r"])
+ti["W "] = cond(wo["IsDifficult"], ti[" r"], ti["p "])
+ti["1 "] = {"#ac_pearl", essential = INDISPENSABLE}
+ti["2 "] = {"#ac_pearl", essential = INDISPENSABLE} .. ti["p "]
+
+wo(res.composer(ti), "  ", {
+    "            . . . . : : : : : : : . . . . : ",
+    "                  . . . : . . . . . R . : : ",
+    "   l l l l            . . .        vRv. . . ",
+    "   l1lwlwl   l l l l           r rRrRv v. . ",
+    "   lwl l7l     lwlwl s        wh r  RvR . . ",
+    "                   l lws          R       . ",
+    "                   l l s         h h r r  . ",
+    "     r        .                hwhwlwl l    ",
+    "    pr  R       . . . . .      h l l l l    ",
+    "     rpr r r r  . R : .                     ",
+    "     r r rpr r  . : R R .     wh h          ",
+    "        R         . R 9V v       rR         ",
+    "     r  R  r      . . R        r rR  r r    ",
+    "     r  R pr        .                r c    ",
+    ".     R R  r  pr r.      r    . .   prwc c  ",
+    ".         pr rpr rR     Pr rpr  pr    wc    ",
+    ". .  r  R  r rPr rR      r. . pr    wc      ",
+    ". . WrR R R         R    r. .  r            ",
+    ". .    v9vR      r  R      rpr r     cwc h  ",
+    ".  r rR  vR R .  r rR R   R   .     wcwc h  ",
+    ". prpr1v8VR R R Pr r2r r  R           wh h  ",
+    ".    rR   R   2r rpr rR 9VR . .       wh    ",
+    ". . . . R %vR R  r r rR R : . . .           ",
+    ". . . . : : : . .     . . : : : . .         ",
+    ". . : : : : : : . . . . : : : : : . . .     "})
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+      <el:string el:key="text1">
+        <el:english el:translate="false">Did you ask the devil to give you more power? ;-)</el:english>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

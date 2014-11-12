@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected >
+    <el:info el:type="level">
+      <el:identity el:title="Scarlett's Necklace" el:subtitle="Who broke the pearl necklace?" el:id="20080814ral422"/>
+      <el:version el:score="1" el:release="1" el:revision="$Revision: 191 $" el:status="released"/>
+      <el:author  el:name="Ronald Lamprecht" el:email="ral@users.berlios.de"/>
+      <el:copyright>Copyright © 2008 Ronald Lamprecht</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10">
+        <el:dependency el:path="lib/liblua" el:id="lib/liblua" el:release="1" el:preload="true"/>
+      </el:compatibility>
+      <el:modes el:easy="true" el:single="true" el:network="false"/>
+      <el:comments>
+        <el:credits el:showinfo="true" el:showstart="false">Pearl theme inspired by Jacob Scott, Scarlet story by Andreas Lochmann</el:credits>
+      </el:comments>
+      <el:score el:easy="5:54" el:difficult="10:47"/>
+    </el:info>
+    <el:luamain><![CDATA[
+wo["ConserveLevel"] = true
+
+ti[" "] = {"fl_dark"}
+ti["f"] = {"fl_dark", "f%%"}
+ti["="] = {"fl_bridge_bw", "bridge#"}
+ti["x"] = {"it_shogun_s", "x%%"}
+
+ti["A"] = {"st_plop_slate", "pearl#"}
+ti["B"] = {"st_brownie", "pearl#"}
+ti["C"] = {"st_redbrown_movable", "pearl#"}
+ti["D"] = {"st_granite_movable", "pearl#"}
+ti["E"] = {"st_lightglass_movable", "pearl#"}
+ti["F"] = {"st_camouflage_movable", "pearl#"}
+ti["G"] = {"st_box", "pearl#"}
+ti["H"] = {"st_rawglass_movable", "pearl#"}
+ti["I"] = {"st_plaster_movable", "pearl#"}
+ti["J"] = {"st_box_hay", "pearl#"}
+
+ti["_"] = {"st_window_s", secure=true}
+ti["|"] = {"st_window_e", secure=true}
+ti["."] = {"st_window_w", secure=true}
+ti["-"] = {"st_window_n", secure=true}
+ti["}"] = {"st_window_ne", secure=true}
+ti["{"] = {"st_window_nw", secure=true}
+ti[")"] = {"st_window_es", secure=true}
+ti["("] = {"st_window_sw", secure=true}
+
+ti["d"] = {"it_document", text="story"}
+
+if wo["IsDifficult"] then
+    ti["T"] = {"st_coinslot", target="check"}
+    ti["s"] = {"st_yellow"}
+    ti["c"] = {"it_coin_s"}
+else
+    ti["T"] = {"st_switch", target="check"}
+    ti["s"] = {"st_granite"}
+    ti["c"] = ti[" "]
+end
+
+ti["X"] = {"st_oxyd_d", "oxyd"}
+
+ti["@"] = {"ac_marble", 0, 0.5}
+
+pearl_keys = lib.lua.shuffle({"A","B","C","D","E","F","G","H","I","J"})
+function myres(key, x, y)
+   local idx = ("ABCDEFGHIJ"):find(key, 1, true)
+   if idx ~= nil then
+       return ti[pearl_keys[idx]]
+   else
+       return ti[key]
+   end
+end
+
+w, h = wo(res.autotile(myres,{"0","9","x"}, {"K","S","f"}), " ", {
+"{--------sT--------}",
+".     cccccccc     |",
+".0                9|",
+".K                S|",
+".      G JH I      |",
+". 1   A B  C D   8 |",
+". L     E  F     R |",
+".  2      @     7  |",
+".   M    cd    Q   |",
+".    3        6    |",
+".     N 4 O5 P     |",
+"(________  ________)",
+"X=== =  =  =  = ===X"
+})
+
+pearls = no["pearl#*"]:shuffle()
+
+function check(value, sender)
+    if value or sender:is("st_switch") then  -- ignore coinslot off event
+        no["bridge#*"]:open()
+        no["oxyd"]:closeall()
+        for i = 1, #pearls + 1 do
+            j = ((i-1) % #pearls) + 1   -- we need to check first place two times
+            pearl = st(no["x%"..j])
+            pearl_right = st(no["x%"..((j % #pearls) + 1)])
+            if -pearl and -pearl_right then
+                wirename = "wire"..pearls[pearl].."_"..pearls[pearl_right]
+                if pearl_right == pearls[(pearls[pearl] % #pearls) + 1] and not -no[wirename] then
+                    wo:add({"ot_wire", wirename, anchor1=pearl, anchor2=pearl_right})
+                    pearl["_wires"] = cond(pearl["_wires"] == 1, 2, 1)
+                    pearl_right["_wires"] = cond(pearl_right["_wires"] == 1, 2, 1)
+                elseif -no["wire"..pearls[pearl_right].."_"..pearls[pearl]] then
+                    wo[no["f%"..i]] = {"it_document", text="fault"}
+                end
+                if pearl["_wires"] == 2 then
+                    fl(pearl.x, h-1):close()
+                end
+            end
+        end
+    end
+end
+
+    ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+      <el:string el:key="subtitle">
+        <el:english el:translate="true"/>
+      </el:string>
+      <el:string el:key="story">
+        <el:english el:translate="true" >Mrs. Scarlett's wonderful pearl necklace tore, and all the colorful pearls rolled onto the floor. Mrs. Scarlett doesn't remember the sequence, but she knows that succeeding pearls connect, when each is placed on a neighboring dot and a coin is inserted into the slot.</el:english>
+      </el:string>
+      <el:string el:key="fault">
+        <el:english el:translate="true" >You did invert the sequence of this pair of pearls. You need to correct this fault to finish the necklace.</el:english>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

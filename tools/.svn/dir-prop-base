@@ -1,0 +1,13 @@
+K 10
+svn:ignore
+V 64
+Makefile
+Makefile.in
+.deps
+tolua
+tolua.exe
+ttf2bmf
+ttf2bmf.exe
+
+
+END

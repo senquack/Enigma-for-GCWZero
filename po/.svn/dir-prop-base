@@ -1,0 +1,12 @@
+K 10
+svn:ignore
+V 79
+*.gmo
+Makefile
+Makefile.in
+POTFILES
+remove-potcdate.sed
+stamp-po
+level_i18n.cc
+
+END

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Turbulencia" el:subtitle="Meditation! Silence? ... Have a Look ..." el:id="mecke19" />
+      <el:version el:score="1" el:release="1" el:revision="$Revision:22$" el:status="released" />
+      <el:author el:name="mecke" el:email="" />
+      <el:copyright>Copyright © 2008 Thomas Bernhardt</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true" />
+      <el:compatibility el:enigma="1.10" />
+      <el:modes el:easy="true" el:single="true" el:network="false" el:control="force" el:scoreunit="duration" el:scoretarget="time" />
+      <el:comments>
+        <el:credits el:showinfo="true" el:showstart="false">Thanks to Raoul Bourquin for testing and some important ideas</el:credits>
+      </el:comments>
+      <el:score el:easy="2:50" el:difficult="3:14" />
+    </el:info>
+    <el:luamain><![CDATA[
+wo["ConserveLevel"] = true
+
+ti[" &"] = {"fl_red"}
+ti[" !"] = {"fl_water"}
+ti["! "] = {"st_purplegray"}
+ti[" $"] = {"fl_sahara"}
+ti["# "] = {"st_chess_white"}
+ti["s "] = {"it_squashed"}
+ti["hh"] = ti[" !"] .. {"st_pull"}
+ti["ef"] = ti[" &"] .. {"it_squashed"}
+ti["$ "] = {"st_granite"}
+ti[" %"] = {"fl_sand"}
+ti["% "] = {"st_rotator_ccw"}
+ti["& "] = {"st_boulder_n"}
+ti["b "] = {"it_blocker"}
+ti[" '"] = {"fl_bluegray"}
+ti["' "] = {"st_oneway_white_e"}
+ti["( "] = {"st_yellow"}
+ti[") "] = {"st_scissors", name="df3"}
+ti["* "] = {"st_oneway_white_w"}
+ti[" ("] = {"fl_slope_isw"}
+ti["+ "] = {"st_boulder_e"}
+ti[", "] = {"st_pull"}
+ti[" a"] = ti["hh"] .. {"it_surprise"}
+ti[" )"] = {"fl_slope_inw"}
+ti[" *"] = {"fl_slope_pw"}
+ti["- "] = {"st_boulder_w"}
+ti[". "] = {"st_grate_cross"}
+ti[" d"] = ti["hh"] .. {"it_dynamite"}
+ti["c "] = {"it_crack_l"}
+ti["? "] = {"it_seed_volcano"}
+ti[" +"] = {"fl_rough"}
+ti["l "] = {"it_landmine"}
+ti[" u"] = ti["hh"] .. {"it_umbrella"}
+ti["/ "] = {"st_death"}
+ti[" p"] = ti["hh"] .. {"it_pencil"}
+ti["0 "] = {"st_quake"}
+ti[" f"] = ti["hh"] .. {"it_coffee"}
+ti["q "] = {"it_coffee"}
+ti[" ,"] = {"fl_gravel"}
+ti[" -"] = {"fl_redslab"}
+ti["1 "] = {"st_rawglass"}
+ti["2 "] = {"st_plop_slate"}
+ti[" ."] = {"fl_swamp"}
+ti[" /"] = {"fl_blueslab"}
+ti["z "] = {"it_document", text="text1"}
+ti["3 "] = {"st_actorimpulse"}
+ti["k "] = {"it_cherry"}
+ti["4 "] = {"st_break_boulder"}
+ti["i "] = {"it_seed"}
+ti["w "] = {"it_flag_white"}
+ti["5 "] = {"st_thief"}
+ti["y "] = {"it_sword"}
+ti["x "] = {"it_hammer"}
+ti["m "] = {"it_coin_l"}
+ti["6 "] = {"st_knight"}
+ti["n "] = {"it_magicwand"}
+ti["7 "] = {"st_boulder_s"}
+ti["pp"] = ti[" -"] .. {"it_squashed"}
+ti["pn"] = ti["pp"] .. {"st_oneway_e"}
+ti["X "] = {"#ac_pearl_white", controllers=CTRL_YIN, name="df1"}
+ti["r "] = ti[" $"] .. {"#ac_rotor", range=1, strength=1}
+ti["t "] = ti[" $"] .. {"#ac_top", range=1, strength=1}
+ti["8 "] = {"st_puzzle_blue_e"}
+ti["9 "] = {"st_puzzle_blue_w"}
+ti[": "] = {"st_puzzle_blue_ew"}
+
+if wo ["IsDifficult"] then
+    ti["ee"] = ti[" $"] .. {"st_rotator_ccw"}
+    ti["ex"] = ti["ef"] .. {"st_boulder_n"}
+    ti["eo"] = ti["ef"] .. {"st_boulder_s"}
+    ti["R "] = {"st_rubberband"}
+    ti["Q "] = {"st_rubberband"}
+    ti["S "] = {"st_yellow"}
+else
+    ti["ee"] = ti[" $"] .. {"st_yellow"}
+    ti["ex"] = ti["ef"] .. {"it_squashed"}
+    ti["eo"] = ti["ef"] .. {"it_squashed"}
+    ti["R "] = {"st_grate_cross"}
+    ti["Q "] = {"st_purplegray"}
+    ti["S "] = {"st_scissors"}
+end
+
+local resolver = res.composer(ti)
+
+w, h = wo(resolver, "  ", {
+       "!!!!ee!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
+       "!!$$s&s&s(s&s(s&s(s&s(s&s(s&s(s&s(s&s&ee",
+       "!!r$s&R's'.'0's'2's'2's'2's'2's!2's's&!!",
+       "!!$$b&'' a d p f .,! .,% .,% .,! .,!b&!!",
+       "!!t$s&(!(!S!(!(!z/(!i/(!#/(!y/(!n/(!s&!!",
+       "!!$$b&(! ) ) )?,3!3!3!3!3!3!3!3!3!(!b&!!",
+       "!!X%ex)! *l+q+c-1-4!9+5.8.5.:+4+6-pneoQ!",
+       "!!$$b&(! ( ( (?,3!3!3!3!3!3!3!3!3!(!b&!!",
+       "!!t$s&(!(!S!(!(!k/(!w/(!#/(!x/(!m/(!s&!!",
+       "!!$$b&*' a u p f .,! .,% .,% .,! .,!b&!!",
+       "!!r$s&R's'.'0's'2's'2's'2's'2's!2's's&!!",
+       "!!ees&s&s)s&s)s&s)s&s)s&s)s&s)s&s)s&s&!!",
+       "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!ee!!"})
+
+wo:add({"ot_rubberband", anchor1="df1", anchor2="df3"})
+wo:shuffleOxyd()
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+      <el:string el:key="subtitle">
+        <el:english el:translate="true"/>
+        <el:translation el:lang="de">Meditiere! ... aber wo ??</el:translation>
+      </el:string>
+      <el:string el:key="text1">
+        <el:english el:translate="true">These stormy days ...</el:english>
+        <el:translation el:lang="de">Unruhige Zeiten in dieser Meditation</el:translation>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

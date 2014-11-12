@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+  <el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Black Liberation" el:subtitle="Black is Beautiful" el:id="mecke11"/>
+      <el:version el:score="1" el:release="2" el:revision="$Revision:44$" el:status="released"/>
+      <el:author el:name="mecke" el:email=""/>
+      <el:copyright>Copyright © 2008 Thomas Bernhardt</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10"/>
+      <el:modes el:easy="true" el:single="true" el:network="false"/>
+      <el:comments>
+        <el:credits el:showinfo="true" el:showstart="false">Thanks to Ronald Lamprecht for testing and feedback</el:credits>
+      </el:comments>
+      <el:score el:easy="28:51" el:difficult="33:44"/>
+    </el:info>
+  <el:luamain><![CDATA[
+ti[" !"] = {"fl_abyss"}
+ti[" ,"] = {"fl_red"}
+ti["! "] = {"st_plop_slate"}
+ti[" #"] = {"fl_yinyang_yin_invisible"}
+ti["# "] = {"st_death"}
+ti[" $"] = {"fl_metal_7"}
+ti[" %"] = {"fl_bluegray"}
+ti["% "] = {"st_boulder_w"}
+ti["& "] = {"st_quake"}
+ti["c7"] = ti[" #"] .. {"st_rawglass"}
+ti["c2"] = ti["c7"] .. {"it_key", code=2}
+
+ti["triggerytemplate"] = ti[" #"] .. {"it_trigger", name="t%%", target="L%%", action="toggle"}
+ti["v8"] = ti[" %"] .. {"it_trigger", target="lezy2",action="toggle"}
+ti["v9"] = ti[" %"] .. {"it_trigger", target="lezy1",action="toggle"}
+ti["v3"] = ti[" #"] .. {"it_trigger", target="lezy3",action="toggle"}
+ti["v4"] = ti[" #"] .. {"it_trigger", target="lezy3",action="toggle"}
+ti["v5"] = ti[" !"] .. {"it_trigger", target="doorwand",action="toggle"}
+ti["U "] = {"st_key", code=1,  target= {"door1","door2"}}
+ti["; "] = {"st_key", code=2,  target="door4"}
+ti["' "] = {"st_door", faces="ns", name="dolli2"}
+ti["( "] = {"st_actorimpulse_invisible"}
+ti[" &"] = {"fl_aquamarine"}
+ti[") "] = {"st_grate_cross"}
+ti["a1"] = ti[" !"] .. {"st_grate_cross"}
+ti["* "] = {"st_mirror", movable=true, transparent=false}
+ti["+ "] = {"st_darkgray"}
+ti[" '"] = {"fl_water"}
+ti[", "] = {"st_granite_hollow"}
+ti["- "] = {"st_thief"}
+ti[". "] = {"st_puzzle_yellow", connections="es"}
+ti["p2"] = ti[" #"] .. {"st_puzzle_yellow", connections="es"}
+ti["/ "] = {"st_puzzle_yellow", connections="ns"}
+ti["0 "] = {"st_puzzle_yellow", connections="ne"}
+ti["p1"] = ti[" #"] .. {"st_puzzle_yellow", connections="ne"}
+ti[" ("] = {"fl_swamp"}
+ti["1 "] = {"st_puzzle_yellow", connections="ew"}
+ti["2 "] = {"st_rawglass"}
+ti["3 "] = {"st_laser_e"}
+ti["L0"] = ti[" #"] .. {"st_laser_e", name="lezy2"}
+ti["laserytemplate"] = ti[" #"] .. {"st_laser_e", name="L%%"}
+ti["4 "] = {"st_puzzle_yellow", connections="sw"}
+ti["p3"] = ti[" #"] .. {"st_puzzle_yellow", connections="sw"}
+ti["5 "] = {"st_ghost_break"}
+ti["y1"] = ti[" !"] .. {"st_ghost_break"}
+ti["y2"] = ti["y1"] .. {"it_puller_s"}
+ti["y3"] = ti[" #"] .. {"it_puller_s"}
+ti["y4"] = ti[" #"] .. {"st_mirror", movable=true, transparent=false}
+ti["y5"] = ti["y4"] .. {"it_puller_s"}
+ti["X "] = {"#ac_marble_black"}
+ti["oo"] = ti[" #"] .. {"st_oxyd_a"}
+ti["7 "] = {"st_laserswitch", target="door3"}
+ti["$ "] = {"st_laser_s", name="lezy3"}
+ti["8 "] = {"st_oneway_w"}
+ti["9 "] = {"st_box_wood"}
+ti[": "] = {"st_puzzle_yellow", connections="nw"}
+ti[" )"] = {"fl_space"}
+ti["< "] = {"st_actorimpulse"}
+ti["= "] = {"st_yellow"}
+ti["> "] = {"st_death_invisible"}
+ti["? "] = {"st_brownie"}
+ti["g "] = {"it_glasses"}
+ti["f "] = {"it_flag_black"}
+ti["@ "] = {"st_break_oxydc"}
+ti["st"] = ti[" #"] .. {"st_break_oxydc"}
+ti["5!"] = ti[" !"] .. {"st_ghost_break"}
+ti["sy"] = ti["st"] .. {"it_seed"}
+ti["sz"] = ti["st"] .. {"it_shogun_l"}
+ti["tz"] = ti["5!"] .. {"it_shogun_l"}
+ti["A "] = {"st_door", faces="ew", name="doorwand"}
+ti["d1"] = ti[" #"] .. {"st_door", faces="ew", name="door1"}
+ti["d2"] = ti[" #"] .. {"st_door", faces="ew", name="door2"}
+ti["d3"] = ti[" #"] .. {"st_door", faces="ns", name="door3"}
+ti["d4"] = ti[" #"] .. {"st_door", faces="ns", name="door4"}
+ti["B "] = {"st_stoneimpulse_hollow"}
+ti["w "] = {"it_magicwand"}
+ti["C "] = {"st_stoneimpulse"}
+ti["D "] = {"st_rawglass_movable"}
+ti["E "] = {"st_plaster"}
+ti[" *"] = {"fl_ivory"}
+ti["F "] = {"st_oneway_s"}
+ti[" +"] = {"fl_sahara"}
+ti["G "] = {"st_purplegray"}
+ti["H "] = {"st_oneway_e"}
+ti["I "] = {"st_oneway_n"}
+ti["Y "] = {"st_knight"}
+ti["c8"] = ti[" +"] .. {"st_rawglass"}
+ti["cc"] = ti["c8"] .. {"it_coin_m"}
+ti["J "] = {"st_passage_black_frame"}
+ti["a5"] = ti[" #"] .. {"st_passage_black_frame"}
+ti["K "] = {"st_laser_w", name="lezy1"}
+ti["vv"] = ti[" '"] .. {"it_strip", connections="ns"}
+ti["hh"] = ti[" '"] .. {"it_strip", connections="ew"}
+ti["hi"] = ti["a1"] .. {"it_strip", connections="ew"}
+ti["JJ"] = ti[" #"] .. {"#ac_top", range=10, strength=10}
+ti["a2"] = ti[" #"] .. {"#ac_top", range=1, strength=1}
+ti["a3"] = ti[" #"] .. {"#ac_top", range=3, strength=3}
+ti["a6"] = ti["a5"] .. {"#ac_top", range=1, strength=1}
+ti["se"] = ti[" #"] .. {"it_seed"}
+ti["sc"] = ti[" *"] .. {"it_cherry"}
+ti["sb"] = ti[" )"] .. {"st_plop_slate"}
+ti["ss"] = ti["sb"] .. {"it_springboard"}
+ti["l1"] = ti["p1"] .. {"it_extralife"}
+ti["l2"] = ti["p2"] .. {"it_extralife"}
+ti["l3"] = ti["p3"] .. {"it_extralife"}
+ti["l4"] = ti[" #"] .. {"it_extralife"}
+
+if wo ["IsDifficult"] then
+    ti["hx"] = ti[" '"] .. {"it_strip", connections="ew"}
+    ti["c9"] = ti[" ,"] .. {"st_rawglass"}
+    ti["c1"] = ti["c9"] .. {"it_key", code=1}
+    ti["nn"] = ti[" #"] .. {"fl_yinyang_yin_invisible"}
+else
+    ti["hx"] = ti[" #"] .. {"it_cherry"}
+    ti["nn"] = ti[" #"] .. {"it_extralife"}
+    ti["c1"] = ti[" ,"] .. {"it_key", code=1}
+    ti["c9"] = ti[" ,"] .. {"fl_red"}
+end
+
+local autotiler = res.autotile(ti, {"t", "triggerytemplate"},{"L", "laserytemplate"})
+
+wo(res.composer(autotiler), "  ", {
+       "!!!!!#!#!#!#!#!#!#!#!#!#!#!#!#!###<###!#!#!#!#!#!#!#!#E#E!E!E!E!E!E###############E#E#E#E#E#E#E#E#E#E#E#E#E#E#E#E#",
+       "!! ! # # # # # # # # # # #9# #9# !<! !9# # # # # # # #9# ! !(! !5! # # # # # # # # # # # #?# #?# #?# #?# #?# #?#E#",
+       "!! ! ### # # # ! # # ### # # # # !<! ! #@!@#@#@#@#@#@# # ! !(! !5! # # # # # # # # # # # # #?# #?# #?# #?# #?# #E#",
+       "!! ! # # #)# # # #)# # # # # # # !<! ! #@#@#@#sysy@#@# # ! !(! !5! # # # # # # # # # # # #?# #?# #?# #?# #?# #?#E#",
+       "!! ! # # # #l21#l3 # # # #########<### #@#sz@#@!@#@!@# # ! !(! !5! # # # # # # # # # # # # #?# #?# #?# #?# #?# #E#",
+       "!! !&# # ! #/#c2/# # ! # ###;#####<### #@#@!sy@#@#sz@# # ! !(! !5! # ' ' 'vv ' ' ' # # # #?# #?# #?#se?# #?# #?#E#",
+       "!! ! # # # #l11#l4 # # # ###9#####<### #@#@#@#@!sz@#@# # ! !(! !5! # ' ' 'vv ' ' ' # # # # #?# #?#se##se?# #?# #E#",
+       "!! ! # # #)# # # #)# # # # # # #5!<!5! #@#@#sy@#@#@!@# # ! !(! !5! # ' 'sc!)sc ' 'nn # # #?# #?# #?#se?# #?# #?#E#",
+       "!! ! ### # # # ! # # ### # # # #5!<!5! #@#sz@#sysy@#@# # ! !(! !5! #hhhhss 'D)hxhhnn # # # #?# #?# #?# #?# #?# #E#",
+       "!! ! ! # # # # # # # # # #9# #9#5!<!5!9# # # # # # # #9# ! !(! !5! # ' 'sc!)sc ' 'nn # # #?# #?# #?# #?# #?# #?#E#",
+       "!!!!d4!#5!5!5!5!5!5!5!5! ! ! ! ! !f! ! ! ! # !(!(!(!5!F#5!(!(!5!5! # ' ' 'vv ' ' ' # # # # #?# #?# #?# #?# #9# #E#",
+       "5!5!Y%)!%#t1##L1 ! #oo5# ! # ! # #<# #g% ! # !=# # # # # ! ! ! ! ! # ' ' 'vv ' ' ' # # # #?# #?# #?# #?# #?# #?#E#",
+       " ! ! #hi,#-# (3# !(#(#(# ! # ! # # # # # ! # !(#=# # # # ! ! ! ! ! # # # # # # # # # # # # # # # # # # # # # # #E#",
+       " ! !Y#)!%#t2##L2 ! #oo(# ! # ! # ) ) ) # ! # !(# #=# # # ! ! ! ! ! # # # # # # # # # # # # # # # # # # # # # # #E#",
+       " ! ! #hi,#-# (3# ! # #(# ! # ! #<) )<) # ! # !=# # #=# # ! ! ! ! ! # # # # # # # # #############################!#",
+       " ! !Y#)!%#t3##L3 ! #oo(# ! # ! # ) ) ) # ! # !##=# # # #G#G#G#G#G# # # # # # # # # # # # # # # # # # # # # # # #!#",
+       " ! ! #hi,#-# (3# ! # #(# ! # ! #=) )=) # ! # ) ###=# # #G# # # # # # # # # # # # # # # # # # # # # # # # # # # #!#",
+       " ! !Y#)!%#t4##L4 ! #oo(# !:# ! #>)oo>) #5! # ) #A#w#=# )L0 # % %v8 % % %X% % % % # % # % # %%# % # %v9 % % %K# %=#",
+       " ! ! #hi,#-# (3# ! # #(# ! # ! #=) )=) # ! # ) ###=# # #G# # # # # # # # # # # # # # # # # # # # # # # # # # # #!#",
+       " ! !Y#)!%#t5##L5 ! #oo(# ! # ! # ) ) ) # ! # !##=# # # #G#G#G#G#G#5#5#5#5#5#5#5#5#5# # # # # # # # # # # # # # #!#",
+       " ! ! #hi,#-# (3# ! # #(# ! # ! #<) )<) # ! # !=# # #=# # # # # # #5# #5# #5# #5# #5#############################!#",
+       " ! !Y#)!%#t6##L6 ! #oo(# ! # ! # ) ) ) # ! # !(# #=# # # # # # # #5#JJ5#JJ5#JJ5#JJ5# ! ! ! ! ! ! ! ! ! ! ! ! ! ! !",
+       " ! ! #hi,#-# (3# !(#(#(# ! # ! # # # # # ! # !(#=# # # # # # # # #5# #5# #5# #5# #5# ! ! ! ! ! ! ! ! ! ! ! ! ! ! !",
+       "5!5!(%)!%#t7##L7 ! #oo5# ! # ! # #<# #g% ! # !=# # # # # # # # # #5# #5# #5# #5# #5# ! ! ! ! ! ! ! ! ! ! ! ! ! ! !",
+       "!#!#'&!!5!5!5!5!5!5!tz5! ! # ! ! ! ! ! !5!d35!(!(!C!(!)+ +)+)+)+)+cc2#2#2#2#2#2#2#)+ # # # # # # # # # # # # # #(#",
+       "!#$# #*# # # # # #+# # # # # #*# # # #a6 # # ! #B#B#B#G#!#!#!#!#!#5# #5# #5# #5# #5# # , ,<, , ,<, , , ,<, , ,<,(#",
+       "!# # # # #y5 # # #+#7#+#+#*#+# # # #J# #a2 # # !B#B#B#d2H#I#I#H#I#5# #5# #5# #5# #5# # ,<, , ,<,<,<, ,<, , ,<, ,(#",
+       "!# # #+# #+#+#*#+#+#+###+# #+# # #J# # # #a2 # #C!D#C#G#H#H#I#H#I#5#JJ5#JJ5#JJ5#JJ5# #<, , ,<,J, ,<, ,J,<, , , ,(#",
+       "!# # #+# # # # # #*# # # # # # # #v4J# # # #a2 #B#v5B#!#H#H#I#I#I#5# #5# #5# #5# #5# # , ,<,<, , ,J,<, , , ,<,<,(#",
+       "!# # # # # ### # # # # # #+#y3 # # # #J# # # #a3B'C#B'G#H#H#F#H#I#5# #5# #5# #5# #5# # , , ,<, ,J,c1J, ,G, , ,c9U#",
+       "!# # # ' ! ' ! ' ! ' !5!5!5!5!5!5!5!5!y25!5!5!5!5!5!5!!#8#H#F#H#I#5# #5# #5# #5# #5# # ,<, ,<, ,<,J, ,<, , ,<, ,(#",
+       "!#%# # ' # #v3 # # # #8# ( (#( (?! ( ( ( (?! ( ( ( (5!G#H#H#H#H#H#5# #5# #5# #5# #5# #<, ,<, ,J, ,<, ,J,<, , , ,(#",
+       "!# # # ' # ' ! ' ! ' #5! ( ( ( (?# ( (#( (?! ( ( ( (5!!#F#H#F#F#H#5#5#5#5#5#5#5#5#5# # , , , ,<, ,<,<,<, , , , ,(#",
+       "!# # # # # ' # ' # ' #5! ( ( ( (?! ( ( ( (?# ( (#( (5!G#I#H#H#8#H# # # # # ) # # # ) #<, ,<,<, , ,<, , , , , , ,(#",
+       "!# ! ! ' ! ' ! ' ! ' !5! ( ( ( (?! ( ( ( (?! ( ( ( (8#d1I#H#H#H#8# # # # # # # ) # # # # # # # # # # # # # # # #(#",
+       "###################### ! ! ! ! ! ! ! ! ! ! ! ! ! ! !5!G#!#!#!#!#!#!#!#!#!#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#"})
+
+wo:shuffleOxyd()
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+      <el:string el:key="subtitle">
+        <el:english el:translate="false"/>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

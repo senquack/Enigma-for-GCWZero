@@ -1,0 +1,10 @@
+K 10
+svn:ignore
+V 65
+Makefile
+Makefile.in
+stamp-h1
+zipios-config.h
+zipios-config.h.in
+
+END

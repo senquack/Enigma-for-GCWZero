@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="library">
+      <el:identity el:title="" el:id="lib/libpuzzle"/>
+      <el:version el:score="2" el:release="3" el:revision="6" el:status="released"/>
+      <el:author  el:name="Ronald Lamprecht" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2008 Ronald Lamprecht</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10">
+      </el:compatibility>
+      <el:modes el:easy="false" el:single="false" el:network="false"/>
+      <el:comments>
+      </el:comments>
+      <el:score el:easy="-" el:difficult="-"/>
+    </el:info>
+    <el:luamain><![CDATA[
+function res.puzzle_finalization(context)
+--    print("puzzle final - num pos "..#context[5])
+    local stones = {}
+    for i, ppos in ipairs(context[5]) do
+        local stone = st(context[5][i])
+        if -stone and stone:is("st_puzzle") then
+            table.insert(stones, stone)
+        end
+    end
+    stones = grp(stones)
+    -- seperate puzzles into huddles
+    local huddles = {}
+    while #stones > 0 do
+        local huddle = stones[1]:get_adjacents()
+        table.insert(huddles, huddle)
+        stones = stones - huddle
+--        print("puzzle final - huddle of size "..#huddle)
+    end
+--    print("puzzle final - num huddles "..#huddles)
+
+    -- shuffle huddles
+    local width = wo["Width"]
+    local height = wo["Height"]
+    local offsets = {W, S, E, N}
+    local dirchars = {"w","s","e","n"}
+    for h, huddle in ipairs(huddles) do
+--        print("puzzle final - shuffle huddle of size "..#huddle)
+        local pfloors = fl(huddle)
+        local pushes = {}
+        local intensity = 0
+        local algorithm = 0   -- std
+        for puz in huddle do
+            local alg = puz["algorithm"]
+            if alg == "marked" then
+               algorithm = 1
+            end
+            intensity = math.max(intensity, puz["intensity"])
+        end
+
+        for puz in huddle do
+            for dir, offset in ipairs(offsets) do
+                local cand = puz - offset
+                if cand:exists() then
+                    local cfloor = fl(cand)
+
+                    local may_push = true
+                    if pfloors[cfloor] == nil then
+                        if algorithm == 1 then
+                            local pushdirs = cfloor["push_directions"]
+                            if type(pushdirs) ~= "string" or not pushdirs:find(dirchars[dir]) then
+                                may_push = false
+                            end
+                        end
+                    else  -- floor is under the puzzle but if its marked, the levelautor wants to shuffle from here
+                        may_push = false
+                        if algorithm == 1 then
+                            local pushdirs = cfloor["push_directions"]
+                            if type(pushdirs) == "string" and pushdirs:find(dirchars[dir]) then
+                                may_push = true
+                            end
+                        end
+                    end
+
+                    -- Add all possible shuffles from current position to the table
+                    if may_push then
+                        local length = 1
+                        local lpos = puz + offset
+                        while lpos:exists() and pfloors[fl(lpos)] ~= nil do
+                            length = length + 1
+                            lpos = lpos + offset
+                        end
+                        if length > 1 then
+                            table.insert(pushes, {fl(puz), dir - 1, length})
+--                          print("  push ("..cfloor.x..","..cfloor.y..") dir "..(dir-1).." length "..length)
+                        end
+                    end
+
+                end
+            end
+        end
+
+        -- How many pull_rotations we try to do?
+        intensity = intensity * #huddle
+        if intensity > 0 then
+            intensity = intensity + math.random(0, 1)
+        end
+
+        -- and now, let's shuffle!
+        while intensity > 0 and #pushes > 0 do
+            local pidx = random(#pushes)  -- select a random push pos/dir
+            local puzz = st(pushes[pidx][1])
+            local dir = pushes[pidx][2]
+            local length = pushes[pidx][3]
+            local nextpuzz = st(puzz + offsets[dir + 1])
+
+            -- check for leading sequence of hollow puzzles
+            while length > 2 and puzz["hollow"] and nextpuzz["hollow"] do
+                puzz = nextpuzz
+                nextpuzz = st(puzz + offsets[dir + 1])
+                length = length - 1
+            end
+
+            if not nextpuzz["hollow"] then
+                puzz:pull_rotate(dir)
+            end
+            -- decrement in any case - there may exist no way scramble
+            intensity = intensity - 1
+        end
+    end
+    -- cleanup for subsequent calls
+    context[5] = {}
+end
+
+function res.puzzle_newtile(key, template, suffix)
+    local decl = template:_declaration()  -- get a deep copy
+    local result
+    for i, tile in ipairs(decl) do
+        if type(tile) == "string" then
+            if result == nil then
+                result = ti[tile]
+            else
+                result = result .. ti[tile]
+            end
+        else
+            if tile[1]:find("st_puzzle", 1, true) then
+                local clusteridx = ("01234pqrstuvwxyz"):find(suffix, 1, true)
+                local connections = (" abcdefghijklmno"):find(suffix, 1 , true)
+                if  clusteridx == nil then
+                    clusteridx = ("56789PQRSTUVWXYZ"):find(suffix, 1, true)
+                    if clusteridx ~= nil then
+                        tile["hollow"] = true
+                    end
+                end
+                if  connections == nil then
+                    connections = ("+ABCDEFGHIJKLMNO"):find(suffix, 1, true)
+                    if connections ~= nil then
+                        tile["hollow"] = true
+                    end
+                end
+                if  clusteridx ~= nil then
+                    if clusteridx < 6 then
+                        tile["cluster"] = clusteridx - 1
+                    else   -- pqr...xyz = 10...20
+                        tile["cluster"] = clusteridx + 4
+                    end
+                elseif connections ~= nil then
+                    tile["connections"] = ({"","w","s","sw","e","ew","es","esw",
+                            "n","nw","ns","nsw","ne","new","nes","nesw"})[connections]
+                end
+            end
+
+            if result == nil then
+                result = ti(tile)
+            else
+                result = result .. ti(tile)
+            end
+        end
+    end
+    ti[key] = result
+end
+
+function res.puzzle_implementation(context, evaluator, key, x, y)
+    for i, prefix in ipairs (context[4]) do
+        if key:find(prefix, 1, true) == 1 then
+            -- prefix based substitution
+            if evaluator(context[3], key, x, y) == nil then
+                local template = ti[prefix]
+                local suffix = key:sub(#(prefix) + 1)
+                assert_bool(template, "Resolver puzzle missing template rule '" ..prefix.."'.", 2)
+                assert_bool(#suffix == 1, "Resolver puzzle key '"..key.."' does not match template rule '" ..prefix.."'", 2)
+                res.puzzle_newtile(key, template, suffix)
+            end
+            table.insert(context[5], po(x,y))
+            return ti[key]
+        end
+    end
+    return evaluator(context[3], key, x, y)
+end
+
+function res.puzzle(subresolver, ...)
+    -- syntax: ... = <prefixkey>
+    -- context: [4] = table with unmodified rule tables
+    assert_bool(is_resolver(subresolver), "res.puzzle first argument (subresolver)", 2)
+    local args = {...}
+    local length = 0
+    for i, prefix in ipairs(args) do
+        assert_type(prefix, "res.puzzle puzzle prefix", 2, "string")
+        if length == 0 then
+            length = #prefix
+        elseif length ~= #prefix then
+            error("Resolver puzzle prefix " .. i.." mismatch of length", 2)
+        end
+    end
+    local context = {res.puzzle_implementation, res.puzzle_finalization, subresolver, args, {}}
+    setmetatable(context, res.metatable)
+    return context
+end
+
+    ]]></el:luamain>
+    <el:i18n>
+    </el:i18n>
+  </el:protected>
+</el:level>

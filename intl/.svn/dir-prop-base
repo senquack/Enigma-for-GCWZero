@@ -1,0 +1,12 @@
+K 10
+svn:ignore
+V 80
+Makefile
+libgnuintl.h
+libintl.a
+libintl.h
+ref-del.sed
+ref-add.sed
+charset.alias
+
+END

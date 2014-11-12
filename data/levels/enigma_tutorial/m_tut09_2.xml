@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Floors 1" el:subtitle="" el:id="m_tutor/m_tut9"/>
+      <el:version el:score="2" el:release="3" el:revision="5" el:status="released"/>
+      <el:author  el:name="Martin Hawlisch" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2003 Martin Hawlisch</el:copyright>
+      <el:license el:type="GPL version 2" el:open="true"/>
+      <el:compatibility el:enigma="1.10"/>
+      <el:modes el:easy="true" el:single="true" el:network="false"/>
+      <el:comments><el:code>New API converted by R. Bourquin</el:code></el:comments>
+      <el:score el:easy="-" el:difficult="-"/>
+    </el:info>
+    <el:luamain><![CDATA[
+
+ti[" "] = {"fl_lawn_b"}
+ti["1"] = {"fl_lawn"}
+ti["2"] = {"fl_lawn_c1"}
+ti["3"] = {"fl_lawn_c2"}
+ti["4"] = {"fl_lawn_c3"}
+ti["5"] = {"fl_lawn_c4"}
+ti["6"] = {"fl_lawn_d1"}
+ti["7"] = {"fl_lawn_d2"}
+ti["8"] = {"fl_lawn_d3"}
+ti["9"] = {"fl_lawn_d4"}
+ti["M"] = {"fl_metal"}
+ti["I"] = {"fl_ice"}
+ti["R"] = {"fl_rough", friction=7.0, adhesion=0.5}
+ti["D"] = {"fl_dunes"}
+ti["S"] = {"fl_space"}
+ti["C"] = {"fl_sand"}
+ti["#"] = {"st_fake_oxyda"}
+ti["d"] = ti["1"] .. {"it_document", text="text1"}
+ti["@"] = ti["C"] .. {"#ac_marble_black"}
+ti["O"] = {"st_oxyd", flavor="d"}
+
+if wo["IsDifficult"] then
+    ti["Q"] = ti["O"]
+else
+    ti["Q"] = {"st_fake_oxydd"}
+end
+
+wo(ti, " ", {
+    "##########################################################",
+    "#                  #                  #                  #",
+    "# 2111111111111114 # 2111111111111114 # 2111111111111114 #",
+    "# 1IIIIIIIIIIIIII1 # 1RRRRRRRRRRRRRR1 # 1DDDDDDDDDDDDDD1 #",
+    "# 1IIIIIIIIIIIIII1 # 1RRRRRRRRRRRRRR1 # 1DDDDDDDDDDDDDD1 #",
+    "# 1IIOIIIIIIIIIII1   1RRORRRRRRRRRRR1   1DDODDDDDDDDDDD1 #",
+    "# 1IIIIIIIIIIIIII11111RRRRRRRRRRRRRR11111DDDDDDDDDDDDDD1 #",
+    "# 1IIIIIIIIIIIQII1   1RRRRRRRRRRRQRR1   1DDDDDDDDDDDQDD1 #",
+    "# 1IIIIIIIIIIIIII1 # 1RRRRRRRRRRRRRR1 # 1DDDDDDDDDDDDDD1 #",
+    "# 1IIIIIIIIIIIIII1 # 1RRRRRRRRRRRRRR1 # 1DDDDDDDDDDDDDD1 #",
+    "# 3111111111111115 # 3111111111111115 # 3111111111111115 #",
+    "#        1         #         1        #         1        #",
+    "######## 1 ################# 1 ################ 1 ########",
+    "#        1         #         1        #         1        #",
+    "# 2111111111111114 # 21111111d1111114 # 2111111111111114 #",
+    "# 1MMMMMMMMMMMMMM1 # 1CCCCCCCCCCCCCC1 # 1SSSSSSSSSSSSSS1 #",
+    "# 1MMMMMMMMMMMMMM1 # 1CCCCCCCCCCCCCC1 # 1SSSSSSSSSSSSSS1 #",
+    "# 1MMOMMMMMMMMMMM1   1CCOCCCCCCCCCCC1   1SSOSSSSSSSSSSS1 #",
+    "# 1MMMMMMMMMMMMMM1111dCCCCCCC@CCCCCCd1111SSSSSSSSSSSSSS1 #",
+    "# 1MMMMMMMMMMMQMM1   1CCCCCCCCCCCQCC1   1SSSSSSSSSSSQSS1 #",
+    "# 1MMMMMMMMMMMMMM1 # 1CCCCCCCCCCCCCC1 # 1SSSSSSSSSSSSSS1 #",
+    "# 1MMMMMMMMMMMMMM1 # 1CCCCCCCCCCCCCC1 # 1SSSSSSSSSSSSSS1 #",
+    "# 3111111111111115 # 3111111111111115 # 3111111111111115 #",
+    "#                  #                  #                  #",
+    "##########################################################"})
+
+wo:shuffleOxyd()
+
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+      <el:string el:key="text1">
+        <el:english el:translate="true">Friction and acceleration depend on the floor type.</el:english>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

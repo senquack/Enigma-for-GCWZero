@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="library">
+      <el:identity el:title="" el:id="lib/libsoko"/>
+      <el:version el:score="1" el:release="1" el:revision="8" el:status="released"/>
+      <el:author el:name="Enigma Team" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2007, 2008, 2009 Enigma Team</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10">
+        <el:dependency el:path="lib/liblua" el:id="lib/liblua" el:release="1" el:preload="true"/>
+        <el:dependency el:path="lib/libmath" el:id="lib/libmath" el:release="1" el:preload="true"/>
+        <el:dependency el:path="lib/libimport" el:id="lib/libimport" el:release="1" el:preload="true"/>
+        <el:dependency el:path="lib/libsoko_designlist" el:id="lib/libsoko_designlist" el:release="1" el:preload="true"/>
+      </el:compatibility>
+      <el:modes el:easy="false" el:single="false" el:network="false"/>
+      <el:comments>
+        <el:dedication>
+          To Ralf Westram, who wrote the first Sokoban lib for Enigma,
+          and Taztunes, maybe the most active Sokoban-Enigma-player.        
+        </el:dedication>
+      </el:comments>
+      <el:score el:easy="-" el:difficult="-"/>
+    </el:info>
+    <el:luamain><![CDATA[
+
+lib.soko = {}
+setmetatable(lib.soko, getmetatable(lib))
+lib.soko.keys_to_field_names = {["  "] = "inf", ["- "] = "outf", ["$ "] = "box",
+    ["# "] = "wall", [" ."] = "goal", ["D "] = "door", ["d "] = "open_door"}
+lib.soko.ignore_key = "Ig"  -- This key may not appear in any Sokoban-level.
+    
+-- The following constants are defined in libsoko_designlist:
+-- RESOLVE_ALL = 0
+-- RESOLVE_RANDOM = 1
+-- RESOLVE_CHECKERBOARD = 2
+-- RESOLVE_LINES = 3
+-- RESOLVE_WAVES = 4
+-- RESOLVE_ORIENTED = 5
+-- MAXDESIGN
+GOAL_HOOK_DEFAULT = 0
+GOAL_HOOK_RALF = 1
+lib.soko.MAX_HEIGHT = 10000  -- If you have to change this, change it before any other call to lib.soko.
+
+lib.soko.resolver_info = {}
+lib.soko.ti_defined = {}
+lib.soko.area = {}
+lib.soko.endphase_started = false
+lib.soko.initially_completed_goals = 0
+lib.soko.goal_hook = GOAL_HOOK_DEFAULT
+
+------------------------------------------------------------------------
+-- lib.soko.area
+------------------------------------------------------------------------
+
+-- lib.soko.area provides a way to save information about specific
+-- positions of the current level (see it as "attributes for positions").
+function lib.soko.area_get(self, index)
+    if usertype(index) == "position" then
+        local signature = index.x * lib.soko.MAX_HEIGHT + index.y
+        if not rawget(self, signature) then
+            rawset(self, signature, {})
+        end
+        return rawget(self, signature)
+    elseif (type(index) == "string") and (index == "type") then
+        return "lib.soko.area"
+    else
+        error("lib.soko: Internal error: Read access to area_get with wrong type " .. etype(index) .. ".", 2)
+    end
+end
+
+function lib.soko.area_set(self, newindex, value)
+    error("lib.soko: Internal error: lib.soko.area used inappropriately.", 1)
+end
+
+lib.soko.area_metatable = {
+  __index = lib.soko.area_get,
+  __newindex = lib.soko.area_set,
+  _type = "lib.soko.area"
+}
+
+setmetatable(lib.soko.area, lib.soko.area_metatable)
+
+------------------------------------------------------------------------
+-- Choosing the Designnumber, Random numbers
+------------------------------------------------------------------------
+
+-- design_from_level determines a random design number, based on the
+-- outline of the level (position of walls). The algorithm we use here
+-- is inspired by the horseshoe mapping and thereby deterministically
+-- chaotic. To illustrate, why we don't use a simpler calculation
+-- using random seeds pseudo-random number generators, we expose on
+-- this nice mathematical problem a bit deeper. And although the
+-- algorithm we use to determine design numbers can as well be used
+-- in other situations, we stick to the design number as concrete
+-- example.
+--
+-- Main Problem:
+--
+--  Let N be the number of designs in the design list, and L a
+--  variable depending on the level alone (or the level itself).
+--  Find an algorithm which chooses a number n(L,N) from {1, ..., N}
+--  for given level L, such that
+--    1) n(L,N) is uniformly distributed (i.e. all designs are
+--       equally probable),
+--    2) n(L,N+1) != n(L,N)  =>  n(L,N+1) = N+1
+--  Property (2) means the following: We want to extend our design
+--  list once in a while. But the design of a level should change
+--  as seldom as possible, i.e., when it changes at all, then it
+--  already becomes the newly added design. Implementation of this
+--  "stability" is the main problem.
+--
+-- Analysis:
+--
+--  Assume L would be a real number in [0,1). Then for N=2 the
+--  obvious solution would be: n(L,2) = (L < 0.5) ? 1 : 2.
+--  Now look at N=3. We reassign the domains of 1 and 2, such
+--  that each of the domains [0,0.5) and [0.5,1) gives a part
+--  away for design number 3. We would end up with something like
+--   [  0, 1/6) : 3
+--   [1/6, 1/2) : 1
+--   [1/2, 4/6) : 3
+--   [4/6, 1)   : 2
+--  And with N=4, the domains fragmentate more and more.
+--  For large enough N, the number of connected domains doubles
+--  with each increase of N.
+--
+--  This can be interpreted as fractal behaviour, as a kind of
+--  Cantor dust. However, the deeper interpretation is that our
+--  assumption of L being a real number creates the fractality,
+--  not the algorithm itself. From a topological aspect, a
+--  (decision) tree reflects the structure much better!
+--  How could such a tree look like? The easiest method (the one
+--  implemented here) seems to be as follows: 
+--
+--    Generate a random number between 1 and N. Is it 1? Then the
+--    design shall be N. If not, generate a random number between
+--    1 and N-1. Is it 1? Then the design shall be N-1. If not,
+--    generate a random number between 1 and N-2, etc.
+--
+--  Now, we have given a binary sequence (the outline of the level:
+--  wall, or no wall?) and need to create a number between 1 and
+--  j from it. Do this by iteration: For each element in our
+--  binary sequence use operation A if it is 0, or operation B
+--  if it is 1 on some number b. A and B should be permutations,
+--  and if they mix good enough, we get a uniform distribution.
+--
+-- Solution:
+--
+--  The two operations we use are:
+--    A: A translation by 1 (modulo j).
+--    B: A discrete horseshoe-kind mapping.
+--  Each element "#" in the level uses operation B, then A, each
+--  other element only A. The kind of horseshoe we're using is
+--  as follows: The lower half of all numbers is stretched onto
+--  the odd numbers, the top half is stretched and mirrored onto
+--  the even numbers. Example for j = 8:
+--             0 1 2 3 4 5 6 7
+--    becomes  1 3 5 7 6 4 2 0
+--  This mapping has a very low periodicity, i.e. after only
+--  very few repetitions the original order is reconstructed
+--  (j=8: 4, j=13: 9, j=15: 5 etc.). However, walls often
+--  repeat in levels, and to compensate for this, a translation
+--  (= addition of 1) is added. I.e.,
+--             0 1 2 3 4 5 6 7
+--    becomes  2 4 6 0 7 5 3 1
+--  Note that the reversed horseshoe mapping in combination with
+--  such a translation by n conserves the first and last n numbers.
+--  Similarly, a negative translation together with our horseshoe
+--  mapping would be problematic.
+--
+-- Is this a uniform distribution?
+--
+--  Difficult to answer. Indeed, there is no definite answer, as
+--  the probability space should consist of all Sokoban levels,
+--  which is not nicely defined (random levels are mostly not
+--  playable, and not all possible levels are indeed interesting).
+--  So, I tested this algorithm with the first 6000 levels from
+--  xsok given here: http://kantorek.webzdarma.cz/downloada.htm 
+--  The list length was assumed to be 75. The resulting histogram
+--  looks uniform, the standard deviation is 9.03. Compare this
+--  with sqrt(6000*1/75*(1-1/75)) = 8.88, i.e. the deviation is
+--  only slightly above the normal distribution. However, their
+--  ratio varies with the list length.
+--
+-- See also: Landau function g(n) for determining the maximal
+--           order of an element in the symmetric group S(n).
+--
+function lib.soko.number_from_level(map, list_length)
+    local j = list_length + 1
+    local l = 2
+    local b
+    repeat
+        j = j - 1
+        b = 0
+        for y = 1, map.height do
+            local line = map[y]
+            for x = 1, map.width do
+                -- works only for keylength = 2
+                if string.sub(line, 2*x - 1, 2*x - 1) == "#" then
+                    if 2*b + 1 < j then
+                        b = 2*b + 1
+                    else
+                        b = 2 * (j - 1 - b)
+                    end
+                end
+                b = (b + 1) % j
+            end
+        end
+    until (b == 0) or (j == 1)
+    return j
+end
+
+function lib.soko.design_from_description(map, design_description, maxdesignnumber)
+    assert_type(design_description, "lib.soko.design_from_description second argument", 2, "nil", "positive integer", "table")
+    assert_type(maxdesignnumber, "lib.soko.design_from_description third argument", 2, "nil", "positive integer")
+    -- choose design
+    local design = {}
+    if type(design_description) == "number" then
+        design = lib.lua.deep_copy(lib.soko_designlist.list[design_description])
+    elseif type(design_description) == "table" then
+        design = lib.lua.deep_copy(design_description)
+    else
+        assert_type(map, "lib.soko.design_from_description first argument", 2, "map")
+        design = lib.lua.deep_copy(lib.soko_designlist.list[lib.soko.number_from_level(
+                     map, maxdesignnumber or MAXDESIGN[1.1])])
+    end
+    if (design == nil) then
+        error("The requested design is not available -- maybe you tried to run "
+            .."this level with an outdated version of Enigma?", 3)
+    end
+    if (type(design) ~= "table") then
+        error("libsoko: Internal error: The requested design is not of type table, "
+            .."but of type " .. type(design) .. ".", 3)    
+    end
+    if design.endp == nil then
+        design.endp = {}
+    end
+    return design
+end
+
+------------------------------------------------------------------------
+-- Level Drawing
+------------------------------------------------------------------------
+
+function lib.soko.define_tiles(design)
+    local function field_to_tiles(field, key)
+        if type(field) == "string" then
+            if (field == "st_door") or (field == "st_door_d") then
+                lib.soko.resolver_info[key] = {RESOLVE_ORIENTED}
+                set_ti(key .. ":" .. NORTH, {"st_door", faces = "sn"})
+                set_ti(key .. ":" .. SOUTH, {"st_door", faces = "sn"})
+                set_ti(key .. ":" .. EAST,  {"st_door", faces = "ew"})
+                set_ti(key .. ":" .. WEST,  {"st_door", faces = "ew"})
+            else
+                set_ti(key, {field})
+            end
+        elseif usertype(field) == "tile" then
+            set_ti(key, field)
+        elseif type(field) == "nil" then
+            set_ti(key, {})
+        elseif type(field) == "table" then
+            for j, subfield in pairs(field) do
+                if j ~= "res" then
+                    field_to_tiles(subfield, key .. ":" .. j)
+                end
+            end
+            -- We collect all neccessary information for the resolver.
+            if type(field.res) == "nil" then
+                lib.soko.resolver_info[key] = {RESOLVE_ALL}
+            elseif type(field.res) == "number" then
+                lib.soko.resolver_info[key] = {field.res}
+            elseif type(field.res) == "table" then
+                lib.soko.resolver_info[key] = field.res
+            else
+                error("lib.soko.define_tiles: Can't understand type " .. etype(field.res)
+                    .. " in resolver info for key '" .. key .. "'.", 2)
+            end
+            lib.soko.resolver_info[key]._count = #field
+            -- For RESOLVE_RANDOM, we calculate the total frequency,
+            -- so we don't have to do it during resolution, and fill
+            -- in missing values.
+            if lib.soko.resolver_info[key][1] == RESOLVE_RANDOM then
+                local frequency_sum = 0
+                for j = 1, lib.soko.resolver_info[key]._count do
+                    local freq = lib.soko.resolver_info[key][j + 1]
+                    if not freq then
+                        lib.soko.resolver_info[key][j + 1] = 1
+                        freq = 1
+                    elseif (type(freq) ~= "number") or (freq < 0) then
+                        error("lib.soko.define_tiles: Frequency values must be "
+                            .. "non-negative (key '" .. key .. "').", 2)
+                    end
+                    frequency_sum = frequency_sum + freq
+                end
+                lib.soko.resolver_info[key]._sum = frequency_sum
+            end
+        else
+            error("lib.soko.define_tiles: Can't understand type " .. type(efield)
+                .. " in design description for key '" .. key .. "'.", 2)
+        end
+    end 
+
+    for key, field_name in pairs(lib.soko.keys_to_field_names) do
+        field_to_tiles(lib.soko_designlist.default[field_name], key .. ":1")
+        field_to_tiles(design[field_name], key .. ":2")
+        lib.soko.resolver_info[key] = {RESOLVE_ALL, _count = 2}
+        field_to_tiles(design.endp[field_name], key .. ":endp")
+    end
+
+    set_ti("O ", {"st_oxyd", "oxyd#", flavor = design.oxyd or lib.soko_designlist.default.oxyd})
+    if design.white then
+        set_ti("@ ", {"#ac_marble_white", "marble#", owner = YIN, controllers = CTRL_YIN})
+        set_ti("n ", {"st_chess_white"})
+    else
+        set_ti("@ ", {"#ac_marble", "marble#"})
+        set_ti("n ", {"st_chess"})
+    end    
+end
+
+function set_ti(key, tile)
+    ti[key] = tile
+    lib.soko.ti_defined[key] = true
+end
+function get_ti(key)
+    if lib.soko.ti_defined[key] then
+        return ti[key]
+    else
+        return nil
+    end
+end
+
+function lib.soko.resolver(key, x, y)
+    local method = (lib.soko.resolver_info[key] or {})[1]
+    local count = (lib.soko.resolver_info[key] or {})._count
+    local resolve_to = nil
+    if not method then
+        return get_ti(key)
+    elseif method == RESOLVE_ALL then
+        local tile = ti{}
+        for j = 1, count do
+            tile = tile .. lib.soko.resolver(key .. ":" .. j, x, y)
+        end
+        return tile
+    elseif method == RESOLVE_RANDOM then
+        resolve_to = 1
+        local r = math.random(lib.soko.resolver_info[key]._sum)
+        local s = lib.soko.resolver_info[key][resolve_to + 1]
+        while (s < r) and (resolve_to < count) do
+            resolve_to = resolve_to + 1
+            s = s + lib.soko.resolver_info[key][resolve_to + 1]
+        end
+    elseif method == RESOLVE_CHECKERBOARD then
+        resolve_to = (((x%2) + (y%2)) % count) + 1
+    elseif method == RESOLVE_LINES then
+        resolve_to = ((x + y) % count) + 1
+    elseif method == RESOLVE_WAVES then
+        resolve_to = ((x + y * y + x*y*x + 3*y*x*y*x) % count) + 1
+    elseif method == RESOLVE_ORIENTED then
+        resolve_to = lib.soko.area[po(x,y)].orientation
+    -- Unknown method, throw error.
+    elseif type(method) == "number" then
+        error("lib.soko.resolver: Unknown resolver method number " .. method .. ".", 2)
+    else
+        error("lib.soko.resolver: Unknown resolver method of type " .. etype(method) .. ".", 2)
+    end
+    if resolve_to then
+        return lib.soko.resolver(key .. ":" .. resolve_to, x ,y)
+    else
+        return ti{}
+    end
+end
+
+function lib.soko.resolver_endphase(key, x, y)
+    local key1 = string.sub(key, 1, 1) .. " " .. ":endp"
+    local key2 = " " .. string.sub(key, 2, 2) .. ":endp"
+    return    (lib.soko.resolver(key1, x, y) or ti{})
+           .. (lib.soko.resolver(key2, x, y) or ti{})
+end
+
+------------------------------------------------------------------------
+-- Attributes and Endphase Preparation
+------------------------------------------------------------------------
+
+function lib.soko.setup_attributes_and_polists(map)
+    -- Temporarily change the defaultkey of the map to the outf-key.
+    local current_defaultkey = map.defaultkey
+    map.defaultkey = "- "
+    -- Prepare position lists
+    lib.soko.polist = {}
+    for _, field in pairs({"way", "wall", "outf", "goal", "wall_one", "wall_two"}) do
+        lib.soko.polist[field] = po(grp())
+    end
+    local function mark_as(pos, field)
+        lib.soko.polist[field] = lib.soko.polist[field] .. pos
+        lib.soko.area[pos]["is_"..field] = true
+    end
+    -- Traverse the complete map and analyze each position into which
+    -- polist it belongs. Additionally surround the map with outf-positions;
+    -- this is easily possible as map[...] returns an outf-key for these
+    -- positions, which are out of its scope.
+    for x = -1, map.width do
+        for y = -1, map.height do
+            local key = map[{x,y}]
+            local key1 = string.sub(key, 1, 1)
+            local key2 = string.sub(key, 2, 2)
+                if key1 == " " then  mark_as(po(x,y), "way")
+            elseif key1 == "-" then  mark_as(po(x,y), "outf")
+            elseif key1 == "$" then  mark_as(po(x,y), "way")
+                                     st(x,y):set({name = "box#"})
+            elseif key1 == "#" then  mark_as(po(x,y), "wall")
+            elseif key1 == "@" then  mark_as(po(x,y), "way")
+            elseif key1 == "n" then  mark_as(po(x,y), "way")
+                                     st(x,y):set({name = "chess#"})
+            end
+            if key2 == "." then
+                mark_as(po(x,y), "goal")
+                it(x,y):set({name = "goal#", safeaction = true, target = "lib_soko_goal_trigger"})
+                if (key1 == "$") or (key1 == "n") then
+                    it(x,y)._completed = true
+                    lib.soko.initially_completed_goals = lib.soko.initially_completed_goals + 1
+                else
+                    it(x,y)._completed = false
+                end
+            end
+        end
+    end
+    map.defaultkey = current_defaultkey
+    
+    lib.soko.polist.inf = lib.soko.polist.way .. lib.soko.polist.wall
+    
+    local nogoals = fl(lib.soko.polist.way) - fl(lib.soko.polist.goal)
+    nogoals.freeze_check = true
+    no["box#*"].freeze_check = true
+
+    -- polist.wall_one
+    -- There are three conditions for an element of polist.wall_one:
+    -- (i) it's a wall, (ii) it's near or diagonal to outside,
+    -- (iii) it's near a way.
+    -- In addition, it counts the number of near ways.
+    for i = 1, #lib.soko.polist.wall do
+        local pos = lib.soko.polist.wall[i]
+        local outside = false
+        for j = 1, #NEIGHBORS_8 do
+            local delta = NEIGHBORS_8[j]
+            outside = outside or lib.soko.area[pos + delta].is_outf
+        end
+        local count = 0
+        local last_orientation
+        for _, dir in ipairs({{N, NORTH}, {S, SOUTH}, {E, EAST}, {W, WEST}}) do
+            if lib.soko.area[pos + dir[1]].is_way then
+                count = count + 1
+                last_orientation = dir[2]
+            end
+        end
+        lib.soko.area[pos].ways = count
+        if outside and (count > 0) then
+            mark_as(pos, "wall_one")
+            if count == 1 then
+                lib.soko.area[pos].orientation = last_orientation
+            end
+        end
+    end
+    -- polist.wall_two
+    -- There are five conditions for an element of polist.wall_two:
+    -- (i) it's near a wall_one, (ii) it's not a wall_one,
+    -- (iii) it's wall or outside, (iv) it's not near a way.
+    -- In addition, the neighboring wall_ones are added into the list.
+    for i = 1, #lib.soko.polist.wall_one do
+        local wall_one = lib.soko.polist.wall_one[i]
+        for j = 1, #NEIGHBORS_4 do
+            local delta = NEIGHBORS_4[j]
+            local check = wall_one + delta
+            if      map:covers(check)
+                and not (lib.soko.area[check].is_way or lib.soko.area[check].is_wall_one
+                         or ((lib.soko.area[check].ways or 0) > 0)) then
+                mark_as(check, "wall_two")
+                lib.soko.area[check].wall_one =
+                    (lib.soko.area[check].wall_one or po(grp())) .. wall_one
+            end
+        end
+    end
+end
+
+function lib.soko.prepare_endphase(map, design)
+    -- ensure existence of goals
+    assert_bool(#lib.soko.polist.goal > 0, "libsoko: No goals defined.", 2)
+
+    -- ensure a correctly set endphase-attribute
+    assert_type(design.endp, "libsoko design endphase", 2, "nil", "table")
+    design.endp = design.endp or lib.lua.deep_copy(lib.soko_designlist.default.endp)
+    assert_type(design.endp.alg, "libsoko design endphase algorithm", 2, "nil", "string")
+    design.endp.alg = design.endp.alg or lib.lua.deep_copy(lib.soko_designlist.default.endp.alg)
+
+    -- if there is more than one connected component, choose endphase "circle"
+    if #lib.math.mark_components(fl(lib.soko.polist.way), "_pathcomponent", NEIGHBORS_4, true) ~= 1 then
+        design.endp.alg = lib.lua.deep_copy(lib.soko_designlist.default.endp.alg)
+    end
+
+    -- save map and design for later
+    lib.soko.map = map
+    lib.soko.design = design
+
+    -- prepare oxyds and blockers (a "blocker" is a generalized door)
+    local alg = design.endp.alg
+    if       (alg == "circle")
+          or (alg == "hide")
+          or (alg == "fourswitch")
+          or (alg == "gradients")
+          or (alg == "magnets") then
+        -- nothing to prepare
+    elseif   (alg == "ralf")
+          or (alg == "allcrack")
+          or (alg == "vortex") then
+        -- design.door or design.wall or "st_nil"
+        lib.soko.goal_hook = GOAL_HOOK_RALF
+        lib.soko.endphase_set_block_oxyds(design.endp.max_pairs)
+    elseif   (alg == "block") then
+        lib.soko.endphase_set_block_oxyds(design.endp.max_pairs)
+    elseif   (alg == "outside") then
+        lib.soko.endphase_set_outside_oxyds(design.endp.max_pairs)
+    elseif   (alg == "knock") then
+        lib.soko.endphase_set_block_oxyds(tonumber(design.endp.max_pairs) or 3)
+        lib.soko.endphase_set_knocking()
+    else
+        error("lib.soko.prepare_endphase: Endphase algorithm " .. alg .. " unknown.", 2)
+    end
+end
+
+------------------------------------------------------------------------
+-- Goal Trigger and Endphase Main Functions
+------------------------------------------------------------------------
+
+function lib_soko_goal_trigger(is_on, sender)
+    if lib.soko.endphase_started then
+        return
+    end
+    if (-wo:st(sender)) ~= sender._completed then
+        sender._completed = -wo:st(sender)
+        if lib.soko.goal_hook == GOAL_HOOK_RALF then
+            lib.soko.endphase_goal_hook_ralf(sender)
+        end
+        no["goal_counter"]:signal(sender._completed)
+    end
+end
+
+function lib_soko_endphase()
+    -- Correct structure of endp-attribute has been checked
+    -- by prepare_endphase, we trust it blindly.
+    lib.soko.endphase_started = true
+    local endp = lib.lua.deep_copy(lib.soko.design.endp)
+    local alg = endp.alg
+    local marbles = no["marble#*"]
+    -- redraw level and give items
+    wo:drawMap(lib.soko.resolver_endphase, po(0,0), lib.soko.ignore_key, lib.soko.map)
+    local give = lib.lua.deep_copy(endp.give)
+    if type(give) == "string" then
+        give = {{give}}
+    elseif usertype(give) == "tile" then
+        give = {give}
+    end
+    if type(give) == "table" then
+        for _, v in pairs(give) do
+            if (type(v) == "string") and string.find(v, "ac_") then
+                wo[marbles] = {v}
+            elseif (type(v) == "table") and string.find(v[1], "ac_") then
+                wo[marbles] = v
+            elseif v == "rubberball" then
+                local kind = cond(design.white, "#ac_marble", "#ac_marble_white")
+                for j = 1, #marbles do
+                    wo[marbles[j]] = {kind, "rubberball_" .. j, controllers = CTRL_NONE}
+                    wo:add({"ot_rubberband", anchor1 = "rubberball_" .. j,
+                        anchor2 = marbles[j], strength = 50})
+                end
+            elseif type(v) == "string" then
+                wo:add(YIN, {v})
+            else
+                wo:add(YIN, v)
+            end
+        end
+    elseif type(give) ~= "nil" then
+        error("libsoko: Error in design: Can't give something of type "..type(v)..".", 2)
+    end
+    
+    if alg == "circle" then
+        lib.soko.endphase_circle()
+    elseif alg == "outside" then
+        -- Don't do anything; redrawing the level was enough.
+    elseif alg == "hide" then
+        lib.soko.endphase_set_hide_oxyds(endp.max_pairs)
+    elseif    (alg == "ralf")
+           or (alg == "outside")
+           or (alg == "block") then
+        lib.soko.endphase_ralf_open_doors()
+    elseif alg == "allcrack" then
+        lib.soko.endphase_ralf_open_doors()
+        lib.soko.endphase_allcrack()
+    elseif alg == "fourswitch" then
+        lib.soko.endphase_fourswitch()
+    elseif alg == "vortex" then
+        lib.soko.endphase_ralf_open_doors()
+        lib.soko.endphase_vortex()
+    elseif alg == "gradients" then
+        lib.soko.endphase_set_hide_oxyds(endp.max_pairs)
+        lib.soko.endphase_gradients(endp.strength)
+    elseif alg == "magnets" then
+        lib.soko.endphase_set_hide_oxyds(endp.max_pairs)
+        lib.soko.endphase_magnets(endp.strength)
+    elseif alg == "knock" then
+        -- Don't do anything; endphase_call_knocking queries endphase_started.
+    else
+        -- Use default: "circle"
+        lib.soko.endphase_circle()
+    end
+end
+
+------------------------------------------------------------------------
+-- Endphase and Endphase Preparation Smaller Functions
+------------------------------------------------------------------------
+
+function lib.soko.endphase_circle()
+    assert_bool(no["marble#*"] and (#no["marble#*"] > 0), "lib.soko.endphase_circle: No marble found.", 2)
+    local pos = po(no["marble#*"][1])
+    if pos.x > 10 then  pos = pos + {-2,0}  end
+    if pos.y >  6 then  pos = pos + {0,-2}  end
+    st(NEIGHBORS_8 + (pos + po(1, 1))):kill()
+    it(NEIGHBORS_8 + (pos + po(1, 1))):kill()
+    set_ti("Q ", {"st_quake"})
+    wo:drawMap(lib.soko.resolver, pos + po(-1, -1), "i ", {
+        "i O O O i ",
+        "O       O ",
+        "O   Q   O ",
+        "O       O ",
+        "i O O O i "})
+    wo:shuffleOxyd()
+    if #no["marble#*"] > 1 then
+        wo:add(YIN, {"it_hammer"})
+    end
+end
+
+function lib.soko.endphase_set_hide_oxyds(max_pairs)
+    local places = fl(lib.soko.polist.wall_one)
+    -- choose number of oxyds
+    local number_pairs = lib.math.steps(#places, {2, 6, 10, 30}) + 1
+    if number_pairs < 2 then
+        -- use circle instead
+        lib.soko.endphase_circle()
+        return
+    end
+    if max_pairs and tonumber(max_pairs) then
+        number_pairs = math.min(tonumber(max_pairs), number_pairs)
+    end
+    places = (places:shuffle()):sub(2 * number_pairs)
+    -- Draw the oxyds and save positions in map and polists.
+    wo[places] = get_ti("O ")
+    wo:shuffleOxyd()
+    lib.soko.map[po(places)] = "O "
+    lib.soko.polist.oxyd = po(places)
+    for _, field in pairs({"outf", "wall", "wall_one", "wall_two"}) do
+        lib.soko.polist[field] = po(fl(lib.soko.polist[field]) - places)
+    end
+end
+
+function lib.soko.endphase_set_block_oxyds(max_pairs)
+    local oxyds = po(grp())
+    local blockers = po(grp())    
+    -- Add all wall_one-elements with exactly one way near as blocker,
+    -- and the opposite position as oxyd, if it is of type wall_two.
+    -- Make sure that each possible oxyd position is assigned at most once,
+    -- and that no other oxyds or blockers are near.
+    for j = 1, #lib.soko.polist.wall_one do
+        local blocker = lib.soko.polist.wall_one[j]
+        if lib.soko.area[blocker].ways == 1 then
+            for k = 1, #NEIGHBORS_4 do
+                local dir = NEIGHBORS_4[k]
+                if     lib.soko.area[blocker + dir].is_way
+                   and lib.soko.area[blocker - dir].is_wall_two then
+                    -- Check that no oxyd has been set on this position before and
+                    -- no other oxyd or blocker is near the new oxyd or its blocker.
+                    local occupied = false
+                    for l = 1, #oxyds do
+                        occupied = occupied
+                            or (lib.math.manhattan_distance(blockers[l], blocker) <= 1)
+                            or (lib.math.manhattan_distance(oxyds[l],    blocker) <= 1)
+                            or (lib.math.manhattan_distance(blockers[l], blocker - dir) <= 1)
+                            or (lib.math.manhattan_distance(oxyds[l],    blocker - dir) <= 1)
+                    end
+                    if not occupied then
+                        lib.soko.area[blocker].oxyd = blocker - dir
+                        lib.soko.area[blocker - dir].blocker = blocker
+                        lib.soko.area[blocker].way = blocker + dir
+                        blockers = blockers .. blocker
+                        oxyds = oxyds .. (blocker - dir)
+                    end
+                end
+            end
+        end
+    end
+    -- Choose some appropriate subset
+    local number_pairs = lib.math.steps(#oxyds, {4, 8, 16, 28}) + 1
+    if number_pairs < 2 then
+        -- Not enough places? Choose "circle"-algorithm instead and set
+        -- remaining polists to empty groups (nec. for endphase_set_knocking).
+        lib.soko.design.endp.alg = "circle"
+        lib.soko.polist.oxyd = po(grp())
+        lib.soko.polist.blocker = po(grp())
+        return
+    end
+    if max_pairs and tonumber(max_pairs) and (tonumber(max_pairs) >= 1) then
+        number_pairs = math.min(tonumber(max_pairs), number_pairs)
+    end
+    oxyds = (fl(oxyds):shuffle()):sub(2 * number_pairs)
+    -- Draw the oxyds and save positions in map and polists.
+    wo[oxyds] = get_ti("O ")
+    wo:shuffleOxyd()
+    lib.soko.map[oxyds] = "O "
+    lib.soko.polist.oxyd = po(oxyds)
+    lib.soko.polist.blocker = po(grp())
+    for ox in oxyds do
+        local blocker = lib.soko.area[po(ox)].blocker
+        lib.soko.polist.blocker = lib.soko.polist.blocker .. blocker
+        wo[blocker] =    lib.soko.resolver("# ", blocker.x, blocker.y)
+                      .. lib.soko.resolver("D ", blocker.x, blocker.y)
+    end
+    blockers = fl(lib.soko.polist.blocker)
+    lib.soko.map[blockers] = "D "
+    for _, field in pairs({"outf", "wall", "wall_one", "wall_two"}) do
+        lib.soko.polist[field] = po((fl(lib.soko.polist[field]) - oxyds) - blockers)
+    end
+    -- Assign goals to blockers.
+    -- Note: There might be more goals as blockers, and, vice versa,
+    --       there might be more blockers as goals.
+    local goals = fl(lib.soko.polist.goal):shuffle()
+    for j = 2, math.min(#goals, #blockers) do
+        lib.soko.area[po(goals[j])].open = po(blockers[j])
+        if lib.soko.goal_hook == GOAL_HOOK_RALF then
+            lib.soko.endphase_ralf_open_door(it(goals[j])._completed, po(blockers[j]))
+        end
+    end
+end
+
+function lib.soko.endphase_set_outside_oxyds(max_pairs)
+    local places = grp()  -- a group of floors
+    -- Select all places outside or in the walls, unreachable
+    -- for the marble.
+    local common_list = lib.soko.polist.outf .. lib.soko.polist.wall_two
+    for j = 1, #common_list do
+        if (common_list[j].x % 2 == 0) and (common_list[j].y % 2 == 0) then
+            places = places + fl(common_list[j])
+        end
+    end
+    -- Choose some appropriate subset
+    local number_pairs = lib.math.steps(#places, {2, 20, 50, 100}) + 1
+    if number_pairs < 2 then
+        -- Not enough places? Then choose the four corners. They should always
+        -- be at least wall_two and far enough away from each other.
+        places = grp(fl(lib.soko.map.width - 1, 0), fl(0, lib.soko.map.height - 1),
+            fl(0,0), fl(lib.soko.map.width - 1, lib.soko.map.height - 1))
+        number_pairs = 2
+    end
+    if max_pairs and tonumber(max_pairs) then
+        number_pairs = math.min(tonumber(max_pairs), number_pairs)
+    end
+    places = (places:shuffle()):sub(2 * number_pairs)
+    -- Draw the oxyds and save positions in map and polists.
+    wo[places] = get_ti("O ")
+    wo:shuffleOxyd()
+    lib.soko.map[po(places)] = "O "
+    lib.soko.polist.oxyd = po(places)
+    for _, field in pairs({"outf", "wall", "wall_one", "wall_two"}) do
+        lib.soko.polist[field] = po(fl(lib.soko.polist[field]) - places)
+    end
+end
+
+function lib.soko.endphase_set_knocking()
+    -- If no suitable places for blockers were found, the algorithm has already
+    -- been changed to "circle" by endphase_set_block_oxyds. In this case,
+    -- polist.blocker is the empty group and nothing will happen.
+    local blockers = po(fl(lib.soko.polist.blocker):shuffle())
+    -- set attributes of doors
+    for j = 1, #blockers do
+        if -st(blockers[j]) then
+            st(blockers[j]):set({action = "callback", target = "lib_soko_endphase_call_knocking",
+                _close = blockers[(j % #blockers) + 1], _number = j,
+                _open = blockers[((j + 1) % #blockers) + 1]})
+        end
+    end
+end
+
+function lib_soko_endphase_call_knocking(is_on, sender)
+    -- Deactivate the first door until endphase has started.
+    if (tonumber(sender._number) ~= 1) or lib.soko.endphase_started then
+        -- Open or close the neccessary doors given as attributes.
+        st(sender._close):close()
+        st(sender._open ):open()
+    end
+end
+
+function lib.soko.endphase_fourswitch()
+    local places = fl(lib.soko.polist.wall_one):shuffle()
+    -- choose number of fourswitchs/oxyds
+    local number_pairs = lib.math.steps(#places, {2, 6, 10}) + 1
+    if number_pairs < 2 then
+        -- use circle instead
+        lib.soko.endphase_circle()
+        return
+    end
+    places = po(places:sub(2 * number_pairs))
+    -- set fourswitchs
+    for j = 1, #places do
+        wo[places[j]] = {"st_fourswitch", _number = j, _correct = false,
+            target = "lib_soko_endphase_call_fourswitch", safeaction = true}
+        lib.soko.area[places[j]].current = NORTH
+        lib.soko.area[places[j]].solve = ({NORTH, SOUTH, EAST, WEST})[random(1,4)]
+    end
+    lib.soko.fourswitchs = places
+end
+
+function lib_soko_endphase_call_fourswitch(is_on, sender)
+    if not(sender:exists() and po(sender):exists()) then
+        return
+    end
+    local j = sender._number
+    lib.soko.area[po(sender)].current = sender.state
+    -- When count is correct, make it "st_fake_oxyda".
+    if sender.state == lib.soko.area[po(sender)].solve then
+        wo[sender] = {"st_fake_oxyda", state = OPEN, _correct = true}
+    end
+    -- If it's the first fourswitch (the one fourswitch that doesn't change
+    -- any other), check all fourswitchs and replace them by oxyds if all
+    -- are correct. Else, recreate the next fourswitch in hierarchy. Call
+    -- it once by toggling. This means: Recursion!
+    if j == 1 then
+        -- Check all fourswitchs, replace by oxyds if all are correct.
+        for k = 1, #lib.soko.fourswitchs do
+            if not st(lib.soko.fourswitchs[k])._correct then
+                return
+            end
+        end
+        wo[lib.soko.fourswitchs] = get_ti("O ")
+        wo:shuffleOxyd()
+    else
+        -- Trigger all lower fourswitchs and recreate if neccessary.
+        if st(lib.soko.fourswitchs[j - 1])._correct then
+            wo[lib.soko.fourswitchs[j - 1]] = {"st_fourswitch", _number = j - 1,
+                target = "lib_soko_endphase_call_fourswitch", safeaction = true,
+                state = lib.soko.area[lib.soko.fourswitchs[j - 1]].current, _correct = false}
+        end
+        st(lib.soko.fourswitchs[j - 1]):toggle()
+    end  
+end
+
+function lib.soko.endphase_vortex()
+    local list_way = (fl(lib.soko.polist.way) + fl(lib.soko.polist.blocker))
+                                              - fl(lib.soko.polist.goal)
+    local component = lib.math.mark_components(list_way, "_component", NEIGHBORS_4, true)
+    -- If only one component, exit, player will find his or her way alone.
+    if #component < 2 then
+        return
+    end
+    -- Analyse oxyds and to which components they belong to.
+    local component_has_oxyds = {}    
+    for floor in fl(lib.soko.polist.blocker) do
+        if floor._component then
+            component_has_oxyds[floor._component] = true
+        else
+            error("lib.soko.endphase_vortes: Error in component calculation.")
+        end
+    end  
+    -- Let there be at most max(5, number-of-oxyd-components)
+    -- components, plus the one the marble actually occupies.
+    local t = {}  -- helper table: components with oxyds or marble
+    local u = {}  -- helper table: all components except t
+    local marble_component = fl(no["marble#*"][1])._component
+    for j = 1, #component do
+        if component_has_oxyds[j] or (j == marble_component) then
+            table.insert(t, component[j])
+        else
+            table.insert(u, component[j])
+        end
+    end
+    u = lib.lua.shuffle(u)
+    while (#t < 5) and (#u > 0) do
+        table.insert(t, table.remove(u))
+    end
+    component = t
+    -- Find a cyclic permutation (i.e. with only one cycle) to connect the
+    -- vortices (each vortex shall be reached by starting from any other).
+    local connect = lib.math.cyclic_permutation(#component)
+    -- Shuffle floors of each component.
+    for j = 1, #component do
+        component[j] = component[j]:shuffle()
+    end    
+    -- Now set and connect the vortices
+    for j = 1, #component do
+        local dest = po(component[connect[j]][1])
+        -- Remember: We also allow (we need!) vortices at old blocker-positions.
+        -- There could still be a stone over this. This stone might be st_blocker,
+        -- which turns to it_blocker and has therefore to be removed.
+        st(component[j][1]):kill()
+        wo[component[j][1]] = {"it_vortex_open", destination = dest}
+    end
+end
+
+function lib.soko.endphase_allcrack()
+    for j = 1, #lib.soko.polist.way do
+        if not -it(lib.soko.polist.way[j]) then
+            wo[lib.soko.polist.way[j]] = {"it_crack", flavor = "water", state = MEDIUM}
+        end
+    end  
+end
+
+function lib.soko.endphase_gradients(strength)
+    for j = 1, #lib.soko.polist.way do
+        local kind = "fl_slope_" .. ({"pw", "ps", "pe", "pn", "inw", "isw",
+            "ise", "ine", "onw", "osw", "ose", "one"})[random(1,12)]
+        wo[lib.soko.polist.way[j]] = {kind, strength = tonumber(strength) or 25.0}
+    end
+end
+
+function lib.soko.endphase_magnets(strength)
+  local places = fl(lib.soko.polist.way) - fl(lib.soko.polist.goal)
+  places = (places:shuffle()):sub(math.floor(#places/6))
+  wo[places] = {"it_magnet_on", range = 5, strength = tonumber(strength) or 30.0}
+end
+
+function lib.soko.endphase_goal_hook_ralf(sender)
+    -- identify the corresponding blocker (door) and open it
+    if lib.soko.area[po(sender)].open then
+        lib.soko.endphase_ralf_open_door(sender._completed, lib.soko.area[po(sender)].open)
+    end
+end
+
+function lib.soko.endphase_ralf_open_doors()
+    for j = 1, #lib.soko.polist.blocker do
+        lib.soko.endphase_ralf_open_door(true, lib.soko.polist.blocker[j])
+    end
+end
+
+-- endphase_ralf_open_door opens or closes a door at position
+-- POS, dependend on the boolean OPEN.
+function lib.soko.endphase_ralf_open_door(open, pos)
+    if lib.soko.design.open_door then
+        wo[pos] =    lib.soko.resolver(cond(open, "  ", "# "), pos.x, pos.y)
+                  .. lib.soko.resolver(cond(open, "d ", "D "), pos.x, pos.y)
+    else
+        -- use default "open"/"close"-messages instead
+        if -st(pos) then  st(pos):message(cond(open, "open", "close"))  end
+        if -it(pos) then  it(pos):message(cond(open, "open", "close"))  end
+        if -fl(pos) then  fl(pos):message(cond(open, "close", "open"))  end
+    end
+end
+
+------------------------------------------------------------------------
+-- Interface functions
+------------------------------------------------------------------------
+
+-- Syntax:
+--   create_sokoball(multilevel, sublevel_number, args)
+-- with
+--   args = { design = DESIGNARG, maxdesign = MAXDESIGNNUMBER }
+--
+-- create_sokoball creates a sokoball-level from the string MULTILEVEL.
+-- This string can be a multilevel, in which case SUBLEVEL_NUMBER
+-- determines the number of the level, starting with 1. Default is 1.
+-- The design can be chosen by the DESIGNARG variable. This is either
+-- a number (see section "Designs") or a table with the corresponding
+-- design entries. A missing entry will be interpreted as the entry
+-- from lib.soko_designlist.default. If the DESIGN variable is omitted,
+-- a check-number is created from the level which uniquely* determines
+-- a design from the design list, with MAXDESIGNNUMBER as highest
+-- possible design number. *Uniquely means: The design might change
+-- when the design list is enlarged.
+-- Returns width and height of new level.
+--
+function lib.soko.create_sokoball(multilevel, sublevel_number, args)
+    assert_type(multilevel, "lib.soko.create_sokoball first argument", 2, "non-empty string")
+    assert_type(sublevel_number, "lib.soko.create_sokoball second argument", 2, "nil", "positive integer")
+    assert_type(args, "lib.soko.create_sokoball third argument", 2, "table", "nil")
+    local designarg = nil
+    local maxdesignnumber = nil
+    for key, entry in pairs(args or {}) do
+        if key == "design" then
+            assert_type(entry, "lib.soko.create_sokoball argument \"design\"", 2, "nil", "positive integer", "table")
+            designarg = entry
+        elseif key == "maxdesign" then
+            assert_type(entry, "lib.soko.create_sokoball argument \"maxdesign\"", 2, "nil", "positive integer")
+            maxdesignnumber = entry
+        else
+            error("lib.soko: Unsupported argument " .. key .. " to create_sokoball.", 2)
+        end
+    end
+    local small_map = lib.import.map_sokoban(multilevel, sublevel_number)
+    local design = lib.soko.design_from_description(small_map, designarg, maxdesignnumber)
+    -- Extend map to 20x13 if possible, throw an error if level exceeds
+    -- MAX_HEIGHT. We add three additional rows, which are used to surround
+    -- the level with "virtual" positions in lib.soko.area; these are set
+    -- in lib.soko.setup_attributes_and_polists() below.
+    local final_width = math.max(20, small_map.width)
+    local final_height = math.max(13, small_map.height)
+    if small_map.height + 3 > lib.soko.MAX_HEIGHT then
+        error("lib.soko: Level exceeds maximum height.", 2)
+    end
+    local map = wo:newMap("- ", final_width, final_height)
+    local dx = math.floor((final_width - small_map.width) / 2)
+    local dy = math.floor((final_height - small_map.height) / 2)
+    small_map.defaultkey = "- "
+    map:paste(small_map, po(dx, dy))
+    map.defaultkey = "  "
+
+    -- Global variables
+    wo["ConserveLevel"] = true
+    wo["AutoRespawn"] = true
+    wo["AllowSuicide"] = false
+    wo["ShowMoves"] = true
+    wo["FollowGrid"] = false
+    wo["FollowMethod"] = FOLLOW_SCROLL
+    wo["AllowSingleOxyds"] = true
+    wo["Fragility"] = 1.0
+    wo["CrackSpreading"] = 0.0
+    
+    lib.soko.define_tiles(design)
+    
+    wo(res.composer(lib.soko.resolver), "  ", map)
+    lib.soko.setup_attributes_and_polists(map)
+    lib.soko.prepare_endphase(map, design)
+    
+    -- If we have a chessoban, make sure all goals are it_trigger.
+    -- (Remember that st_shogun can press it_trigger as well.)
+    if #no["chess#*"] ~= 0 then
+        wo[lib.soko.polist.goal] = {"it_trigger", "trigger#",
+             target = "lib_soko_goal_trigger", safeaction = true}
+    end
+    
+    wo:add({"ot_counter", "goal_counter", safeaction = true,
+            state = lib.soko.initially_completed_goals,
+            ["action_" .. (#lib.soko.polist.goal)] = "callback",
+            ["target_" .. (#lib.soko.polist.goal)] = "lib_soko_endphase"})
+    
+    return map.width, map.height
+end
+
+    ]]></el:luamain>
+    <el:i18n>
+    </el:i18n>
+  </el:protected>
+</el:level>

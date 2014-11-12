@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Multi-lane" el:subtitle="" el:id="devnull03"/>
+      <el:version el:score="1" el:release="1" el:revision="30" el:status="released"/>
+      <el:author el:name="/dev/null" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2008 dev0</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10">
+        <el:dependency el:path="lib/libmap" el:id="lib/libmap" el:release="1" el:preload="true"/>
+      </el:compatibility>
+      <el:modes el:easy="true" el:single="true" el:network="false"/>
+      <el:comments>
+        <el:credits el:showinfo="true" el:showstart="false">Thanks to Ronald Lamprecht and Andreas Lochmann for help.</el:credits>
+      </el:comments>
+      <el:score el:easy="-" el:difficult="23:53"/>
+    </el:info>
+    <el:luamain><![CDATA[
+wo["AllowSuicide"] = false
+
+ti[" "] = {"fl_abyss"}
+ti["."] = {"fl_dark"}
+ti["#"] = {"st_granite"}
+ti["Z"] = cond(wo["IsDifficult"], ti["#"], {"fl_bridge_gc", name = "bridgeZ#"})
+ti["W"] = {"st_box_wood_v"}
+ti["w"] = ti["."] .. ti["W"]
+ti["q"] = ti["w"] .. {"it_extralife"}
+ti["a"] = {"st_key", name = "keyA", code = 1, target = "doorA"}
+ti["A"] = ti["."] .. {"st_door", name = "doorA", faces = "ns"}
+ti["c"] = {"st_key", name = "keyC", code = 3, target = "doorC"}
+ti["C"] = ti["."] .. {"st_door", name = "doorC", faces = "ns"}
+ti["b"] = {"st_key", name = "keyB", code = 2, target = "doorB"}
+ti["B"] = ti["."] .. {"st_door", name = "doorB", faces = "ns"}
+ti["d"] = {"st_key", name = "keyD", code = 4, target = "doorD"}
+ti["D"] = ti["."] .. {"st_door", name = "doorD", faces = "ns"}
+ti["g"] = {"st_laser", name = "laserS1", orientation = SOUTH, state = ON}
+ti["h"] = {"st_laser", name = "laserW#", orientation = WEST,  state = OFF}
+ti["i"] = {"st_laser", name = "laserS2", orientation = SOUTH, state = OFF}
+ti["k"] = {"st_laser", name = "laserN#", orientation = NORTH, state = OFF}
+ti["l"] = {"st_laser", name = "laserS3", orientation = SOUTH, state = ON}
+ti["n"] = {"st_laser", name = "laserS4", orientation = SOUTH, state = ON}
+ti["-"] = ti["."] .. {"st_mirror", movable = true}
+ti["p"] = {"st_lightpassenger"}
+ti["r"] = ti["."] .. {"st_rotator", movable = true, counterclock = true}
+ti["mailer"] = {"st_mail_s"}
+ti["m"] = ti["mailer"] .. {"it_pipe_sw"}
+ti["M"] = ti["mailer"] .. {"it_pipe_es"}
+ti["="] = cond(wo["IsDifficult"], ti["."] .. {"st_door", faces = "ns"}, ti["."])
+ti["x"] = {"st_grate_cross"}
+ti["X"] = ti["."] .. {"st_grate_cross"}
+ti[":"] = {"fl_bridge_bn", name = "bridgeFloppyBlack#"}
+ti["9"] = {"fl_bridge_bn", name = "bridgeFloppyWhite#"}
+ti["8"] = {"fl_bridge_bw", name = "bridge02#", state = CLOSED}
+ti["7"] = {"fl_bridge_bw", state = CLOSED}
+ti["6"] = {"fl_bridge_gc", name = "bridge06#"}
+ti["5"] = {"fl_bridge_bw", name = "bridge00#"}
+ti["4"] = {"fl_bridge_gc", name = "bridge04#"}
+ti["("] = {"fl_bridge_gc", name = "bridgeEasyWhite#"}
+ti[")"] = {"fl_bridge_gc", name = "bridgeEasyBlack#"}
+ti["J"] = {"fl_fake_abyss"}
+ti[">"] = ti["4"] .. {"it_pipe_ne"}
+ti["<"] = ti["4"] .. {"it_pipe_nw"}
+ti["_"] = {"it_pipe_ew"}
+ti["}"] = ti["."] .. {"it_pipe_es"}
+ti["{"] = ti["."] .. {"it_pipe_sw"}
+ti["|"] = ti["."] .. {"it_pipe_ns"}
+ti["+"] = ti["."] .. ti["_"]
+ti["e"] = ti["."] .. {"it_key", code = 1}
+ti["E"] = {"it_key", code = 3}
+ti["f"] = ti["."] .. {"it_key", code = 4}
+ti["F"] = {"it_key", code = 2}
+ti["u"] = ti["."] .. {"it_floppy"}
+ti["s"] = ti["."] .. {"it_seed"}
+ti["S"] = ti["w"] .. {"it_seed"}
+ti["t"] = {"it_wrench"}
+ti["y"] = ti["w"] .. {"it_yinyang", name = "yinyang#"}
+ti["%"] = ti["."] .. {"it_document", text = "doc1"}
+ti["z"] = {"it_document", text = "BzG"}
+ti["U"] = {"st_floppy", name = "floppyU", target = "bridgeFloppyBlack#*"}
+ti["V"] = {"st_floppy", name = "floppyV", target = "bridgeFloppyWhite#*"}
+ti["G"] = {"st_switch", name = "switchG", target = "laserS1"}
+ti["H"] = {"st_switch", name = "switchH", target = "@laserW#*"}
+ti["I"] = {"st_switch", name = "switchI", target = "laserS2"}
+ti["K"] = {"st_switch", name = "switchK", target = "@laserN#*"}
+ti["L"] = {"st_switch", name = "switchL", target = "laserS3"}
+ti["0"] = ti["."] .. {"it_trigger", name = "trigger00", action = "toggle", target = "bridge00#*"}
+ti["1"] = {"it_trigger", name = "trigger01", action = "callback", target = "bridge01"}
+ti["2"] = ti["J"] .. {"it_trigger", name = "trigger02", action = "callback", target = "bridge02", safeaction = true}
+ti["3"] = {"it_trigger", name = "trigger03", action = "callback", target = "bridge03"}
+ti["!"] = ti["."] .. {"it_sensor", name = "sensor01#", action = "open", target = "bridge02#*", invisible = true}
+ti[","] = {"fl_bridge_gc", state = CLOSED}
+ti["j"] = ti[")"] .. {"st_grate_cross"}
+ti["P"] = cond(wo["IsDifficult"], ti["."], ti["."] .. {"it_pin"})
+ti["Y"] = ti[","] .. {"it_yinyang"}
+ti["~"] = {"fl_bluegray"}
+ti["R"] = ti["~"] .. {"it_document", name = "docs#", text = "doc2"}
+ti["&"] = ti["."] .. {"it_wormhole", name = "wormholeEasyBlack", destination = "blackStart", strength = 1.0, range = 1.0}
+ti["["] = ti[","] .. {"it_sensor", name = "sensorEW01", action = "callback", target ="sensorEasyBW", invisible = true, safeaction = true}
+ti["]"] = ti["."] .. {"it_sensor", name = "sensorEB01", action = "callback", target ="sensorEasyBW", invisible = true, safeaction = true}
+ti["$"] = {"st_granite", name = "anchor"}
+ti["o"] = {"st_oxyd"}
+ti["blackMarble"] = {"fl_dark", name = "blackStart"} .. ti({"#ac_marble_black"})
+ti["@"] = cond(wo["IsDifficult"], ti["blackMarble"], ti["blackMarble"] .. {"it_wormhole", name = "wormhole4Black", destination = po(10,18.5), strength = 1.0, range = 1.0, safeaction = true})
+ti["*"] = ti["."] .. {"#ac_marble_white"}
+
+mainMap = wo:newMap(" ", {
+    "##n##################################l$                   ###########iI######################gG#",
+    "# p                                                                     ..w   w w            pu#",
+    "#          2                                                            ..wwwwww..             #",
+    "# ....                ... ............                                  ....    w      ...   Wt#",
+    "# ..-.                .           9                                         #  q       .r.   w #",
+    "#P.....               7           w                        ..               # x x      ..w   Pw#",
+    "#*w....    .........!w.           .                       www               # .              w@#",
+    "#%w   .    .....r...!.y888u       .                       ...               #  w      .w.    ww#",
+    "#..   ..w...........!w.           .                       ......w w.w..     h ww0...55.w.  w   h",
+    "#............         8           f                       ...        y.     H   w     .ww      H",
+    "#      ......         .           9                       xx        .       x.ww-     ... w.  :#",
+    "#                      ..............S                    ..........X.X.....X w .             e#",
+    "######################################                    k#####################################",
+    "#                  #                 #########.##.#########                                    #",
+    "#                  #                  #......#.##.#......#                                     #",
+    "#                  #                  #..o...#=##=#...o..#                                     #",
+    "#                  #                  #...o..#.##.#..o...#                                     #",
+    "####################                  #..o...# ## #...o..#                                     #",
+    "#Y,,,,[~~RR~~]....&#                  #...o....ZZ....o...#                                     #",
+    "####################                  #..o...######...o..#                                     #",
+    "#                  #                  #...o..#    #..o...#                                     #",
+    "#                  #                  #..o...#    #...o..#                                     #",
+    "#                  #                  #...o..#    #..o...#                                     #",
+    "#                  #                  #......#z  z#......#                                     #",
+    "################################################################################################"})
+
+easyCenterWhiteMap = wo:newMap(" ", {
+    "####################",
+    "# 3                #",
+    "    x              #",
+    "F                  #",
+    "#        ##        #",
+    "#        ##        #",
+    ".  ((((  ##        #",
+    "#...#bB# ##        #",
+    "#.#.##s#.##        #",
+    "#.#..###.##        #",
+    "dD##.....##        #",
+    "  ######X######### #",
+    "LV#    #.##.#    ###"})
+
+easyCenterBlackMap = wo:newMap(" ", {
+    "####################",
+    "#                1 #",
+    "#              x    ",
+    "#                  E",
+    "#        ## . w   w#",
+    "#        ## ww   w.#",
+    "#        ## w w w  .",
+    "#        ## #Cc#. .#",
+    "#        ##w#s##.#w#",
+    "#        ##.###..#.#",
+    "#        ##.....##Aa",
+    "# #########j######  ",
+    "###    #.##)#    #UK"})
+
+normalCenterMap = wo:newMap(" ", {
+    "####################",
+     "# 3              1 #",
+     "    x  64><46  x    ",
+     "F      6    6      E",
+     "#    446 ## . w   w#",
+     "#    6   ## ww   w.#",
+     ".    64  ## w w w  .",
+     "#...#bB# ## #Cc#. .#",
+     "#.#.##s#.##w#s##.#w#",
+     "#}#..###.##.###..#{#",
+     "dD##....|##|....##Aa",
+     "  m#####|##|#####M  ",
+     "LV _____+__+_____ UK"})
+
+function bridge01()
+    if wo["IsDifficult"] then
+        no["bridge04#*"]:close()
+    else
+        no["bridgeEasyBlack#*"]:close()
+        no["bridgeZ#*"]:close()
+    end
+end
+
+function bridge02()
+    no["trigger02"]:kill()
+    no["bridge02#*"]:close()
+    no["sensor01#*"]:kill()
+end
+
+function bridge03()
+    if wo["IsDifficult"] then
+        no["bridge06#*"]:close()
+    else
+        no["bridgeEasyWhite#*"]:close()
+        no["bridgeZ#*"]:close()
+    end
+end
+
+function sensorEasyBW(value, source)
+    wo:drawMap(ti, no["sensorEW01"]+E, " ", {"~~##~~"})
+    if source == no["sensorEW01"] then
+        wo:drawMap(ti, no["anchor"], easyCenterWhiteMap)
+    else
+        no["wormhole4Black"]:kill()    -- remove wormhole
+        wo:drawMap(ti, no["anchor"], easyCenterBlackMap)
+    end
+    no["sensorEB01"]:kill()
+    no["sensorEW01"]:kill()
+end
+
+-- create world
+wo(ti," ", mainMap)
+
+if wo["IsDifficult"] then
+    wo:drawMap(ti, no["anchor"], normalCenterMap)
+else
+    no["yinyang#*"]:kill()
+end
+
+wo:shuffleOxyd()
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+      <el:string el:key="doc1">
+        <el:english>Attention! The trigger in the abyss is a weird one. It disappears when touched ...</el:english>
+        <el:translation el:lang="de">Vorsicht! Der Trigger im Abgrund ist eigenartig. Er verschwindet bei Berührung ...</el:translation>
+      </el:string>
+      <el:string el:key="doc2">
+        <el:english>Go left to play the white part. Go right to play the black part.</el:english>
+        <el:translation el:lang="de">Nach links für den weißen Part. Nach rechts für den schwarzen Part.</el:translation>
+      </el:string>
+      <el:string el:key="BzG">
+        <el:english el:translate="false">How does it feel to get rid off the weight of the world? ;-))</el:english>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

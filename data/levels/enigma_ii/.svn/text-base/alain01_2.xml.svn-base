@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Buridan" el:subtitle="An illustration of the famous Epimenides paradox" el:id="alain01"/>
+      <el:version el:score="2" el:release="2" el:revision="3" el:status="released"/>
+      <el:author el:name="Alain Busser" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2005 Alain Busser</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10"/>
+      <el:modes el:easy="false" el:single="true" el:network="false"/>
+      <el:score el:easy="-" el:difficult="0:42"/>
+    </el:info>
+    <el:luamain><![CDATA[
+ti[" "] = {"fl_bluegreen"}
+ti["-"] = {"fl_space"}
+ti["#"] = {"st_bluesand", cluster=1}
+ti["*"] = {"st_quake"}
+ti["F"] = {"st_fake_quake"}
+ti["K"] = {"st_knight"}
+ti["+"] = {"st_box_hay"}
+ti["doorns"] = {"st_door", flavor="d", faces="ns", name="door%%"}
+ti["doorew"] = {"st_door", flavor="d", faces="ew", name="door%%"}
+ti["triggers"] = {"it_trigger", target="door%%"}
+ti["r"] = ti[" "] .. {"st_chameleon"} .. ti({"it_hammer"})
+ti["t"] = {"fl_bluegreen", name="destw"} .. ti({"it_document", text="text1"})
+ti["u"] = {"fl_bluegreen", name="destv"} .. ti({"it_document", text="text2"})
+ti["v"] = {"it_wormhole", strength=0, range=0, destination="destv"}
+ti["w"] = {"it_wormhole", strength=0, range=0, destination="destw"}
+ti["s"] = {"it_sword"}
+ti["O"] = {"st_oxyd", flavor="c"}
+ti["@"] = {"#ac_marble"}
+
+wo(res.autotile(ti, {"1", "9", "triggers"}, {"a", "d", "doorns"}, {"e", "i", "doorew", 5}), " ", {
+    "####################",
+    "#s#  hgfei  ##34# ##",
+    "#d# r#####   K12K 9#",
+    "#c####FFFFFF++++++K#",
+    "#bF       *       +#",
+    "#aF ***** * ***** 8#",
+    "# * *vv-* * *ww-* +#",
+    "# * *O*-*@* *O*-* 7#",
+    "# * *** * * *** * +#",
+    "# *    t* *    u* 6#",
+    "# ******* ******* +#",
+    "#                 5#",
+    "####################"})
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false" el:comment="Buridan invented this paradox: A:'B is false' and B:'A is true'; it is not necessary to play to this level."/>
+      </el:string>
+      <el:string el:key="text1">
+        <el:english el:translate="true" el:comment="wordplay between 'right' (converse of left) and 'right' (true); not necessary to translate.">The other document lies and the left wormhole is the right one.</el:english>
+        <el:translation el:lang="fr">L'autre document ment.</el:translation>
+      </el:string>
+      <el:string el:key="text2">
+        <el:english el:translate="true" el:comment="wordplay between 'left (converse of right) and 'been left' (abandonned); not necessary to translate.">The other document tells the truth and the other wormhole has been left on the right side.</el:english>
+        <el:translation el:lang="fr">L'autre document dit vrai.</el:translation>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

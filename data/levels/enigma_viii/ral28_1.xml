@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected >
+    <el:info el:type="level">
+      <el:identity el:title="More Microwire" el:subtitle="" el:id="20080717ral282"/>
+      <el:version el:score="1" el:release="1" el:revision="$Revision: 130 $" el:status="released"/>
+      <el:author  el:name="Ronald Lamprecht" el:email="ral@users.berlios.de"/>
+      <el:copyright>Copyright © 2008 Ronald Lamprecht</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10"/>
+      <el:modes el:easy="false" el:single="true" el:network="false"/>
+      <el:score el:easy="-" el:difficult="1:09"/>
+    </el:info>
+    <el:luamain><![CDATA[
+wo["ConserveLevel"] = false
+wo["ShowMoves"] = true
+
+ti[" "] = {"fl_abyss"}
+ti["."] = {"fl_samba", friction=7, adhesion=1.8}
+ti["*"] = ti[" "] ..{"st_beads"}
+ti["#"] = {"fl_samba"}
+ti["1"] = {"it_trigger", target="bridgeA"} .. ti{"st_brownie", "brownie1"}
+ti["2"] = {"it_trigger", target="bridgeB"} .. ti{"st_brownie", "brownie2"}
+ti["3"] = {"it_trigger", target="bridgeC"} .. ti{"st_brownie", "brownie3"}
+ti["4"] = {"it_trigger", target="bridgeD"} .. ti{"#ac_marble"}
+ti["5"] = {"it_trigger", target="bridgeE"} 
+ti["6"] = {"it_trigger", target="bridgeF"} 
+ti["a"] = {"fl_bridge_bw", "bridgeA", state=CLOSED}
+ti["b"] = {"fl_bridge_bw", "bridgeB", state=CLOSED}
+ti["c"] = {"fl_bridge_bw", "bridgeC", state=CLOSED}
+ti["d"] = {"fl_bridge_bw", "bridgeD", state=CLOSED}
+ti["e"] = {"fl_bridge_bw", "bridgeE"}
+ti["f"] = {"fl_bridge_bw", "bridgeF"}
+ti["W"] = {"st_oxyd_d", "west#"}
+ti["E"] = {"st_oxyd_d", "east#"}
+
+w, h = wo(ti, ".", {
+"                    ",
+"                    ",
+"                    ",
+"                    ",
+"       ******       ",
+"    W  *.26.*  E    ",
+"   W#abc.41.def#E   ",
+"    W  *.35.*  E    ",
+"       ******       ",
+"                    ",
+"                    ",
+"                    ",
+"                    "
+})
+
+wo:add({"ot_wire", anchor1="brownie1", anchor2="brownie2"})
+wo:add({"ot_wire", anchor1="brownie2", anchor2="brownie3"})
+wo:shuffleOxyd({no["west#*"], max=0})
+
+    ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

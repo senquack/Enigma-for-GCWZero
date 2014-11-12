@@ -1,0 +1,15 @@
+K 10
+svn:ignore
+V 88
+Makefile
+Makefile.in
+config.h
+enigma
+enigma.exe
+stamp-h1
+config.h.in
+.deps
+doc
+doc_full
+
+END

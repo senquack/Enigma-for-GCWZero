@@ -1,0 +1,18 @@
+K 10
+svn:ignore
+V 158
+Makefile
+Makefile.in
+.deps
+liboxyd.a
+extractchunks
+extractchunks.exe
+extractbitmaps
+extractbitmaps.exe
+printlevels
+printlevels.exe
+printstats
+printstats.exe
+
+
+END

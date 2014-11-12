@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Cross Mail" el:subtitle="The level goes on" el:id="johann03"/>
+      <el:version el:score="1" el:release="1" el:revision="11" el:status="released"/>
+      <el:author  el:name="Johann Freymuth" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2007 Johann Freymuth</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10"/>
+      <el:modes el:easy="false" el:single="true" el:network="false"/>
+      <el:score el:easy="-" el:difficult="-"/>
+    </el:info>
+    <el:luamain><![CDATA[
+ti[" "] = {"fl_bright"}
+ti["y"] = {"it_yinyang"}
+ti["x"] = {"it_cross"}
+ti["|"] = {"it_pipe_ns"}
+ti["-"] = {"it_pipe_ew"}
+ti["9"] = {"it_pipe_ne"}
+ti["8"] = {"it_pipe_es"}
+ti["7"] = {"it_pipe_sw"}
+ti["6"] = {"it_pipe_nw"}
+ti["b"] = {"it_brush"}
+ti["h"] = {"it_hammer"}
+ti["d"] = {"it_dynamite"}
+ti["o"] = {"it_bomb_black"}
+ti["#"] = {"st_darkglass"}
+ti["C"] = {"st_lightglass"}
+ti["0"] = ti["C"] .. ti["|"]
+ti["1"] = ti["C"] .. ti["-"]
+ti["2"] = ti["C"] .. ti["9"]
+ti["3"] = ti["C"] .. ti["8"]
+ti["4"] = ti["C"] .. ti["7"]
+ti["5"] = ti["C"] .. ti["6"]
+ti["X"] = ti["x"] .. {"st_darkglass"}
+ti["M"] = {"st_mail_e"}
+ti["U"] = {"st_mail_n"}
+ti["I"] = {"st_ghost_break"}
+ti["i"] = {"st_switch", target="setpipe", _pipe="|"}
+ti["j"] = {"st_switch", target="setpipe", _pipe="-"}
+ti["k"] = {"st_switch", target="setpipe", _pipe="9"}
+ti["l"] = {"st_switch", target="setpipe", _pipe="8"}
+ti["m"] = {"st_switch", target="setpipe", _pipe="7"}
+ti["n"] = {"st_switch", target="setpipe", _pipe="6"}
+ti["O"] = {"st_oxyd", name="oxydstone#"}
+ti["B"] = ti({"it_yinyang"}) .. {"#ac_marble_black"}
+ti["W"] = ti({"it_yinyang"}) .. {"#ac_marble_white"}
+
+wo(res.random(ti, "x", {"x", "y"}), " ", {
+    "##########XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    "#B      bhX       x         x x x x x x x x x x      XdIO#",
+    "#         X       x       x x x x x yoy x x x x      X IC#",
+    "#         X       x      x  x x x x x x x x x x      XdIO#",
+    "#         X       x     x   x x x x x x x x x xxyxx  C IC#",
+    "#         M  x  xxx    x    x x x x x x yoy x xyo x  XdIO#",
+    "#         X     x       x   yoy x x x x x x x x y xx X IC#",
+    "#         X       x      x  x x yoy x x x x x x x  x XdIO#",
+    "#         X     xxx       x x x x x x x x x yoy xx x X IC#",
+    "#         X       x         x x x x x x x x x x x  x XdIO#",
+    "#ijklmn#  XXXXXXXXXXXXXXXXXXXUXXXUXXXUXXXUXXXUXXXUXXXX IC#",
+    "#012345#  #W||||||||||||||                   8679     dIO#",
+    "##########################################################"})
+
+wo:shuffleOxyd({"oxydstone#*", linear=true})
+
+function setpipe(value, sender)
+    wo[sender+N] = ti[sender._pipe]
+end
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

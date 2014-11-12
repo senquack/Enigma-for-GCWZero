@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="- Meditation -" el:subtitle="" el:id="devnull04"/>
+      <el:version el:score="1" el:release="1" el:revision="13" el:status="released"/>
+      <el:author  el:name="/dev/null" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2008 dev0</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10"/>
+      <el:modes el:easy="true" el:single="true" el:network="false"/>
+      <el:comments>
+        <el:credits el:showinfo="true" el:showstart="false">A variation of a Meditation created by Raoul Bourquin</el:credits>
+      </el:comments>
+      <el:score el:easy="0:25" el:difficult="0:30"/>
+    </el:info>
+    <el:luamain><![CDATA[
+local f = cond(wo["IsDifficult"], 35.0, 25.0)
+
+ti[" "] = {"fl_abyss"}
+ti["."] = {"fl_gray"}
+ti[":"] = cond(wo["IsDifficult"], ti[" "], {"st_invisible"})
+ti["d"] = {"fl_slope_ps"}
+ti["u"] = {"fl_slope_pn"}
+ti["r"] = {"fl_slope_pe"}
+ti["l"] = {"fl_slope_pw"}
+ti["D"] = {"fl_slope_ose"}
+ti["U"] = {"fl_slope_osw"}
+ti["R"] = {"fl_slope_one"}
+ti["L"] = {"fl_slope_onw"}
+ti["n"] = {"fl_slope_tn"}
+ti["s"] = {"fl_slope_ts"}
+ti["w"] = {"fl_slope_tw"}
+ti["e"] = {"fl_slope_te"}
+ti["0"] = ti["."] .. {"it_wormhole_on", destination = po( 4.5, 6.5), strength = 1.0, range = 1.0}
+ti["1"] = ti["."] .. {"it_wormhole_on", destination = po(15.5, 6.5), strength = 1.0, range = 1.0}
+ti["o"] = ti["."] .. {"it_meditation_hollow"}
+ti["S"] = {"fl_slope_ose", force_x =  f, force_y =  f}
+ti["E"] = {"fl_slope_osw", force_x = -f, force_y = -f}
+ti["N"] = {"fl_slope_one", force_x =  f, force_y =  f}
+ti["W"] = {"fl_slope_onw", force_x = -f, force_y = -f}
+ti["^"] = {"fl_slope_ps", force_y =  f}
+ti["v"] = {"fl_slope_pn", force_y = -f}
+ti["<"] = {"fl_slope_pe", force_x =  f}
+ti[">"] = {"fl_slope_pw", force_x = -f}
+ti["9"] = ti["D"] .. {"#ac_pearl", essential = INDISPENSABLE}
+ti["8"] = ti["U"] .. {"#ac_pearl", essential = INDISPENSABLE}
+ti["7"] = ti["L"] .. {"#ac_pearl", essential = INDISPENSABLE}
+ti["6"] = ti["R"] .. {"#ac_pearl", essential = INDISPENSABLE}
+
+wo(ti, " ", {
+    "                    ",
+    " ..w9dddddddddd8e.. ",
+    ":s: rDddddddddUl  s ",
+    "S^E:rrDddddddUll :s:",
+    "<o> rrrDddddUlll:S^E",
+    "NvW rrrrDddUllll <o>",
+    "S^E rrrrr01lllll NvW",
+    "<o> rrrrRuuLllll S^E",
+    "NvW:rrrRuuuuLlll <o>",
+    ":n: rrRuuuuuuLll:NvW",
+    " n  rRuuuuuuuuLl :n:",
+    " ..w6uuuuuuuuuu7e.. ",
+    "                    "})
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

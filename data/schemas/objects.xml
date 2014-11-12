@@ -1,0 +1,2365 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<objects xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="objects.xsd">
+  <attributes>
+    <attr name="action" type="tokens" default="nil" rw="rw"/>
+    <attr name="adhesion" type="double" default="nil" rw="rw"/>
+    <attr name="algorithm" type="string" default="std" rw="rw"/>
+    <attr name="anchor1" type="tokens" default="nil" rw="rw"/>
+    <attr name="anchor2" type="tokens" default="nil" rw="rw"/>
+    <attr name="attacknearest" type="bool" default="false" rw="rw"/>
+    <attr name="autoclose" type="bool" default="false" rw="rw"/>
+    <attr name="autoopen" type="bool" default="false" rw="rw"/>
+    <attr name="basename" type="string" default="nil" rw="r"/>
+    <attr name="breakable" type="bool" default="false" rw="rw"/>
+    <attr name="burnable" type="bool" default="nil" rw="rw"/>
+    <attr name="charge" type="double" default="0" rw="rw"/>
+    <attr name="cluster" type="int" default="nil" min="0" max="9" rw="rw"/>
+    <attr name="code" type="int" default="1" rw="rw"/>
+    <attr name="coin_value" type="double" default="1" rw="rw"/>
+    <attr name="color" type="int" default="nil" min="0" max="1" rw="rw"/>
+    <attr name="connections" type="string" default="nil" rw="rw"/>
+    <attr name="controllers" type="int" default="0" min="0" max="3" rw="rw"/>
+    <attr name="counterclock" type="bool" default="false" rw="rw"/>
+    <attr name="checkerboard" type="int" default="nil" rw="rw"/>
+    <attr name="destination" type="tokens" default="nil" rw="rw"/>
+    <attr name="destidx" type="int" default="0" min="0" max="999" rw="rw"/>
+    <attr name="essential" type="int" default="0" min="0" max="2" rw="rw"/>
+    <attr name="essential_id" type="string" default="nil" rw="rw"/>
+    <attr name="eternal" type="bool" default="false" rw="rw"/>
+    <attr name="exit" type="bool" default="false" rw="rw"/>
+    <attr name="faces" type="string" default="nil" rw="rw"/>
+    <attr name="fastfire" type="bool" default="false" rw="rw"/>
+    <attr name="fellows" type="group" default="nil" rw="r"/>
+    <attr name="force_x" type="double" default="0" rw="rw"/>
+    <attr name="force_y" type="double" default="0" rw="rw"/>
+    <attr name="flavor" type="string" default="b" rw="rw"/>
+    <attr name="floodable" type="bool" default="false" rw="rw"/>
+    <attr name="fragility" type="double" default="nil" rw="rw"/>
+    <attr name="freezable" type="bool" default="false" rw="r"/>
+    <attr name="freeze_check" type="bool" default="false" rw="rw"/>
+    <attr name="friction" type="double" default="nil" rw="rw"/>
+    <attr name="gohome" type="bool" default="true" rw="rw"/>
+    <attr name="gradient" type="double" default="nil" rw="rw"/>
+    <attr name="hit_strength" type="double" default="nil" rw="rw"/>
+    <attr name="hit_distortion_xx" type="double" default="1" rw="rw"/>
+    <attr name="hit_distortion_xy" type="double" default="0" rw="rw"/>
+    <attr name="hit_distortion_yx" type="double" default="0" rw="rw"/>
+    <attr name="hit_distortion_yy" type="double" default="1" rw="rw"/>
+    <attr name="hollow" type="bool" default="false" rw="rw"/>
+    <attr name="ignitable" type="bool" default="false" rw="rw"/>
+    <attr name="initfire" type="bool" default="false" rw="rw"/>
+    <attr name="instant" type="bool" default="false" rw="rw"/>
+    <attr name="intensity" type="double" default="1" rw="rw"/>
+    <attr name="interval" type="double" default="1" rw="rw"/>
+    <attr name="interval_s" type="double" default="3" rw="rw"/>
+    <attr name="interval_m" type="double" default="6" rw="rw"/>
+    <attr name="interval_l" type="double" default="12" rw="rw"/>
+    <attr name="inverse" type="bool" default="false" rw="rw"/>
+    <attr name="invisible" type="bool" default="false" rw="rw"/>
+    <attr name="length" type="double" default="1" rw="rw"/>
+    <attr name="liftable" type="bool" default="false" rw="r"/>
+    <attr name="loop" type="bool" default="true" rw="rw"/>
+    <attr name="mass" type="double" default="1" rw="rw"/>
+    <attr name="max" type="double" default="0" rw="rw"/>
+    <attr name="min" type="double" default="0" rw="rw"/>
+    <attr name="movable" type="bool" default="false" rw="rw"/>
+    <attr name="name" type="string" default="nil" rw="rw"/>
+    <attr name="name_m" type="string" default="nil" rw="rw"/>
+    <attr name="name_s" type="string" default="nil" rw="rw"/>
+    <attr name="noash" type="bool" default="false" rw="rw"/>
+    <attr name="nopaction" type="bool" default="false" rw="rw"/>
+    <attr name="noshuffle" type="bool" default="false" rw="rw"/>
+    <attr name="orientation" type="int" default="0" min="0" max="3" rw="rw"/>
+    <attr name="owner" type="int" default="nil" min="0" max="1" rw="rw"/>
+    <attr name="oxydcolor" type="int" default="-1" min="-4" max="7" rw="rw"/>
+    <attr name="portable" type="bool" default="false" rw="r"/>
+    <attr name="prefercurrent" type="double" default="0.0" rw="rw"/>
+    <attr name="push_directions" type="string" default="nil" rw="rw"/>
+    <attr name="range" type="double" default="1.0" rw="rw"/>
+    <attr name="rubbers" type="group" default="nil" rw="r"/>
+    <attr name="safeaction" type="bool" default="false" rw="rw"/>
+    <attr name="secure" type="bool" default="false" rw="rw"/>
+    <attr name="scissor" type="bool" default="false" rw="rw"/>
+    <attr name="scratches" type="string" default="" rw="rw"/>
+    <attr name="shape" type="string" default="" rw="rw"/>
+    <attr name="selection" type="tokens" default="nil" rw="rw"/>
+    <attr name="slope" type="int" default="-1" min="-1" max="7" rw="rw"/>
+    <attr name="spreading" type="double" default="nil" rw="rw"/>
+    <attr name="state" type="int" default="0" min="0" max="1" rw="rw"/>
+    <attr name="static" type="bool" default="false" rw="rw"/>
+    <attr name="steady" type="bool" default="false" rw="rw"/>
+    <attr name="stock" type="int" default="1000" rw="rw"/>
+    <attr name="strength" type="double" default="1" rw="rw"/>
+    <attr name="target" type="tokens" default="nil" rw="rw"/>
+    <attr name="text" type="string" default="nil" rw="rw"/>
+    <attr name="transparent" type="bool" default="false" rw="rw"/>
+    <attr name="threshold" type="double" default="0" rw="rw"/>
+    <attr name="velocity_x" type="double" default="nil" rw="rw"/>
+    <attr name="velocity_y" type="double" default="nil" rw="rw"/>
+    <attr name="wires" type="group" default="nil" rw="r"/>
+    <attr name="$chargesign" type="int" default="0" min="-1" max="1" rw=""/>
+    <attr name="$firetransform" type="string" default="" rw=""/>
+    <attr name="$heattransform" type="string" default="" rw=""/>
+  </attributes>
+  <messages>
+    <msg name="close" type="nil"/>
+    <msg name="closeall" type="nil"/>
+    <msg name="crack" type="nil"/>
+    <msg name="darken" type="nil"/>
+    <msg name="disconnect" type="nil"/>
+    <msg name="explode" type="nil"/>
+    <msg name="extinguish" type="nil"/>
+    <msg name="flip" type="nil"/>
+    <msg name="forcefire" type="nil"/>
+    <msg name="get_adjacents" type="nil"/>
+    <msg name="get_cluster" type="nil"/>
+    <msg name="is_complete" type="nil"/>
+    <msg name="grow" type="nil"/>
+    <msg name="heat" type="nil"/>
+    <msg name="hit" type="object"/>
+    <msg name="ignite" type="nil"/>
+    <msg name="inner_pull" type="dir"/>
+    <msg name="kill" type="nil"/>
+    <msg name="lighten" type="nil"/>
+    <msg name="move" type="pos"/>
+    <msg name="off" type="nil"/>
+    <msg name="on" type="nil"/>
+    <msg name="open" type="nil"/>
+    <msg name="orientate" type="nil"/>
+    <msg name="peepall" type="nil"/>
+    <msg name="pull_rotate" type="int"/>
+    <msg name="push_rotate" type="int"/>
+    <msg name="setfire" type="nil"/>
+    <msg name="shuffle" type="nil"/>
+    <msg name="shovel" type="nil"/>
+    <msg name="signal" type="int" min="0" max="1"/>
+    <msg name="spit" type="tokens"/>
+    <msg name="stopfire" type="nil"/>
+    <msg name="toggle" type="nil"/>
+    <msg name="turn" type="nil"/>
+    <msg name="turnback" type="nil"/>
+    <msg name="_appear" type="nil"/>
+    <msg name="_dispenser" type="nil"/>
+    <msg name="_booze" type="nil"/>
+    <msg name="_brush" type="nil"/>
+    <msg name="_cannonball" type="nil"/>
+    <msg name="_capture" type="nil"/>
+    <msg name="_checkflood" type="nil"/>
+    <msg name="_disappear" type="nil"/>
+    <msg name="_explosion" type="nil"/>
+    <msg name="_fall" type="nil"/>
+    <msg name="_fallvortex" type="nil"/>
+    <msg name="_fire" type="nil"/>
+    <msg name="_freeze" type="nil"/>
+    <msg name="_glasses" type="nil"/>
+    <msg name="_hit" type="object"/>
+    <msg name="_init" type="nil"/>
+    <msg name="_invisibility" type="nil"/>
+    <msg name="_jump" type="nil"/>
+    <msg name="_jumping" type="bool"/>
+    <msg name="_laserhit" type="nil"/>
+    <msg name="_levelfinish" type="bool"/>
+    <msg name="_model_reanimated" type="nil"/>
+    <msg name="_passed" type="nil"/>            <!-- check type-->
+    <msg name="_performaction" type="nil"/>
+    <msg name="_recheck" type="nil"/>
+    <msg name="_resurrect" type="nil"/>
+    <msg name="_revive" type="nil"/>
+    <msg name="_rise" type="nil"/>
+    <msg name="_scramble" type="int"/>
+    <msg name="_shatter" type="nil"/>
+    <msg name="_shield" type="nil"/>
+    <msg name="_shogun" type="int"/>
+    <msg name="_start" type="nil"/>
+    <msg name="_suicide" type="nil"/>
+    <msg name="_trigger" type="bool"/>
+    <msg name="_updateglobals" type="string"/>
+  </messages>
+  <zoo>
+    <object name="" abstract="true" states="2">
+      <attr name="action"/>
+      <attr name="basename"/>
+      <attr name="checkerboard"/>
+      <attr name="inverse"/>
+      <attr name="name"/>
+      <attr name="nopaction"/>
+      <attr name="safeaction"/>
+      <attr name="state"/>
+      <attr name="target"/>
+      <action type="bool"/>
+      <msg name="disconnect"/>
+      <msg name="kill"/>
+      <msg name="toggle"/>
+    </object>
+    <object name="ac" abstract="true">
+      <attr name="adhesion" default="1.0"/>
+      <attr name="controllers"/>
+      <attr name="color" rw="r"/>
+      <attr name="fellows"/>
+      <attr name="owner"/>
+      <attr name="essential"/>
+      <attr name="essential_id"/>
+      <attr name="charge"/>
+      <attr name="mass" rw="r"/>
+      <attr name="velocity_x"/>
+      <attr name="velocity_y"/>
+      <msg name="_freeze"/>
+      <msg name="_revive"/>
+    </object>
+    <object name="ac_bug">
+    </object>
+    <object name="ac_horse">
+      <attr name="destination"/>
+      <attr name="destidx"/>
+      <attr name="loop" default="true"/>
+      <attr name="steady" default="true"/>
+      <attr name="strength" default="10.0"/>
+    </object>
+    <object name="ac_killer">
+      <attr name="color" default="1"/>
+    </object>
+    <object name="ac_killer_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="ac_killer_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="ac_marble">
+      <attr name="color" default="0"/>
+      <msg name="_appear"/>
+      <msg name="_booze"/>
+      <msg name="_disappear"/>
+      <msg name="_fall"/>
+      <msg name="_fallvortex"/>
+      <msg name="_init"/>
+      <msg name="_invisibility"/>
+      <msg name="_jump"/>
+      <msg name="_laserhit"/>
+      <msg name="_levelfinish"/>
+      <msg name="_resurrect"/>
+      <msg name="_rise"/>
+      <msg name="_shatter"/>
+      <msg name="_shield"/>
+      <msg name="_suicide"/>
+    </object>
+    <object name="ac_marble_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="ac_marble_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="ac_pearl">
+      <attr name="color" default="1"/>
+      <msg name="_appear"/>
+      <msg name="_booze"/>
+      <msg name="_disappear"/>
+      <msg name="_fall"/>
+      <msg name="_fallvortex"/>
+      <msg name="_init"/>
+      <msg name="_invisibility"/>
+      <msg name="_jump"/>
+      <msg name="_laserhit"/>
+      <msg name="_levelfinish"/>
+      <msg name="_resurrect"/>
+      <msg name="_rise"/>
+      <msg name="_shatter"/>
+      <msg name="_shield"/>
+      <msg name="_suicide"/>
+    </object>
+    <object name="ac_pearl_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="ac_pearl_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="ac_rotor">
+      <attr name="range" default="5.0"/>
+      <attr name="strength" default="10.0"/>
+      <attr name="gohome"/>
+      <attr name="attacknearest"/>
+      <attr name="prefercurrent"/>
+    </object>
+    <object name="ac_top">
+      <attr name="range" default="5.0"/>
+      <attr name="strength" default="10.0"/>
+      <attr name="gohome"/>
+      <attr name="attacknearest"/>
+      <attr name="prefercurrent"/>
+    </object>
+    <object name="fl" abstract="true">
+      <attr name="adhesion"/>
+      <attr name="burnable"/>
+      <attr name="eternal"/>
+      <attr name="fastfire"/>
+      <attr name="floodable"/>
+      <attr name="force_x"/>
+      <attr name="force_y"/>
+      <attr name="fragility"/>
+      <attr name="freeze_check"/>
+      <attr name="friction"/>
+      <attr name="ignitable"/>
+      <attr name="initfire"/>      
+      <attr name="noash"/>
+      <attr name="push_directions"/>
+      <attr name="secure"/>
+      <msg name="heat"/>
+      <msg name="forcefire"/>
+      <msg name="ignite"/>
+      <msg name="setfire"/>
+      <msg name="stopfire"/>
+    </object>
+    <object name="fl_standard" abstract="true"/>
+    <object name="fl_floodstream" abstract="true">
+      <attr name="faces"/>
+      <attr name="interval" default="0.2"/>
+      <msg name="_init"/>
+      <msg name="_checkflood"/>
+    </object>
+    <object name="fl_abyss">
+      <attr name="friction" default="2.0"/>
+      <attr name="adhesion" default="1.0"/>
+      <attr name="noash" default="true"/>
+    </object>
+    <object name="fl_adhesionless" super="fl_standard">
+      <attr name="friction" default="2.5"/>
+      <attr name="adhesion" default="0.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_aquamarine" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="0.4"/>
+      <attr name="adhesion" default="1.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_aquamarine_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_bast" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="1.5"/>
+      <attr name="adhesion" default="2.5"/>
+      <attr name="burnable" default="true"/>
+      <attr name="$firetransform" default="fl_abyss"/>
+    </object>
+    <object name="fl_bast_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_bluegray" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="4.5"/>
+      <attr name="adhesion" default="1.5"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_bluegray_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_bluegreen" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="6.0"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_bluegreen_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_blueslab" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="7.0"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_blueslab_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_brick" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="3.5"/>
+      <attr name="adhesion" default="2.0"/>
+    </object>
+    <object name="fl_brick_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_bridge">
+      <attr name="flavor" default="gc"/>
+      <attr name="friction" default="5.0"/>
+      <attr name="adhesion" default="1.0"/>
+      <attr name="noash" default="true"/>
+      <attr name="$firetransform" default="fl_abyss"/>
+      <msg name="close"/>
+      <msg name="open"/>
+      <msg name="signal"/>
+      <msg name="_init"/>
+    </object>
+    <object name="fl_bridge_gc">
+      <attr name="flavor" value="gc"/>
+    </object>
+    <object name="fl_bridge_bw">
+      <attr name="flavor" value="bw"/>
+    </object>
+    <object name="fl_bridge_bs">
+      <attr name="flavor" value="bs"/>
+    </object>
+    <object name="fl_bridge_be">
+      <attr name="flavor" value="be"/>
+    </object>
+    <object name="fl_bridge_bn">
+      <attr name="flavor" value="bn"/>
+    </object>
+    <object name="fl_bright" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="3.0"/>
+      <attr name="adhesion" default="1.5"/>
+    </object>
+    <object name="fl_bright_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_concrete" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="4.5"/>
+      <attr name="adhesion" default="1.3"/>
+    </object>
+    <object name="fl_concrete_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_dark" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="3.0"/>
+      <attr name="adhesion" default="1.5"/>
+    </object>
+    <object name="fl_dark_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_darkgray" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="3.0"/>
+      <attr name="adhesion" default="1.6"/>
+    </object>
+    <object name="fl_darkgray_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_dunes" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="1.3"/>
+      <attr name="adhesion" default="1.0"/>
+    </object>
+    <object name="fl_dunes_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_fake">
+      <attr name="flavor" default="abyss"/>
+      <attr name="friction" default="3.0"/>
+      <attr name="adhesion" default="2.0"/>
+    </object>
+    <object name="fl_fake_abyss">
+      <attr name="flavor" value="abyss"/>
+    </object>
+    <object name="fl_fake_trigger">
+      <attr name="flavor" value="trigger"/>
+    </object>
+    <object name="fl_gravel" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="3.2"/>
+      <attr name="adhesion" default="1.5"/>
+    </object>
+    <object name="fl_gravel_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_gray" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="5.0"/>
+      <attr name="adhesion" default="3.0"/>
+    </object>
+    <object name="fl_gray_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_hay" super="fl_floodstream">
+      <attr name="friction" default="5.0"/>
+      <attr name="adhesion" default="1.5"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_hay_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_himalaya" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="5.0"/>
+      <attr name="adhesion" default="2.0"/>
+    </object>
+    <object name="fl_himalaya_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_ice">
+      <attr name="friction" default="0.1"/>
+      <attr name="adhesion" default="0.1"/>
+      <attr name="noash" default="true"/>
+      <attr name="$heattransform" default="fl_water"/>
+      <attr name="$firetransform" default="fl_water"/>
+    </object>
+    <object name="fl_inverse">
+      <attr name="flavor" default="white"/>
+      <attr name="friction" default="3.0"/>
+      <attr name="adhesion" default="-2.0"/>
+    </object>
+    <object name="fl_inverse_white">
+      <attr name="flavor" value="white"/>
+    </object>
+    <object name="fl_inverse_gray">
+      <attr name="flavor" value="gray"/>
+    </object>
+    <object name="fl_ivory" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="2.2"/>
+      <attr name="adhesion" default="1.6"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_ivory_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_lawn" super="fl_standard">
+      <attr name="friction" default="4.0"/>
+      <attr name="adhesion" default="1.5"/>
+      <attr name="burnable" default="true"/>
+      <attr name="$firetransform" default="fl_dunes"/>
+    </object>
+    <object name="fl_lawn_a" init="true"/>
+    <object name="fl_lawn_b" init="true"/>
+    <object name="fl_lawn_c1" init="true"/>
+    <object name="fl_lawn_c2" init="true"/>
+    <object name="fl_lawn_c3" init="true"/>
+    <object name="fl_lawn_c4" init="true"/>
+    <object name="fl_lawn_d1" init="true"/>
+    <object name="fl_lawn_d2" init="true"/>
+    <object name="fl_lawn_d3" init="true"/>
+    <object name="fl_lawn_d4" init="true"/>
+    <object name="fl_lawn_e1" init="true"/>
+    <object name="fl_lawn_e2" init="true"/>
+    <object name="fl_lawn_e3" init="true"/>
+    <object name="fl_lawn_e4" init="true"/>
+    <object name="fl_marble" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="6.4"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_marble_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_metal" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="3.0"/>
+      <attr name="adhesion" default="2.0"/>
+    </object>
+    <object name="fl_metal_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_metal_1" init="true"/>
+    <object name="fl_metal_1_framed" init="true"/>
+    <object name="fl_metal_2" init="true"/>
+    <object name="fl_metal_2_framed" init="true"/>
+    <object name="fl_metal_3" init="true"/>
+    <object name="fl_metal_3_framed" init="true"/>
+    <object name="fl_metal_4" init="true"/>
+    <object name="fl_metal_4_framed" init="true"/>
+    <object name="fl_metal_5" init="true"/>
+    <object name="fl_metal_5_framed" init="true"/>
+    <object name="fl_metal_6" init="true"/>
+    <object name="fl_metal_6_framed" init="true"/>
+    <object name="fl_metal_7" init="true"/>
+    <object name="fl_metal_7_framed" init="true"/>
+    <object name="fl_metal_7n" init="true"/>
+    <object name="fl_mortar" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="7.2"/>
+      <attr name="adhesion" default="1.8"/>
+    </object>
+    <object name="fl_mortar_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_pinkbumps" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="5.0"/>
+      <attr name="adhesion" default="1.2"/>
+    </object>
+    <object name="fl_pinkbumps_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_plank" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="5.5"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="burnable" default="true"/>
+      <attr name="$firetransform" default="fl_abyss"/>
+    </object>
+    <object name="fl_plank_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_platinum" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="3.0"/>
+      <attr name="adhesion" default="1.6"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_platinum_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_red" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="0.9"/>
+      <attr name="adhesion" default="1.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_red_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_redslab" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="7.0"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_redslab_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_rough" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="7.0"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_rough_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_rock" super="fl_floodstream">
+      <attr name="friction" default="6.5"/>
+      <attr name="adhesion" default="2.2"/>
+    </object>
+    <object name="fl_rock_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_sahara" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="6.4"/>
+      <attr name="adhesion" default="2.0"/>
+    </object>
+    <object name="fl_sahara_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_samba" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="6.0"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="burnable" default="true"/>
+      <attr name="$firetransform" default="fl_abyss"/>
+    </object>
+    <object name="fl_samba_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_samba_h" init="true"/>
+    <object name="fl_samba_h_framed" init="true"/>
+    <object name="fl_samba_v" init="true"/>
+    <object name="fl_samba_v_framed" init="true"/>
+    <object name="fl_slope">
+      <attr name="friction" default="4.0"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="slope" default="-1"/>
+      <attr name="strength"/>
+      <attr name="shape"/>
+    </object>
+    <object name="fl_sand" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="6.0"/>
+      <attr name="adhesion" default="2.0"/>
+    </object>
+    <object name="fl_sand_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_scales">
+      <attr name="flavor" default="platinum"/>
+      <attr name="min" default="1.8"/>
+      <attr name="friction" default="4.0"/>
+      <attr name="adhesion" default="2.0"/>
+      <msg name="_init"/>
+    </object>
+    <object name="fl_scales_brick">
+      <attr name="flavor" value="brick"/>
+    </object>
+    <object name="fl_scales_bridgewood">
+      <attr name="flavor" value="bridgewood"/>
+    </object>
+    <object name="fl_scales_concrete">
+      <attr name="flavor" value="concrete"/>
+    </object>
+    <object name="fl_scales_darkgray">
+      <attr name="flavor" value="darkgray"/>
+    </object>
+    <object name="fl_scales_gray">
+      <attr name="flavor" value="gray"/>
+    </object>
+    <object name="fl_scales_platinum">
+      <attr name="flavor" value="platinum"/>
+    </object>
+    <object name="fl_slope_pw">
+      <attr name="shape" value="pw"/>
+    </object>
+    <object name="fl_slope_ps">
+      <attr name="shape" value="ps"/>
+    </object>
+    <object name="fl_slope_pe">
+      <attr name="shape" value="pe"/>
+    </object>
+    <object name="fl_slope_pn">
+      <attr name="shape" value="pn"/>
+    </object>
+    <object name="fl_slope_inw">
+      <attr name="shape" value="inw"/>
+    </object>
+    <object name="fl_slope_isw">
+      <attr name="shape" value="isw"/>
+    </object>
+    <object name="fl_slope_ise">
+      <attr name="shape" value="ise"/>
+    </object>
+    <object name="fl_slope_ine">
+      <attr name="shape" value="ine"/>
+    </object>
+    <object name="fl_slope_onw">
+      <attr name="shape" value="onw"/>
+    </object>
+    <object name="fl_slope_osw">
+      <attr name="shape" value="osw"/>
+    </object>
+    <object name="fl_slope_ose">
+      <attr name="shape" value="ose"/>
+    </object>
+    <object name="fl_slope_one">
+      <attr name="shape" value="one"/>
+    </object>
+    <object name="fl_slope_tw">
+      <attr name="shape" value="tw"/>
+    </object>
+    <object name="fl_slope_ts">
+      <attr name="shape" value="ts"/>
+    </object>
+    <object name="fl_slope_te">
+      <attr name="shape" value="te"/>
+    </object>
+    <object name="fl_slope_tn">
+      <attr name="shape" value="tn"/>
+    </object>
+    <object name="fl_slope_twl">
+      <attr name="shape" value="twl"/>
+    </object>
+    <object name="fl_slope_tsl">
+      <attr name="shape" value="tsl"/>
+    </object>
+    <object name="fl_slope_tel">
+      <attr name="shape" value="tel"/>
+    </object>
+    <object name="fl_slope_tnl">
+      <attr name="shape" value="tnl"/>
+    </object>
+    <object name="fl_slope_twr">
+      <attr name="shape" value="twr"/>
+    </object>
+    <object name="fl_slope_tsr">
+      <attr name="shape" value="tsr"/>
+    </object>
+    <object name="fl_slope_ter">
+      <attr name="shape" value="ter"/>
+    </object>
+    <object name="fl_slope_tnr">
+      <attr name="shape" value="tnr"/>
+    </object>
+    <object name="fl_space">
+      <attr name="friction" default="0.0"/>
+      <attr name="adhesion" default="0.0"/>
+    </object>
+    <object name="fl_stone" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="1.4"/>
+      <attr name="adhesion" default="1.0"/>
+    </object>
+    <object name="fl_stone_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_swamp">
+      <attr name="friction" default="13.0"/>
+      <attr name="adhesion" default="1.0"/>
+      <attr name="noash" default="true"/>
+      <attr name="$heattransform" default="fl_dunes"/>
+      <attr name="$firetransform" default="fl_dunes"/>
+    </object>
+    <object name="fl_thief">
+      <attr name="friction" default="4.5"/>
+      <attr name="adhesion" default="1.5"/>
+      <msg name="_capture"/>
+    </object>
+    <object name="fl_tigris" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="6.0"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_tigris_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_water" super="fl_floodstream">
+      <attr name="friction" default="5.0"/>
+      <attr name="adhesion" default="1.0"/>
+      <attr name="noash" default="true"/>
+      <attr name="$heattransform" default="fl_swamp"/>
+      <attr name="$firetransform" default="fl_swamp"/>
+    </object>
+    <object name="fl_white" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="4.0"/>
+      <attr name="adhesion" default="2.0"/>
+    </object>
+    <object name="fl_white_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_wood" super="fl_floodstream">
+      <attr name="friction" default="6.4"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="burnable" default="true"/>
+      <attr name="$firetransform" default="fl_abyss"/>
+    </object>
+    <object name="fl_wood_h" init="true"/>
+    <object name="fl_wood_v" init="true"/>
+    <object name="fl_wood_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_wood_framed_h" init="true"/>
+    <object name="fl_wood_framed_v" init="true"/>
+    <object name="fl_woven" super="fl_standard">
+      <attr name="faces"/>
+      <attr name="friction" default="6.5"/>
+      <attr name="adhesion" default="3.0"/>
+      <attr name="burnable" default="true"/>
+    </object>
+    <object name="fl_woven_framed">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="fl_yinyang">
+      <attr name="friction" default="5.2"/>
+      <attr name="adhesion" default="2.0"/>
+      <attr name="invisible"/>
+    </object>
+    <object name="fl_yinyang_yin">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="fl_yinyang_yang">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it" abstract="true">
+      <attr name="liftable"/>
+      <attr name="portable"/>
+      <attr name="freezable"/>
+      <msg name="_freeze"/>
+    </object>
+    <object name="it_bag">
+      <attr name="mass" default="0.0" rw="r"/>
+    </object>
+    <object name="it_banana"/>
+    <object name="it_blocker">
+      <attr name="autoclose"/>
+      <msg name="close"/>
+      <msg name="open"/>
+      <msg name="signal"/>
+      <msg name="_init"/>
+      <msg name="_performaction"/>
+    </object>
+    <object name="it_blocker_new" init="true">
+    </object>
+    <object name="it_bomb">
+      <attr name="color"/>
+      <msg name="ignite"/>
+      <msg name="heat"/>
+      <msg name="explode"/>
+      <msg name="_explosion"/>
+    </object>
+    <object name="it_bomb_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="it_bomb_black_burning" init="true"/>
+    <object name="it_bomb_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="it_bomb_white_burning" init="true"/>
+    <object name="it_bottle">
+      <attr name="interval" default="5"/>
+      <attr name="text"/>
+      <msg name="_brush"/>
+    </object>
+    <object name="it_bottle_idle">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_bottle_broken">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_brake"/>
+    <object name="it_brush"/>
+    <object name="it_burnable">
+      <attr name="state" max="5" rw="r"/>
+      <msg name="extinguish"/>
+      <msg name="ignite"/>
+      <msg name="_brush"/>
+      <msg name="_explosion"/>
+    </object>
+    <object name="it_burnable_invisible">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_burnable_oil">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_burnable_ignited">
+      <attr name="state" value="2"/>
+    </object>
+    <object name="it_burnable_burning">
+      <attr name="state" value="3"/>
+    </object>
+    <object name="it_burnable_ash">
+      <attr name="state" value="4"/>
+    </object>
+    <object name="it_burnable_fireproof">
+      <attr name="state" value="5"/>
+    </object>
+    <object name="it_cherry"/>
+    <object name="it_coffee"/>
+    <object name="it_coin">
+      <attr name="coin_value" default="3"/>
+      <attr name="state" rw="r"/>
+    </object>
+    <object name="it_coin_s">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_coin_m">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_coin_l">
+      <attr name="state" value="2"/>
+    </object>
+    <object name="it_crack">
+      <attr name="state" min="-1" max="3"/>
+      <attr name="flavor"/>
+      <attr name="fragility"/>
+      <attr name="spreading"/>
+      <msg name="crack"/>
+      <msg name="heat"/>
+    </object>
+    <object name="it_crack_i">
+      <attr name="state" value="-1"/>
+    </object>
+    <object name="it_crack_s">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_crack_m">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_crack_l">
+      <attr name="state" value="2"/>
+    </object>
+    <object name="it_cross">
+      <attr name="interval" default="10"/>
+      <attr name="state" rw="r"/>
+      <msg name="_brush"/>
+      <msg name="signal"/>
+    </object>
+    <object name="it_death"/>
+    <object name="it_document">
+      <attr name="text"/>
+    </object>
+    <object name="it_debris"/>
+    <object name="it_drop"/>
+    <object name="it_extinguisher">
+      <attr name="state" max="2"/>
+    </object>
+    <object name="it_dynamite">
+      <attr name="state"/>
+      <msg name="ignite"/>
+      <msg name="heat"/>
+      <msg name="explode"/>
+      <msg name="_explosion"/>
+      <msg name="_dispenser"/>
+    </object>
+    <object name="it_dynamite_burning">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_explosion">
+      <attr name="state" max="3" rw="r"/>
+    </object>
+    <object name="it_explosion_nil">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_explosion_hollow">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_explosion_crack">
+      <attr name="state" value="2"/>
+    </object>
+    <object name="it_explosion_debris">
+      <attr name="state" value="3"/>
+    </object>
+    <object name="it_extinguisher_empty">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_extinguisher_medium">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_extinguisher_full">
+      <attr name="state" value="2"/>
+    </object>
+    <object name="it_extralife"/>
+    <object name="it_extralife_new" init="true"/>
+    <object name="it_flag">
+      <attr name="color"/>
+    </object>
+    <object name="it_flag_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="it_flag_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="it_floppy"/>
+    <object name="it_glasses">
+      <attr name="state" max="31"/>
+    </object>
+    <object name="it_glasses_broken">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_hammer"/>
+    <object name="it_hammer_new" init="true"/>
+    <object name="it_key">
+      <attr name="code"/>
+      <attr name="invisible" default="true"/>
+    </object>
+    <object name="it_landmine"/>
+    <object name="it_magicwand"/>
+    <object name="it_magnet">
+      <attr name="range" default="nil"/>
+      <attr name="strength" default="nil"/>
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="signal"/>
+    </object>
+    <object name="it_magnet_off">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_magnet_on">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_meditation">
+      <attr name="state" min="-3" max="3" default="-2"/>
+      <attr name="essential" max="1"/>
+      <attr name="friction"/>
+      <attr name="adhesion"/>
+      <msg name="flip"/>
+      <msg name="shovel"/>
+      <msg name="signal"/>
+      <msg name="_init"/>
+    </object>
+    <object name="it_meditation_caldera">
+      <attr name="state" value="-3"/>
+    </object>
+    <object name="it_meditation_hollow">
+      <attr name="state" value="-2"/>
+    </object>
+    <object name="it_meditation_dent">
+      <attr name="state" value="-1"/>
+    </object>
+    <object name="it_meditation_bump">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_meditation_hill">
+      <attr name="state" value="2"/>
+    </object>
+    <object name="it_meditation_volcano">
+      <attr name="state" value="3"/>
+    </object>
+    <object name="it_pencil"/>
+    <object name="it_pin"/>
+    <object name="it_pipe">
+      <attr name="connections"/>
+      <msg name="_explosion"/>
+    </object>
+    <object name="it_pipe_w">
+      <attr name="connections" value="w"/>
+    </object>
+    <object name="it_pipe_s">
+      <attr name="connections" value="s"/>
+    </object>
+    <object name="it_pipe_sw">
+      <attr name="connections" value="sw"/>
+    </object>
+    <object name="it_pipe_e">
+      <attr name="connections" value="e"/>
+    </object>
+    <object name="it_pipe_ew">
+      <attr name="connections" value="ew"/>
+    </object>
+    <object name="it_pipe_es">
+      <attr name="connections" value="es"/>
+    </object>
+    <object name="it_pipe_n">
+      <attr name="connections" value="n"/>
+    </object>
+    <object name="it_pipe_nw">
+      <attr name="connections" value="nw"/>
+    </object>
+    <object name="it_pipe_ns">
+      <attr name="connections" value="ns"/>
+    </object>
+    <object name="it_pipe_ne">
+      <attr name="connections" value="ne"/>
+    </object>
+    <object name="it_puller">
+      <attr name="orientation"/>
+    </object>
+    <object name="it_puller_w">
+      <attr name="orientation" value="0"/>
+    </object>
+    <object name="it_puller_s">
+      <attr name="orientation" value="1"/>
+    </object>
+    <object name="it_puller_e">
+      <attr name="orientation" value="2"/>
+    </object>
+    <object name="it_puller_n">
+      <attr name="orientation" value="3"/>
+    </object>
+    <object name="it_ring"/>
+    <object name="it_rubberband">
+      <attr name="anchor2"/>
+      <attr name="strength" default="10"/>
+      <attr name="length"/>
+      <attr name="threshold"/>
+      <attr name="max"/>
+      <attr name="min"/>
+      <attr name="scissor"/>
+    </object>
+    <object name="it_seed">
+      <attr name="flavor"/>
+      <attr name="secure"/>
+      <msg name="grow"/>
+      <msg name="signal"/>
+    </object>
+    <object name="it_seed_wood">
+      <attr name="flavor" value="wood"/>
+    </object>
+    <object name="it_seed_greenbrown">
+      <attr name="flavor" value="greenbrown"/>
+    </object>
+    <object name="it_seed_volcano">
+      <attr name="flavor" value="volcano"/>
+    </object>
+    <object name="it_seed_hay">
+      <attr name="flavor" value="hay"/>
+    </object>
+    <object name="it_sensor">
+      <attr name="invisible"/>
+      <attr name="exit"/>
+      <msg name="_glasses"/>
+      <msg name="_hit"/>
+    </object>
+    <object name="it_shogun">
+      <attr name="flavor"/>
+      <msg name="_init"/>
+    </object>
+    <object name="it_shogun_s">
+      <attr name="flavor" value="s"/>
+    </object>
+    <object name="it_shogun_m">
+      <attr name="flavor" value="m"/>
+    </object>
+    <object name="it_shogun_l">
+      <attr name="flavor" value="l"/>
+    </object>
+    <object name="it_spade"/>
+    <object name="it_spoon"/>
+    <object name="it_spring">
+    </object>
+    <object name="it_spring_keep">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_spring_drop">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_springboard"/>
+    <object name="it_squashed">
+      <msg name="_brush"/>
+    </object>
+    <object name="it_squashed"/>
+    <object name="it_strip">
+      <attr name="connections"/>
+      <attr name="friction"/>
+      <attr name="adhesion"/>
+    </object>
+    <object name="it_strip_w">
+      <attr name="connections" value="w"/>
+    </object>
+    <object name="it_strip_s">
+      <attr name="connections" value="s"/>
+    </object>
+    <object name="it_strip_sw">
+      <attr name="connections" value="sw"/>
+    </object>
+    <object name="it_strip_e">
+      <attr name="connections" value="e"/>
+    </object>
+    <object name="it_strip_ew">
+      <attr name="connections" value="ew"/>
+    </object>
+    <object name="it_strip_es">
+      <attr name="connections" value="es"/>
+    </object>
+    <object name="it_strip_esw">
+      <attr name="connections" value="esw"/>
+    </object>
+    <object name="it_strip_n">
+      <attr name="connections" value="n"/>
+    </object>
+    <object name="it_strip_nw">
+      <attr name="connections" value="nw"/>
+    </object>
+    <object name="it_strip_ns">
+      <attr name="connections" value="ns"/>
+    </object>
+    <object name="it_strip_nsw">
+      <attr name="connections" value="nsw"/>
+    </object>
+    <object name="it_strip_ne">
+      <attr name="connections" value="ne"/>
+    </object>
+    <object name="it_strip_new">
+      <attr name="connections" value="new"/>
+    </object>
+    <object name="it_strip_nes">
+      <attr name="connections" value="nes"/>
+    </object>
+    <object name="it_strip_nesw">
+      <attr name="connections" value="nesw"/>
+    </object>
+    <object name="it_surprise">
+      <attr name="selection"/>
+    </object>
+    <object name="it_sword"/>
+    <object name="it_sword_new" init="true"/>
+    <object name="it_trigger">
+      <attr name="invisible"/>
+      <attr name="state" rw="r"/>
+      <msg name="_init"/>
+      <msg name="_jumping"/>
+    </object>
+    <object name="it_trap">
+      <msg name="open"/>
+      <msg name="signal"/>
+      <msg name="_glasses"/>
+    </object>
+    <object name="it_umbrella"/>
+    <object name="it_umbrella_new" init="true"/>
+    <object name="it_vortex">
+      <attr name="destination"/>
+      <attr name="autoclose"/>
+      <attr name="autoopen"/>
+      <attr name="scissor" default="true"/>
+      <msg name="open"/>
+      <msg name="close"/>
+      <msg name="signal"/>
+    </object>
+    <object name="it_vortex_closed">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_vortex_open">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_weight">
+      <attr name="mass" default="10.0"/>
+    </object>
+    <object name="it_wormhole">
+      <attr name="destination"/>
+      <attr name="interval" default="0"/>
+      <attr name="range" default="nil"/>
+      <attr name="scissor" default="true"/>
+      <attr name="strength" default="nil"/>
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="signal"/>
+    </object>
+    <object name="it_wormhole_off">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="it_wormhole_on">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="it_wrench"/>
+    <object name="ot" abstract="true">
+    </object>
+    <object name="it_yinyang"/>
+    <object name="ot_counter">
+      <msg name="signal"/>
+    </object>
+    <object name="ot_rubberband">
+      <attr name="anchor1"/>
+      <attr name="anchor2"/>
+      <attr name="strength" default="10"/>
+      <attr name="length"/>
+      <attr name="threshold"/>
+      <attr name="max"/>
+      <attr name="min"/>
+      <msg name="_performaction"/>
+      <msg name="_recheck"/>
+    </object>
+    <object name="ot_timer">
+      <attr name="interval"/>
+      <attr name="loop"/>
+      <attr name="state" default="1"/>
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="signal"/>
+    </object>
+    <object name="ot_wire">
+      <attr name="anchor1"/>
+      <attr name="anchor2"/>
+    </object>
+    <object name="st" abstract="true"/>
+    <object name="st_clusterstone" abstract="true">
+      <attr name="cluster"/>
+      <attr name="connections"/>
+      <attr name="faces"/>
+      <msg name="_model_reanimated"/>
+    </object>
+    <object name="st" abstract="true">
+      <attr name="movable" rw="r"/>
+      <attr name="fellows"/>
+      <attr name="freeze_check"/>
+      <attr name="rubbers"/>
+      <attr name="wires"/>
+    </object>
+    <object name="st_actorimpulse">
+      <attr name="invisible"/>
+      <attr name="strength" default="nil"/>
+      <attr name="hit_strength"/>
+      <attr name="hit_distortion_xx"/>
+      <attr name="hit_distortion_xy"/>
+      <attr name="hit_distortion_yx"/>
+      <attr name="hit_distortion_yy"/>
+      <msg name="signal"/>
+      <msg name="_init"/>
+      <msg name="_model_reanimated"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_actorimpulse_invisible">
+      <attr name="invisible" value="true"/>
+    </object>
+    <object name="st_ancient"/>
+    <object name="st_blocker">
+      <attr name="autoclose"/>
+      <msg name="close"/>
+      <msg name="open"/>
+      <msg name="signal"/>
+      <msg name="_performaction"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_barrier">
+      <attr name="flavor" default="all"/>
+      <attr name="static" default="true"/>
+    </object>
+    <object name="st_beads"/>
+    <object name="st_blocker_new" init="true">
+    </object>
+    <object name="st_bluegray">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_bluegray_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_bluesand" super="st_clusterstone"/>
+    <object name="st_bluesand_w">
+      <attr name="connections" value="w"/>
+    </object>
+    <object name="st_bluesand_s">
+      <attr name="connections" value="s"/>
+    </object>
+    <object name="st_bluesand_sw">
+      <attr name="connections" value="sw"/>
+    </object>
+    <object name="st_bluesand_e">
+      <attr name="connections" value="e"/>
+    </object>
+    <object name="st_bluesand_ew">
+      <attr name="connections" value="ew"/>
+    </object>
+    <object name="st_bluesand_es">
+      <attr name="connections" value="es"/>
+    </object>
+    <object name="st_bluesand_esw">
+      <attr name="connections" value="esw"/>
+    </object>
+    <object name="st_bluesand_n">
+      <attr name="connections" value="n"/>
+    </object>
+    <object name="st_bluesand_nw">
+      <attr name="connections" value="nw"/>
+    </object>
+    <object name="st_bluesand_ns">
+      <attr name="connections" value="ns"/>
+    </object>
+    <object name="st_bluesand_nsw">
+      <attr name="connections" value="nsw"/>
+    </object>
+    <object name="st_bluesand_ne">
+      <attr name="connections" value="ne"/>
+    </object>
+    <object name="st_bluesand_new">
+      <attr name="connections" value="new"/>
+    </object>
+    <object name="st_bluesand_nes">
+      <attr name="connections" value="nes"/>
+    </object>
+    <object name="st_bluesand_nesw">
+      <attr name="connections" value="nesw"/>
+    </object>
+    <object name="st_blur">
+      <attr name="flavor"/>
+    </object>
+    <object name="st_blur_cross">
+      <attr name="flavor" value="cross"/>
+    </object>
+    <object name="st_blur_magic">
+      <attr name="flavor" value="magic"/>
+    </object>
+    <object name="st_blur_straight">
+      <attr name="flavor" value="straight"/>
+    </object>
+    <object name="st_boulder">
+      <attr name="counterclock"/>
+      <attr name="orientation"/>
+      <msg name="orientate"/>
+      <msg name="turn"/>
+      <msg name="turnback"/>
+      <msg name="flip"/>
+      <msg name="_cannonball"/>
+    </object>
+    <object name="st_boulder_w">
+      <attr name="orientation" value="0"/>
+    </object>
+    <object name="st_boulder_s">
+      <attr name="orientation" value="1"/>
+    </object>
+    <object name="st_boulder_e">
+      <attr name="orientation" value="2"/>
+    </object>
+    <object name="st_boulder_n">
+      <attr name="orientation" value="3"/>
+    </object>
+    <object name="st_box">
+      <attr name="flavor" default="wood" rw="r"/>
+      <attr name="secure"/>
+      <msg name="heat"/>
+      <msg name="_fall"/>
+      <msg name="_fire"/>
+    </object>
+    <object name="st_box_hay">
+      <attr name="flavor" value="hay"/>
+    </object>
+    <object name="st_box_hay_growing" init="true"/>
+    <object name="st_box_rock">
+      <attr name="flavor" value="rock"/>
+    </object>
+    <object name="st_box_wood">
+      <attr name="flavor" value="wood"/>
+    </object>
+    <object name="st_box_wood_growing" init="true"/>
+    <object name="st_box_wood_h" init="true"/>
+    <object name="st_box_wood_v" init="true"/>
+    <object name="st_brake">
+      <msg name="_explosion"/>
+    </object>
+    <object name="st_break">
+      <attr name="flavor"/>
+      <msg name="ignite"/>
+      <msg name="_explosion"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_break_black">
+      <attr name="flavor" value="black"/>
+    </object>
+    <object name="st_break_boulder">
+      <attr name="flavor" value="boulder"/>
+    </object>
+    <object name="st_break_bug">
+      <attr name="flavor" value="bug"/>
+    </object>
+    <object name="st_break_laser">
+      <attr name="flavor" value="laser"/>
+    </object>
+    <object name="st_break_oxydc">
+      <attr name="flavor" value="oxydc"/>
+    </object>
+    <object name="st_break_plain">
+      <attr name="flavor" value="plain"/>
+    </object>
+    <object name="st_break_white">
+      <attr name="flavor" value="white"/>
+    </object>
+    <object name="st_brick" super="st_clusterstone"/>
+    <object name="st_brick_w">
+      <attr name="connections" value="w"/>
+    </object>
+    <object name="st_brick_s">
+      <attr name="connections" value="s"/>
+    </object>
+    <object name="st_brick_sw">
+      <attr name="connections" value="sw"/>
+    </object>
+    <object name="st_brick_e">
+      <attr name="connections" value="e"/>
+    </object>
+    <object name="st_brick_ew">
+      <attr name="connections" value="ew"/>
+    </object>
+    <object name="st_brick_es">
+      <attr name="connections" value="es"/>
+    </object>
+    <object name="st_brick_esw">
+      <attr name="connections" value="esw"/>
+    </object>
+    <object name="st_brick_n">
+      <attr name="connections" value="n"/>
+    </object>
+    <object name="st_brick_nw">
+      <attr name="connections" value="nw"/>
+    </object>
+    <object name="st_brick_ns">
+      <attr name="connections" value="ns"/>
+    </object>
+    <object name="st_brick_nsw">
+      <attr name="connections" value="nsw"/>
+    </object>
+    <object name="st_brick_ne">
+      <attr name="connections" value="ne"/>
+    </object>
+    <object name="st_brick_new">
+      <attr name="connections" value="new"/>
+    </object>
+    <object name="st_brick_nes">
+      <attr name="connections" value="nes"/>
+    </object>
+    <object name="st_brick_nesw">
+      <attr name="connections" value="nesw"/>
+    </object>
+    <object name="st_brownie"/>
+    <object name="st_brownmarble"/>
+    <object name="st_brownpyramid">
+      <msg name="_cannonball"/>
+    </object>
+    <object name="st_camouflage">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_camouflage_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_camouflage_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_chameleon"/>
+    <object name="st_charge">
+      <attr name="charge"/>
+      <attr name="$chargesign"/>
+    </object>
+    <object name="st_charge_zero">
+      <attr name="$chargesign" value="0"/>
+    </object>
+    <object name="st_charge_plus">
+      <attr name="$chargesign" value="1"/>
+    </object>
+    <object name="st_charge_minus">
+      <attr name="$chargesign" value="-1"/>
+    </object>
+    <object name="st_chess">
+      <attr name="color" default="0"/>
+      <attr name="movable" default="true" rw="r"/>
+      <msg name="flip"/>
+      <msg name="move"/>
+      <msg name="signal"/>
+      <msg name="_capture"/>
+    </object>
+    <object name="st_chess_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="st_chess_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="st_coinslot">
+      <attr name="instant"/>
+      <attr name="interval_s"/>
+      <attr name="interval_m"/>
+      <attr name="interval_l"/>
+      <attr name="state" rw="r"/>
+    </object>
+    <object name="st_coinslot_instant">
+      <attr name="instant" value="true"/>
+    </object>
+    <object name="st_concrete"/>
+    <object name="st_darkglass">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_darkglass_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_darkglass_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_darkgray">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_darkgray_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_death">
+      <attr name="invisible"/>
+      <attr name="interval" default="10"/>
+      <msg name="_model_reanimated"/>
+    </object>
+    <object name="st_death_invisible">
+      <attr name="invisible" value="true"/>
+    </object>
+    <object name="st_death_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_disco">
+      <msg name="lighten"/>
+      <msg name="darken"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_disco_light">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="st_disco_medium">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="st_disco_dark">
+      <attr name="state" value="2"/>
+    </object>
+    <object name="st_dispenser">
+      <attr name="flavor" default="bombblack" rw="r"/>
+      <attr name="stock" default="1000"/>
+      <msg name="_explosion"/>
+      <msg name="_dispenser"/>
+    </object>
+    <object name="st_dispenser_bombblack">
+      <attr name="flavor" value="bombblack"/>
+    </object>
+    <object name="st_dispenser_bombwhite">
+      <attr name="flavor" value="bombwhite"/>
+    </object>
+    <object name="st_dispenser_dynamite">
+      <attr name="flavor" value="dynamite"/>
+    </object>
+    <object name="st_dispenser_extralife">
+      <attr name="flavor" value="extralife"/>
+    </object>
+    <object name="st_door">
+      <attr name="faces" default="nesw"/>
+      <attr name="flavor"/>
+      <msg name="close"/>
+      <msg name="open"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_door_a">
+      <attr name="flavor" value="a"/>
+    </object>
+    <object name="st_door_b">
+      <attr name="flavor" value="b"/>
+    </object>
+    <object name="st_door_c">
+      <attr name="flavor" value="c"/>
+    </object>
+    <object name="st_door_d">
+      <attr name="flavor" value="d"/>
+    </object>
+    <object name="st_fake">
+      <attr name="flavor" default="quake"/>
+    </object>
+    <object name="st_fake_quake">
+      <attr name="flavor" value="quake"/>
+    </object>
+    <object name="st_fake_oxyda">
+      <attr name="flavor" value="oxyda"/>
+    </object>
+    <object name="st_fake_oxydb">
+      <attr name="flavor" value="oxydb"/>
+    </object>
+    <object name="st_fake_oxydc">
+      <attr name="flavor" value="oxydc"/>
+    </object>
+    <object name="st_fake_oxydd">
+      <attr name="flavor" value="oxydd"/>
+    </object>
+    <object name="st_fake_oxyde">
+      <attr name="flavor" value="oxyde"/>
+    </object>
+    <object name="st_flash">
+      <attr name="hit_strength"/>
+      <attr name="hit_distortion_xx"/>
+      <attr name="hit_distortion_xy"/>
+      <attr name="hit_distortion_yx"/>
+      <attr name="hit_distortion_yy"/>
+    </object>
+    <object name="st_flat">
+      <attr name="hollow" rw="r"/>
+      <attr name="breakable" rw="r"/>
+      <attr name="burnable" rw="r"/>
+      <msg name="_fire"/>
+    </object>
+    <object name="st_flat_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_flat_movable">
+      <attr name="movable" value="true"/>
+      <attr name="breakable" value="false"/>
+      <attr name="burnable" value="false"/>
+    </object>
+    <object name="st_flat_breakable">
+      <attr name="breakable" value="true"/>
+      <attr name="movable" value="false"/>
+    </object>
+    <object name="st_flat_breaking" init="true"/>
+    <object name="st_flat_cracked">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="st_flat_burnable">
+      <attr name="burnable" value="true"/>
+      <attr name="movable" value="false"/>
+    </object>
+    <object name="st_flat_moveburnable">
+      <attr name="movable" value="true"/>
+      <attr name="burnable" value="true"/>
+    </object>
+    <object name="st_floppy">
+      <attr name="secure" default="true"/>
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_fourswitch" states="4">
+      <attr name="counterclock"/>
+      <action type="dir" statetype="bool"/>
+      <msg name="signal"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_ghost">
+      <attr name="flavor"/>
+    </object>
+    <object name="st_ghost_break">
+      <attr name="flavor" value="break"/>
+    </object>
+    <object name="st_ghost_greenbrown">
+      <attr name="flavor" value="greenbrown"/>
+    </object>
+    <object name="st_ghost_purplemarble">
+      <attr name="flavor" value="purplemarble"/>
+    </object>
+    <object name="st_granite">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_granite_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_granite_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_grate">
+      <attr name="flavor"/>
+    </object>
+    <object name="st_grate_cross">
+      <attr name="flavor" value="cross"/>
+    </object>
+    <object name="st_grate_framed">
+      <attr name="flavor" value="framed"/>
+    </object>
+    <object name="st_greenbrown">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_greenbrown_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_greenbrown_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_greenbrown_growing" init="true"/>
+    <object name="st_greengray"/>
+    <object name="st_ice"/>
+    <object name="st_invisible">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_invisible_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_invisible_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_jamb">
+      <attr name="color" default="0"/>
+      <msg name="hit"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_jamb_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="st_jamb_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="st_key">
+      <attr name="code"/>
+      <attr name="secure" default="true"/>
+      <attr name="invisible" default="true"/>
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_knight">
+      <attr name="state" max="4" rw="r"/>
+    </object>
+    <object name="st_lightglass">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_lightglass_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_lightglass_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_mail">
+      <attr name="orientation"/>
+    </object>
+    <object name="st_mail_w">
+      <attr name="orientation" value="0"/>
+    </object>
+    <object name="st_mail_s">
+      <attr name="orientation" value="1"/>
+    </object>
+    <object name="st_mail_e">
+      <attr name="orientation" value="2"/>
+    </object>
+    <object name="st_mail_n">
+      <attr name="orientation" value="3"/>
+    </object>
+    <object name="st_laser">
+      <attr name="counterclock"/>
+      <attr name="orientation"/>
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="orientate"/>
+      <msg name="signal"/>
+      <msg name="turn"/>
+      <msg name="turnback"/>
+    </object>
+    <object name="st_laser_w">
+      <attr name="orientation" value="0"/>
+    </object>
+    <object name="st_laser_s">
+      <attr name="orientation" value="1"/>
+    </object>
+    <object name="st_laser_e">
+      <attr name="orientation" value="2"/>
+    </object>
+    <object name="st_laser_n">
+      <attr name="orientation" value="3"/>
+    </object>
+    <object name="st_laserflop">
+      <attr name="interval" default="1.8"/>
+      <msg name="on"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_lightpassenger">
+      <attr name="interval" default="0.05"/>
+      <attr name="friction"/>
+      <attr name="gradient"/>
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="signal"/>
+      <msg name="_init"/>
+      <msg name="_glasses"/>
+      <msg name="_model_reanimated"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_lightpassenger_on">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="st_lightpassenger_off">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="st_laserswitch">
+      <attr name="state" rw="r"/>
+      <msg name="_init"/>
+      <msg name="_model_reanimated"/>
+    </object>
+    <object name="st_magic">
+      <attr name="flavor"/>
+    </object>
+    <object name="st_magic_brick">
+      <attr name="flavor" value="brick"/>
+    </object>
+    <object name="st_magic_oxyda">
+      <attr name="flavor" value="oxyda"/>
+    </object>
+    <object name="st_magic_oxydc">
+      <attr name="flavor" value="oxydc"/>
+    </object>
+    <object name="st_metal">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_metal_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_mirror">
+      <attr name="counterclock"/>
+      <attr name="flavor" default="slab"/>
+      <attr name="movable" rw="rw"/>
+      <attr name="orientation"/>
+      <attr name="transparent"/>
+      <msg name="orientate"/>
+      <msg name="signal"/>
+      <msg name="turn"/>
+      <msg name="turnback"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_mirror_sheets">
+      <attr name="flavor" value="sheets"/>
+    </object>
+    <object name="st_mirror_slab">
+      <attr name="flavor" value="slab"/>
+    </object>
+    <object name="st_mirror_triangle">
+      <attr name="flavor" value="triangle"/>
+    </object>
+    <object name="st_monoflop">
+      <attr name="interval" default="1.8"/>
+      <msg name="on"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_oneway" states="4">
+      <attr name="color"/>
+      <attr name="orientation"/>
+      <msg name="flip"/>
+      <msg name="orientate"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_oneway_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="st_oneway_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="st_oxyd">
+      <attr name="flavor"/>
+      <attr name="noshuffle"/>
+      <attr name="oxydcolor"/>
+      <attr name="static"/>
+      <attr name="selection"/>
+      <msg name="closeall"/>
+      <msg name="peepall"/>
+      <msg name="shuffle"/>
+      <msg name="_trigger"/>
+      <msg name="_cannonball"/>
+      <msg name="_init"/>
+      <msg name="open"/>
+      <msg name="close"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_oxyd_a">
+      <attr name="flavor" value="a"/>
+    </object>
+    <object name="st_oxyd_b">
+      <attr name="flavor" value="b"/>
+    </object>
+    <object name="st_oxyd_c">
+      <attr name="flavor" value="c"/>
+    </object>
+    <object name="st_oxyd_d">
+      <attr name="flavor" value="d"/>
+    </object>
+    <object name="st_oxyd_e">
+      <attr name="flavor" value="e"/>
+    </object>
+    <object name="st_panel" super="st_clusterstone"/>
+    <object name="st_panel_w">
+      <attr name="connections" value="w"/>
+    </object>
+    <object name="st_panel_s">
+      <attr name="connections" value="s"/>
+    </object>
+    <object name="st_panel_sw">
+      <attr name="connections" value="sw"/>
+    </object>
+    <object name="st_panel_e">
+      <attr name="connections" value="e"/>
+    </object>
+    <object name="st_panel_ew">
+      <attr name="connections" value="ew"/>
+    </object>
+    <object name="st_panel_es">
+      <attr name="connections" value="es"/>
+    </object>
+    <object name="st_panel_esw">
+      <attr name="connections" value="esw"/>
+    </object>
+    <object name="st_panel_n">
+      <attr name="connections" value="n"/>
+    </object>
+    <object name="st_panel_nw">
+      <attr name="connections" value="nw"/>
+    </object>
+    <object name="st_panel_ns">
+      <attr name="connections" value="ns"/>
+    </object>
+    <object name="st_panel_nsw">
+      <attr name="connections" value="nsw"/>
+    </object>
+    <object name="st_panel_ne">
+      <attr name="connections" value="ne"/>
+    </object>
+    <object name="st_panel_new">
+      <attr name="connections" value="new"/>
+    </object>
+    <object name="st_panel_nes">
+      <attr name="connections" value="nes"/>
+    </object>
+    <object name="st_panel_nesw">
+      <attr name="connections" value="nesw"/>
+    </object>
+    <object name="st_passage">
+      <attr name="color" default="0"/>
+      <attr name="flavor" default="square"/>
+      <msg name="signal"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_passage_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="st_passage_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="st_pinkbumps"/>
+    <object name="st_plaster">
+      <attr name="hollow" rw="r"/>
+      <attr name="breakable" rw="r"/>
+    </object>
+    <object name="st_plaster_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_plaster_movable">
+      <attr name="movable" value="true"/>
+      <attr name="breakable" value="false"/>
+    </object>
+    <object name="st_plaster_breakable">
+      <attr name="breakable" value="true"/>
+      <attr name="movable" value="false"/>
+    </object>
+    <object name="st_plaster_movebreakable">
+      <attr name="movable" value="true"/>
+      <attr name="breakable" value="true"/>
+    </object>
+    <object name="st_plop"/>
+    <object name="st_plop_slate" init="true"/>
+    <object name="st_polarswitch">
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_portal">
+      <attr name="flavor" default="horse" rw="r"/>
+    </object>
+    <object name="st_portal_horse">
+      <attr name="flavor" value="horse"/>
+    </object>
+    <object name="st_portal_pearl">
+      <attr name="flavor" value="pearl"/>
+    </object>
+    <object name="st_pull">
+      <attr name="state" rw="r"/>
+    </object>
+    <object name="st_purplemarble"/>
+    <object name="st_purplegray"/>
+    <object name="st_puzzle">
+      <attr name="algorithm"/>
+      <attr name="connections"/>
+      <attr name="cluster"/>
+      <attr name="color" min="2" max="3"/>
+      <attr name="hollow"/>
+      <attr name="intensity" default="3"/>
+      <attr name="state" rw="r"/>
+      <msg name="get_adjacents"/>
+      <msg name="get_cluster"/>
+      <msg name="is_complete"/>
+      <msg name="pull_rotate"/>
+      <msg name="push_rotate"/>
+      <msg name="_scramble"/>
+    </object>
+    <object name="st_puzzle_blue">
+      <attr name="color" value="2"/>
+    </object>
+    <object name="st_puzzle_yellow">
+      <attr name="color" value="3"/>
+    </object>
+    <object name="st_quake" states="3">
+      <msg name="ignite"/>
+      <msg name="signal"/>
+      <msg name="_explosion"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_rawglass"/>
+    <object name="st_rawglass_quad"  init="true"/>
+    <object name="st_rawglass_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_redmarble"/>
+    <object name="st_redrock"/>
+    <object name="st_redbrown">
+      <attr name="hollow" rw="r"/>
+    </object>
+    <object name="st_redbrown_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_redbrown_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_redfiber">
+      <msg name="signal"/>
+    </object>
+    <object name="st_rotator">
+      <attr name="counterclock"/>
+      <attr name="movable" rw="rw"/>
+    </object>
+    <object name="st_rotator_cw">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="st_rotator_ccw">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="st_rubberband">
+      <attr name="strength" default="10"/>
+      <attr name="length"/>
+      <attr name="threshold"/>
+      <attr name="max"/>
+      <attr name="scissor" default="true"/>
+    </object>
+    <object name="st_scissors"/>
+    <object name="st_shogun">
+      <attr name="state" max="16"/>
+      <msg name="_shogun"/>
+      <msg name="_init"/>
+    </object>
+    <object name="st_shogun">
+      <attr name="flavor"/>
+      <attr name="name_m"/>
+      <attr name="name_s"/>
+      <msg name="_shogun"/>
+    </object>
+    <object name="st_shogun_s">
+      <attr name="flavor" value="s"/>
+    </object>
+    <object name="st_shogun_m">
+      <attr name="flavor" value="m"/>
+    </object>
+    <object name="st_shogun_sm">
+      <attr name="flavor" value="sm"/>
+    </object>
+    <object name="st_shogun_l">
+      <attr name="flavor" value="l"/>
+    </object>
+    <object name="st_shogun_sl">
+      <attr name="flavor" value="sl"/>
+    </object>
+    <object name="st_shogun_ml">
+      <attr name="flavor" value="ml"/>
+    </object>
+    <object name="st_shogun_sml">
+      <attr name="flavor" value="sml"/>
+    </object>
+    <object name="st_spitter">
+      <attr name="hit_strength"/>
+      <attr name="hit_distortion_xx"/>
+      <attr name="hit_distortion_xy"/>
+      <attr name="hit_distortion_yx"/>
+      <attr name="hit_distortion_yy"/>
+      <attr name="destination"/>
+      <attr name="range" default="100"/>
+      <attr name="secure"/>
+      <msg name="_cannonball"/>
+      <msg name="spit"/>
+    </object>
+    <object name="st_stoneimpulse">
+      <attr name="hollow"/>
+      <attr name="movable"/>
+      <attr name="orientation"/>
+      <attr name="steady"/>
+      <msg name="signal"/>
+      <msg name="ignite"/>
+      <msg name="_model_reanimated"/>
+      <msg name="_cannonball"/>
+      <msg name="_init"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_stoneimpulse_hollow">
+      <attr name="hollow" value="true"/>
+    </object>
+    <object name="st_stoneimpulse_movable">
+      <attr name="movable" value="true"/>
+    </object>
+    <object name="st_stoneimpulse_steady">
+      <attr name="steady" value="true"/>
+    </object>
+    <object name="st_stoneimpulse_new" init="true">
+    </object>
+    <object name="st_surprise">
+      <attr name="selection"/>
+    </object>
+    <object name="st_swap">
+      <attr name="state" rw="r"/>
+    </object>
+    <object name="st_switch">
+      <attr name="color"/>
+      <attr name="instant"/>
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_switch_black">
+      <attr name="color" value="0"/>
+    </object>
+    <object name="st_switch_white">
+      <attr name="color" value="1"/>
+    </object>
+    <object name="st_thief">
+      <msg name="_capture"/>
+    </object>
+    <object name="st_tigris"/>
+    <object name="st_timer">
+      <attr name="invisible"/>
+      <attr name="interval"/>
+      <attr name="loop"/>
+      <attr name="state" default="1"/>
+      <msg name="on"/>
+      <msg name="off"/>
+      <msg name="signal"/>
+    </object>
+    <object name="st_turnstile">
+      <attr name="counterclock"/>
+      <attr name="flavor"/>
+      <attr name="orientation"/>
+      <attr name="state" max="0"/>
+      <msg name="signal"/>
+      <msg name="turn"/>
+      <msg name="turnback"/>
+    </object>
+    <object name="st_turnstile_red">
+      <attr name="flavor" value="red"/>
+    </object>
+    <object name="st_turnstile_green">
+      <attr name="flavor" value="green"/>
+    </object>
+    <object name="st_turnstilearm">
+      <attr name="state" max="3"/>
+      <attr name="connections"/>
+      <attr name="orientation"/>
+      <attr name="movable" default="true" rw="r"/>
+      <msg name="orientate"/>
+    </object>
+    <object name="st_turnstilearm_n">
+      <attr name="state" value="3"/>
+    </object>
+    <object name="st_turnstilearm_e">
+      <attr name="state" value="2"/>
+    </object>
+    <object name="st_turnstilearm_s">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="st_turnstilearm_w">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="st_volcano">
+      <attr name="secure"/>
+      <msg name="_trigger"/>
+    </object>
+    <object name="st_volcano_idle">
+      <attr name="state" value="0"/>
+    </object>
+    <object name="st_volcano_active">
+      <attr name="state" value="1"/>
+    </object>
+    <object name="st_volcano_new" init="true"/>
+    <object name="st_volcano_growing" init="true"/>
+    <object name="st_window">
+      <attr name="faces" default="s"/>
+      <attr name="scratches"/>
+      <attr name="secure"/>
+      <msg name="inner_pull"/>
+      <msg name="_explosion"/>
+    </object>
+    <object name="st_window_w">
+      <attr name="faces" value="w"/>
+    </object>
+    <object name="st_window_s">
+      <attr name="faces" value="s"/>
+    </object>
+    <object name="st_window_sw">
+      <attr name="faces" value="sw"/>
+    </object>
+    <object name="st_window_e">
+      <attr name="faces" value="e"/>
+    </object>
+    <object name="st_window_ew">
+      <attr name="faces" value="ew"/>
+    </object>
+    <object name="st_window_es">
+      <attr name="faces" value="es"/>
+    </object>
+    <object name="st_window_esw">
+      <attr name="faces" value="esw"/>
+    </object>
+    <object name="st_window_n">
+      <attr name="faces" value="n"/>
+    </object>
+    <object name="st_window_nw">
+      <attr name="faces" value="nw"/>
+    </object>
+    <object name="st_window_ns">
+      <attr name="faces" value="ns"/>
+    </object>
+    <object name="st_window_nsw">
+      <attr name="faces" value="nsw"/>
+    </object>
+    <object name="st_window_ne">
+      <attr name="faces" value="ne"/>
+    </object>
+    <object name="st_window_new">
+      <attr name="faces" value="new"/>
+    </object>
+    <object name="st_window_nes">
+      <attr name="faces" value="nes"/>
+    </object>
+    <object name="st_window_nesw">
+      <attr name="faces" value="nesw"/>
+    </object>
+    <object name="st_woven"/>
+    <object name="st_yellow"/>
+    <object name="st_yinyang">
+      <attr name="instant"/>
+      <attr name="loop"/>
+      <msg name="_cannonball"/>
+    </object>
+    <object name="st_yinyang_instant">
+      <attr name="instant" value="true"/>
+    </object>
+    <object name="st_yinyang_active">
+      <attr name="state" value="1"/>
+      <attr name="instant" value="false"/>
+    </object>
+    <object name="st_yinyang_inactive">
+      <attr name="state" value="2"/>
+      <attr name="instant" value="false"/>
+    </object>
+  </zoo>
+</objects>

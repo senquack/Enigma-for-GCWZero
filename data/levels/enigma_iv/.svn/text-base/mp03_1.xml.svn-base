@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected >
+    <el:info el:type="level">
+      <el:identity el:title="Laser Games" el:subtitle="" el:id="mp03"/>
+      <el:version el:score="1" el:release="1" el:revision="10" el:status="released"/>
+      <el:author el:name="moonpearl"/>
+      <el:copyright>Copyright © moonpearl</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10"/>
+      <el:modes el:easy="false" el:single="true" el:network="false"/>
+      <el:score el:easy="-" el:difficult="-"/>
+    </el:info>
+    <el:luamain><![CDATA[
+wo["ConserveLevel"] = false
+
+ti["  "] = ti({"fl_blueslab", checkerboard = 1}) .. {"fl_redslab", checkerboard = 0}
+ti["# "] = {"st_purplemarble"}
+ti["= "] = {"st_plop_slate"}
+ti["^ "] = {"st_laser", state = ON, orientation = NORTH}
+ti["$ "] = {"st_oxyd", flavor = "b"}
+ti["@ "] = {"#ac_marble_black"}
+ti["T*"] = {"it_trigger", target = "mirror%%", action_1 = "turn", action_0 = "turnback"}
+ti["F*"] = {"st_fourswitch", target = "mirror%%"}
+ti["1*"] = {"st_mirror", name = "mirror%%", flavor = "triangle", orientation = NORTH}
+ti["2*"] = {"st_mirror", name = "mirror%%", flavor = "triangle", orientation = SOUTH}
+ti["3*"] = {"st_mirror", name = "mirror%%", orientation = NORTH}
+ti["4*"] = {"st_mirror", name = "mirror%%", orientation = SOUTH}
+ti["5*"] = {"st_mirror", name = "mirror%%", flavor = "sheets", orientation = EAST}
+ti["6*"] = {"st_mirror", name = "mirror%%", orientation = EAST}
+ti["7*"] = {"st_mirror", name = "mirror%%", orientation = WEST}
+ti["8*"] = {"st_mirror", name = "mirror%%", flavor = "sheets", orientation = NORTH}
+ti["9*"] = {"st_mirror", name = "mirror%%", flavor = "triangle",
+                         orientation = SOUTH, counterclock = true}
+
+local resolver = res.autotile(ti, {"T", "T*"}, {"F", "F*"},
+    {"1", "1*"}, {"2", "2*"}, {"3", "3*"}, {"4", "4*"}, {"5", "5*"},
+    {"6", "6*"}, {"7", "7*"}, {"8", "8*"}, {"9", "9*"})
+
+w, h = wo(resolver, "  ", {
+"# # # # # # # # # # # $ # $ # $ # $ # # ",
+"#                 #                   # ",
+"#     =   =       #   1a  9b  3c  2d  $ ",
+"#             =   #                   # ",
+"#     TaTbTcTd    #   3e  4f  5g  4h  $ ",
+"#     TeFfFgTh    #                   # ",
+"#     TiFjFkTl    #   6i  3j  4k  7l  $ ",
+"#     TmFnFoTp    #                   # ",
+"#     TqTrTsTt    #   8m  7n  6o  8p  $ ",
+"#                 #                   # ",
+"#       @   =     #   1q  7r  3s  2t  $ ",
+"#                 #                   # ",
+"# # # # # # # # # # # $ # $ # $ # ^ # # "
+})
+
+wo:shuffleOxyd()
+    ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

@@ -1,0 +1,55 @@
+10
+
+dir
+2479
+svn://svn.code.sf.net/p/enigma-game/source/trunk/attic
+svn://svn.code.sf.net/p/enigma-game/source
+
+
+
+2013-12-03T21:06:49.255831Z
+2374
+alochmann
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1efed42d-d900-4f75-af85-68d09028c2bd
+
+gfx80
+dir
+
+images-actors
+dir
+
+images-stones
+dir
+
+gfx-templates
+dir
+
+images-items
+dir
+
+images-other
+dir
+
+logs
+dir
+
+images-floors
+dir
+
+fonts
+dir
+

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Tinker, Tailor" el:subtitle="" el:id="andreas46"/>
+      <el:version el:score="2" el:release="4" el:revision="13" el:status="released"/>
+      <el:author el:name="Andreas Lochmann" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2007 Andreas Lochmann</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10">
+        <el:dependency el:path="lib/libmath" el:id="lib/libmath" el:release="1" el:preload="true"/>
+      </el:compatibility>
+      <el:modes el:easy="true" el:single="true" el:network="false"/>
+      <el:score el:easy="2:18" el:difficult="5:10"/>
+    </el:info>
+    <el:luamain><![CDATA[
+wo["ConserveLevel"] = true
+
+-- Names starting with "para" relate to objects on the
+-- right side of the screen, i.e., the side indicating
+-- the next pattern.
+
+ti["  "] = {"fl_lawn_b"}
+ti["# "] = {"st_darkglass"}
+ti["@ "] = {"#ac_marble_black", name = "marble"}
+ti["o "] = {"st_oxyd", flavor = "b"}
+ti["S*"] = {"st_scissors", name = "scissors%%", target = "call_scissors"}
+ti["C "] = {"st_scissors", name = "scissors_central", target = "call_scissors"}
+ti["X*"] = {"st_lightglass"} .. ti({"#ac_horse", name = "horse%%"})
+ti["s*"] = {"st_grate_framed", name = "parascissors%%"}
+ti["c "] = {"st_grate_framed", name = "parascissors_central"}
+ti["x*"] = {"st_lightglass_hollow", name = "paraplace%%"}
+ti["u "] = {"st_switch", target = "next_pattern"}
+ti["v "] = {"st_switch", target = "solve"}
+ti["r*"] = {"fl_lawn_b", "parafloor%%"}
+ti["t "] = {"st_timer", interval = 2.0, name = "timer", loop = false,
+                        invisible = true}
+
+function myrandom()
+  -- Return a random number of the following: 3, 2, 1, -1, -2, -3.
+  return ({3,2,1,-1,-2,-3})[random(6)]
+end
+
+function myresolver(key, x, y)
+  if key == ". " then
+    return {"fl_lawn_b", force_x = myrandom(), force_y = myrandom()}
+  else
+    return ti[key]
+  end
+end
+
+local resolver = res.autotile(myresolver,
+                   {"S", "S*"}, {"X", "X*"}, {"s", "s*"}, {"x", "x*"}, {"r", "r*"})
+
+w, h = wo(resolver, "  ", {
+ -- 01234567890123456789
+   "# # # # # # # # # # # # # # # # # # # # ",
+   "#                   # #     r1  r2    # ",
+   "#       X1  X2      # # r3. . . . . r4# ",
+   "#       S1  S2      # # . . x1. x2. . # ",
+   "#                   # # . . s1. s2. . # ",
+   "# X3S3  @       S4X4# # x3s3. . . s4x4# ",
+   "#         C         # # . . . c . . . # ",
+   "# X5S5          S6X6# # x5s5. . . s6x6# ",
+   "#                   # # . . s7. s8. . # ",
+   "#       S7  S8      # # . . x7. x8. . # ",
+   "#       X7  X8      # # r5. . . . . r6# ",
+   "#                   # #     r7  r8    # ",
+   "# # # # # # # # # # # # # # # # # # # # ",
+   "t                                       ",
+})
+
+function connect(obj1, obj2, restrict)
+  wo:add({"ot_rubberband", anchor1 = obj1, anchor2 = obj2,
+          strength = 0,
+          max = cond(restrict and wo["IsDifficult"], 2.5, nil)})
+  -- Save partner of actor: When call_scissors is called, the
+  -- rubberband will've already been removed, so ["fellows"]
+  -- doesn't work anymore for the marble.
+  obj1["_fellow"] = obj2
+end
+
+function call_scissors(onoff, sender)
+  local marbles_partner = no["marble"]["_fellow"]
+  local scissors_partner = sender["fellows"][1]
+  if sender == marbles_partner then
+    -- Marble hit its own partner, recreate rubberband
+    -- and everything is fine
+    connect(no["marble"], sender, true)
+  else
+    -- This is the interesting case:
+    -- Rubberband of marble is already cut, now delete the other one
+    sender["rubbers"]:kill()
+    -- Reconnect
+    connect(no["marble"], sender, true)
+    connect(scissors_partner, marbles_partner)
+    -- Check for correct pattern
+    local correct = true
+    for j = 1, 8 do
+      correct = correct and
+          (no["horse%"..j]["fellows"][1] == no["scissors%"..Goal[j]])
+    end
+    if correct then
+      next_pattern()
+    end
+  end
+end
+
+-- solve() is for debug reasons only. Use tile keys "u " and "v "
+-- to set debug switches in the level.
+function solve()
+  for j = 1, 8 do
+    wo[no["scissors%"..j]] = {"st_scissors", name = "scissors%"..j}
+  end
+  for j = 1, 8 do
+    connect(no["horse%"..j], no["scissors%"..Goal[j]])
+  end
+end
+
+pattern_count = 0
+function next_pattern()
+  pattern_count = pattern_count + 1
+  if pattern_count < 8 then
+    -- create new permutation with one horse less
+    local p = lib.math.cyclic_permutation(8 - pattern_count)
+    for j = 8 - pattern_count + 1, 8 do
+      p[j] = j
+    end
+    for j = 1, 8 do
+      Goal[fixpoint_permutation[j]] = fixpoint_permutation[p[j]]
+    end
+    -- create temporary goals for the horses to untangle
+    local TemporaryGoal = lib.math.permutation(8)
+    for j = 1, 8 do
+      no["parahorse%"..j]:set(
+          {destination = {no["parafloor%"..TemporaryGoal[j]]}})
+    end
+    -- use timer to set real goals
+    no["timer"]:set({target = "fix_horses", interval = 2.0, loop = false})
+    no["timer"]:message("on")
+  else
+    -- set oxyds
+    for j = 1, 8 do
+      wo[no["scissors%"..j]] = {"st_oxyd"}
+    end
+    wo:shuffleOxyd()
+  end
+end
+
+function fix_horses()
+  for j = 1, 8 do
+    no["parahorse%"..Goal[j]]:set({destination = {no["paraplace%"..j]}})
+  end
+  -- taint the glass of the new "fixpoint"
+  local k = 8 - pattern_count + 1
+  wo[no["paraplace%"..fixpoint_permutation[k]]]
+    = {"st_darkglass_hollow", name = "paraplace%"..fixpoint_permutation[k]}
+  if pattern_count == 7 then
+    wo[no["paraplace%"..fixpoint_permutation[1]]]
+      = {"st_darkglass_hollow", name = "paraplace%"..fixpoint_permutation[1]}
+  end
+end
+
+Goal = lib.math.cyclic_permutation(8)
+connect(no["marble"], no["scissors_central"], true)
+
+if wo["IsDifficult"] then
+  fixpoint_permutation = lib.math.permutation(8)
+else
+  fixpoint_permutation = {}
+  for j = 1, 8 do
+    fixpoint_permutation[j] = j
+  end
+end
+
+for j = 1, 8 do
+  -- Note: The parahorses have the same number as the stones
+  --       they're connected to. It's the paraplace which Goal
+  --       references to, in contrast to the real situation on
+  --       the left side.
+  wo[no["paraplace%"..j]] = {"#ac_horse", name = "parahorse%"..Goal[j], strength = 4 + j/10}
+end
+
+for j = 1, 8 do
+  connect(no["parahorse%"..j], no["parascissors%"..j])
+  connect(no["horse%"..j], no["scissors%"..j])
+end
+    ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

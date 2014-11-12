@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Grow Your Own" el:subtitle="" el:id="natmaze5"/>
+      <el:version el:score="1" el:release="2" el:revision="1" el:status="released"/>
+      <el:author  el:name="Nat Pryce" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2002 Nat Pryce</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10">
+        <el:dependency el:path="lib/libmaze" el:id="lib/libmaze" el:release="2" el:preload="true"/>
+      </el:compatibility>
+      <el:modes el:easy="false" el:single="true" el:network="false"/>
+      <el:comments><el:code>New API converted by R. Bourquin</el:code></el:comments>
+      <el:score el:easy="-" el:difficult="-"/>
+    </el:info>
+    <el:luamain><![CDATA[
+wo["FollowMethod"] = FOLLOW_SCROLL
+wo["FollowAction"] = FOLLOW_HALFSCREEN
+
+ti[" "] = {"fl_abyss"}
+ti["="] = {"fl_gray"}
+ti["t"] = ti["="] .. {"it_trigger", name="trigger#", action="callback", target="grow"}
+
+local width = 38
+local height = 24
+
+maze = res.maze(ti, {area={po(1,1), width, height}, persistent=true})
+wo(maze, " ", 2*width+1, 2*height+1)
+wo[po(0,0) .. po(0,2*height) .. po(2*width,0) .. po(2*width,2*height)] = {"st_oxyd"}
+wo:shuffleOxyd()
+
+function grow(value, sender)
+    cell_vec = (sender - po(1,1))/2
+    cell = maze[maze:encode(cell_vec.x, cell_vec.y)]
+    for d = WEST, NORTH do
+        if cell[d] then
+            wo[cell:pos() + ORI2DIR[d]] = ti["="]
+            wo[cell:pos() + 2*ORI2DIR[d]] = ti["t"]
+        end
+    end
+end
+
+local startpos = po(2*random(width)-1, 2*random(height)-1)
+wo[startpos] = ti["="] .. ti["t"] .. ti({"#ac_marble_black"})
+grow(true, fl(startpos))
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Plutos World" el:subtitle="Deep ..." el:id="mecke16"/>
+      <el:version el:score="1" el:release="1" el:revision="$Revision: 23 $" el:status="released"/>
+      <el:author el:name="mecke" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2008 Thomas Bernhardt</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.10"/>
+      <el:modes el:easy="false" el:single="true" el:network="false"/>
+      <el:comments>
+        <el:credits el:showinfo="true" el:showstart="false">Thanks to Ronald Lamprecht for some important ideas.</el:credits>
+      </el:comments>
+      <el:score el:easy="6:49" el:difficult="6:49"/>
+    </el:info>
+    <el:luamain><![CDATA[
+ti[" ."] = {"fl_abyss"}
+ti[" l"] = {"fl_sahara"}
+ti[" ;"] = {"fl_swamp"}
+ti[" ~"] = {"fl_water"}
+ti[" -"] = {"fl_slope_pe"}
+ti[" ,"] = {"fl_red"}
+ti["  "] = {"fl_metal_7", friction=4.0}
+ti[" |"] = {"fl_metal_7", friction=4.0, name="hotspot#"}
+ti["B "] = {"st_swap"}
+ti["C "] = {"st_box"}
+ti["F "] = {"st_quake"}
+ti["# "] = {"st_redrock"}
+ti["Y "] = {"st_darkglass_movable"}
+ti["U1"] = {"st_passage_black_frame"}
+ti["ic"] = {"st_break_oxydc"}
+ti["h "] = {"st_bluegray_hollow"}
+ti["< "] = {"st_boulder_w"}
+ti["O "] = {"st_rotator_ccw", movable=false}
+ti["& "] = {"st_disco_light"}
+ti["' "] = {"it_seed"}
+ti[" n"] = {"it_death"}
+ti["i "] = {"it_dynamite"}
+ti["ih"] = {"it_hammer"}
+ti["w "] = {"it_magicwand"}
+ti[": "] = {"it_blocker"}
+ti[" b"] = {"it_bomb_black"}
+ti[" !"] = {"it_burnable_burning"}
+ti["A "] = ti[" -"] .. {"it_sword"}
+ti["D "] = ti[" ;"] .. {"st_grate_cross"}
+ti["E "] = ti[" ~"] .. {"st_rawglass_movable"}
+ti["K "] = ti[" ;"] .. {"st_knight"}
+ti["nn"] = ti[" ,"] .. ti["w "]
+ti["Xn"] = ti["nn"] .. {"st_grate_cross"}
+ti["AB"] = ti[" ~"] .. ti[" b"]
+ti["BB"] = ti[" ;"] .. ti[" b"]
+ti["T "] = ti[" ."] .. ti["U1"]
+ti["= "] = ti[" ~"] .. ti["& "]
+ti["> "] = ti[" n"] .. {"st_boulder_e"}
+ti["l "] = ti[" n"] .. {"st_polarswitch"}
+ti["mm"] = ti[" ;"] .. {"st_grate_cross"}
+ti["$template"] = {"it_trigger", target="x%%"}
+ti["xtemplate"] = {"st_oxyd", flavor="a", name="x%%" }
+ti["Z "] = {"st_timer", action="callback", target="set_fire", interval=11.9}
+ti["* "] = ti["mm"] .. {"#ac_marble_black"}
+ti["+ "] = {"#ac_rotor", range=2, strength=2, gohome=false}
+
+wo(res.composer(res.autotile(ti, {"$", "$template"},{"x", "xtemplate"})), "  ", {
+    "# # # # # # # # # # # # # # # # # # # # ",
+    "#  .x1 . n .x2 . n .x3 . n .x4 . ! . .# ",
+    "O T # # # # # # # # # # # # # # # # T # ",
+    " n: : BB: : : : : + : : : : : AB: : : < ",
+    "# ic# TbT T T T T T T T T T T TbT # icO ",
+    "#   #  b b  $1  $2 |$3 |$4  F  b n#   # ",
+    "K D C E   B '  - - -*  - - - - -A  -l Z ",
+    "#   #  b b  $5  $6 |$7 |$8  F  b n#   # ",
+    "O   # TbT T T T T T T T T T T TbT #   # ",
+    " n: : BB: : : : : ih: : : : : AB: : : < ",
+    "# T # # # # # # # # # # # # # # # # T O ",
+    "#  .x5 . n .x6 . n .x7 . n .x8 . ! . .# ",
+    "# # # # # # # # # # # # # # # # # # # # "})
+
+function set_fire()
+    wo[no["hotspot#*"]] = ti[" !"]
+end
+
+wo:shuffleOxyd()
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+      <el:string el:key="subtitle">
+        <el:english el:translate="true"/>
+        <el:translation el:lang="de">Tief Unten ...</el:translation>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>

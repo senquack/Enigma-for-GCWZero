@@ -1,0 +1,27 @@
+K 10
+svn:ignore
+V 133
+Makefile
+Makefile.in
+*.html
+*.aux
+*.cp
+*.vr
+*.ky
+*.tp
+*.log
+*.fn
+*.pdf
+*.vrs
+*.cps
+*.toc
+*.fns
+*.pg
+*.at
+*.ats
+*.ms
+*.mss
+*.ob
+*.obs
+
+END

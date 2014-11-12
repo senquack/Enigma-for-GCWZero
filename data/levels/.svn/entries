@@ -1,0 +1,236 @@
+10
+
+dir
+2479
+svn://svn.code.sf.net/p/enigma-game/source/trunk/data/levels
+svn://svn.code.sf.net/p/enigma-game/source
+
+
+
+2014-11-10T19:40:32.242917Z
+2479
+raoul-b
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+1efed42d-d900-4f75-af85-68d09028c2bd
+
+enigma_ix
+dir
+
+enigma_advent_10
+dir
+
+ant.lua
+file
+
+
+
+
+2014-11-10T23:26:33.106580Z
+5640f2b406b88ecee6c756fc30c626aa
+2012-12-15T18:31:16.048002Z
+2285
+raoul-b
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+47113
+
+enigma_oxyd
+dir
+
+.gitignore
+file
+
+
+
+
+2014-11-10T23:26:33.106580Z
+78f3d7f8c90d5ce61f9a2a3e7f248835
+2008-01-05T01:04:44.532937Z
+968
+dheck
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+23
+
+lib
+dir
+
+enigma_oxydextra
+dir
+
+enigma_vii
+dir
+
+enigma_oxydmagnum
+dir
+
+enigma_i
+dir
+
+enigma_cross
+dir
+
+Makefile.am
+file
+
+
+
+
+2014-11-10T23:26:33.106580Z
+a7ed57811e0ef02d2f2f97ea574d752a
+2012-03-25T21:42:26.508295Z
+2242
+raoul-b
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+454
+
+enigma_peroxyd
+dir
+
+soko
+dir
+
+enigma_experimental
+dir
+
+enigma_demolevels
+dir
+
+enigma_viii
+dir
+
+pentomino_i
+dir
+
+enigma_ii
+dir
+
+enigma_tutorial
+dir
+
+enigma_v
+dir
+
+enigma_esprit
+dir
+
+enigma_x
+dir
+
+patches
+dir
+
+index.lua
+file
+
+
+
+
+2014-11-10T23:26:33.098580Z
+e76e4a746379ce8946e9d7a81a4c3abf
+2006-09-04T21:01:46.629460Z
+271
+ral
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+400
+
+enigma_iii
+dir
+
+enigma_iv
+dir
+
+enigma_vi
+dir
+

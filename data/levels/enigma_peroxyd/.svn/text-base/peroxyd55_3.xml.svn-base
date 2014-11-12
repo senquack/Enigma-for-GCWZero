@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<el:level xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://enigma-game.org/schema/level/1 level.xsd" xmlns:el="http://enigma-game.org/schema/level/1">
+  <el:protected>
+    <el:info el:type="level">
+      <el:identity el:title="Per.Oxyd 55" el:subtitle="Per.Oxyd 55" el:id="ss_pox55"/>
+      <el:version el:score="3" el:release="3" el:revision="2" el:status="released"/>
+      <el:author el:name="Sven Siggelkow" el:email="" el:homepage=""/>
+      <el:copyright>Copyright © 2003 Sven Siggelkow</el:copyright>
+      <el:license el:type="GPL v2.0 or above" el:open="true"/>
+      <el:compatibility el:enigma="1.20" el:engine="per.oxyd"/>
+      <el:modes el:easy="false" el:single="true" el:network="false"/>
+      <el:comments>
+        <el:code>New API converted by /dev/null, April 2013</el:code>
+      </el:comments>
+      <el:score el:easy="-" el:difficult="-"/>
+    </el:info>
+    <el:luamain><![CDATA[
+wo["ProvideExtralifes"] = false
+
+ti[" "] = {"fl_rough"}
+ti["."] = {"fl_space"}
+ti["#"] = {"st_redbrown"}
+ti["="] = ti["."] .. {"st_death_invisible"}
+ti["B"] = {"st_boulder_e"}
+ti["_"] = {"st_blocker"}
+ti["K"] = {"st_plaster_breakable"}
+ti["/"] = {"st_mirror_slab", state=WEST, movable=true}
+ti["L"] = {"st_laser_n", name="laser"}
+ti["R"] = {"st_rotator_ccw_movable"}
+ti["Q"] = {"st_rotator_ccw"}
+ti[">"] = {"st_oneway_e", name="right#"}
+ti["<"] = {"st_oneway_w", name="right#"}
+ti["6"] = {"st_oneway_e", name="left#"}
+ti["4"] = {"st_oneway_w", name="left#"}
+ti["I"] = {"st_oneway_e", name="inner#"}
+ti["S"] = {"st_switch", target="laser"}
+ti["F"] = {"st_floppy", target="right#*", action="flip"}
+ti["t"] = {"it_trigger", target="left#*", action="flip"}
+ti["T"] = {"it_trigger", target="inner#*", action="flip"}
+ti["w"] = {"it_wrench"}
+ti["f"] = {"it_floppy"}
+ti["O"] = {"st_oxyd_b"}
+ti["@"] = {"#ac_marble_black"}
+
+wo(ti, " ", {
+    "....................===================",
+    "#Q##################..................=",
+    "# B   @  B  w      R..................=",
+    "# ################ #..................=",
+    "# # S         # f# #..................=",
+    "# 4 I    R R     # >..................=",
+    "# ### /   ###    # F##................=",
+    "# 6 I  #R #T_  R # <O#................=",
+    "# #O#BK   ### /  # ###................=",
+    "#t#############L## #..................=",
+    "Q                  #..................=",
+    "##################Q#..................=",
+    "....................==================="})
+ ]]></el:luamain>
+    <el:i18n>
+      <el:string el:key="title">
+        <el:english el:translate="false"/>
+      </el:string>
+    </el:i18n>
+  </el:protected>
+</el:level>
