@@ -58,8 +58,9 @@ namespace enigma { namespace gui {
         gui::StaticTextButton *but_audio_options;
         gui::StaticTextButton *but_config_options;
         gui::StaticTextButton *but_paths_options;
-        gui::BoolOptionButton *fullscreen;
-        gui::VideoModeButton *videomode;
+        //senquack
+//        gui::BoolOptionButton *fullscreen;
+//        gui::VideoModeButton *videomode;
         gui::TextField *userNameTF;
         gui::TextField *userPathTF;
         gui::TextField *userImagePathTF;
@@ -70,20 +71,21 @@ namespace enigma { namespace gui {
 
 /* -------------------- Options Buttons -------------------- */
 
-    class FullscreenButton : public BoolOptionButton {
-    public:
-        FullscreenButton(ActionListener *al = 0);
-    };
-
-
-    class VideoModeButton : public ValueButton {
-        int get_value() const;
-        void set_value(int value);
-        std::string get_text(int value) const;
-    public:
-        VideoModeButton();
-        void reinit();
-    };
+    //senquack
+//    class FullscreenButton : public BoolOptionButton {
+//    public:
+//        FullscreenButton(ActionListener *al = 0);
+//    };
+//
+//
+//    class VideoModeButton : public ValueButton {
+//        int get_value() const;
+//        void set_value(int value);
+//        std::string get_text(int value) const;
+//    public:
+//        VideoModeButton();
+//        void reinit();
+//    };
 
     class StereoButton : public ValueButton {
         int get_value() const;
