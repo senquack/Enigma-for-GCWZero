@@ -511,7 +511,7 @@ namespace enigma { namespace gui {
 //                OPTIONS_NEW_LB(N_("Fullscreen: "), fullscreen = new FullscreenButton())
 //                fullscreen->set_listener(this);
 //                OPTIONS_NEW_LB(N_("Video mode: "), videomode = new VideoModeButton())
-                OPTIONS_NEW_LB(N_("Gamma correction: "), new GammaButton())
+//                OPTIONS_NEW_LB(N_("Gamma correction: "), new GammaButton())
                 break;
             case OPTIONS_AUDIO:
                 OPTIONS_NEW_LB(N_("Sound set: "), new SoundSetButton())

@@ -152,15 +152,19 @@ bool Video_SDL::init(int w, int h, int bpp, bool fullscreen)
 
     SDL_WM_SetCaption(caption.c_str(), 0);
 
-    //senquack
+    //senquack - for GCW Zero
 //    Uint32 flags = SDL_SWSURFACE;
 //    if (fullscreen)
 //        flags |= SDL_FULLSCREEN;
-    Uint32 flags = SDL_HWSURFACE | SDL_FULLSCREEN;
+//    Uint32 flags = SDL_HWSURFACE | SDL_FULLSCREEN;
+//    Uint32 flags = SDL_HWSURFACE | SDL_FULLSCREEN | SDL_DOUBLEBUF;
+    Uint32 flags = SDL_SWSURFACE | SDL_FULLSCREEN;  // WORKS with no flicker
 
     // Try to initialize vide mode, return error code on failure
     sdlScreen = 0;
-    bpp = SDL_VideoModeOK (w, h, bpp, flags);
+    //senquack
+//    bpp = SDL_VideoModeOK (w, h, bpp, flags);
+    bpp = 16;
     if (bpp == 0)
         return false;
     sdlScreen = SDL_SetVideoMode(w, h, bpp, flags);
@@ -205,7 +209,8 @@ void Video_SDL::set_fullscreen(bool on_off) {
 
 void Video_SDL::toggle_fullscreen() 
 {
-    SDL_WM_ToggleFullScreen (sdlScreen);
+   //senquack
+//    SDL_WM_ToggleFullScreen (sdlScreen);
 }
 
 
@@ -603,6 +608,12 @@ int video::Mousex() {
 
 int video::Mousey() {
     return cursor->get_y();
+}
+
+//senquack - added this to facilitate movement of mouse cursor in menus through joystick
+void video::MoveMouse(int x, int y) {
+   cursor->move(x, y);
+   cursor->redraw();
 }
 
 /* -------------------- Input grabbing -------------------- */

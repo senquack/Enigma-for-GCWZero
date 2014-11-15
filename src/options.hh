@@ -56,6 +56,20 @@ namespace enigma_options
     const int MIN_MouseSpeed = 1;
     const int MAX_MouseSpeed = 15;
 
+    const int DefaultGsensorCenterX = 0;
+    const int DefaultGsensorCenterY = 13100;
+    const int DefaultGsensorDeadzone = 1200;
+    const int DefaultAnalogDeadzone = 1200;
+    const int DefaultGsensorSpeed = 30;
+    const int DefaultAnalogSpeed = 30;
+    const int DefaultDPADSpeed = 30;
+    const int DefaultAnalogEnabled = 1;
+    const int DefaultGsensorEnabled = 0;
+    const int DefaultSpeedScale1 = 30;       // Percentage to scale speed (When pressing button B)
+    const int DefaultSpeedScale2 = 60;       // Percentage to scale speed (When pressing button X)
+    const int DefaultSpeedScale3 = 200;      // Percentage to scale speed (When pressing button Y)
+    const int GsensorMax = 26200;      // Maximum value gsensor can read
+
 /* -------------------- Variables -------------------- */
 
     /*! An option was changed that will not take effect until Enigma is
@@ -85,6 +99,32 @@ namespace enigma_options
     double SetMouseSpeed (double speed);
     double GetMouseSpeed ();
 
+    //DEBUG
+//    //senquack: added joystick support
+    int GetGsensorCenterX ();
+    int SetGsensorCenterX (int val);
+    int GetGsensorCenterY ();
+    int SetGsensorCenterY (int val);
+    int GetGsensorDeadzone ();
+    int SetGsensorDeadzone (int val);
+    int GetAnalogDeadzone ();
+    int SetAnalogDeadzone (int val);
+    int GetAnalogEnabled ();
+    int SetAnalogEnabled (int val);
+    int GetGsensorEnabled ();
+    int SetGsensorEnabled (int val);
+    int GetGsensorSpeed ();
+    int SetGsensorSpeed (int val);
+    int GetAnalogSpeed ();
+    int SetAnalogSpeed (int val);
+    int GetDPADSpeed ();
+    int SetDPADSpeed (int val);
+    int GetSpeedScale1 ();
+    int SetSpeedScale1 (int val);
+    int GetSpeedScale2 ();
+    int SetSpeedScale2 (int val);
+    int GetSpeedScale3 ();
+    int SetSpeedScale3 (int val);
 
     /*! Get the status of a particular level.
       Returns false if no record for this level exists. */

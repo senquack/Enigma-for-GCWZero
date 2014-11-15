@@ -187,6 +187,8 @@ namespace video
     void ShowMouse();
     int Mousex();
     int Mousey();
+    //senquack - added this to facilitate mouse cursor movement through new joystick support
+    void MoveMouse(int x, int y);
 
 /* -------------------- Visual effects -------------------- */
 

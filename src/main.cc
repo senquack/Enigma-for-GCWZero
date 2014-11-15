@@ -102,6 +102,10 @@ namespace enigma
     //! If true, do not ``grab'' the mouse and keyboard
     bool   Nograb            = false;
     bool Robinson = false;   // do not connect to internet if true
+
+     //senquack - added joystick support:
+     SDL_Joystick *joy_gcw0 = NULL;
+     SDL_Joystick *joy_gsensor = NULL;
 }
 
 /*! The stream object that is used for logging messages.  As defined
@@ -156,6 +160,17 @@ namespace
         string preffilename;
         std::vector<string> levelnames;
 
+        
+//        static int analog_deadzone;
+//        static int gsensor_deadzone;	// Seems to also work well on the GCW Zero's g-sensor
+//        static int gsensor_centerx;		   // The g-sensor needs a re-settable center so the user can play at a normal tilt
+//        static int gsensor_centery;	//	13100 is a reasonable backwards-tilt to set as default.
+//        static int gsensor_recently_recentered;	// Other code can use this to sense when to display message 
+//                                             //  confirming recentering of g-sensor
+//        static const int gsensor_max = 26200;	// seems to be the maximum reading in any direction from the gsensor
+//        static int analog_enabled;
+//        static int gsensor_enabled;
+
     private:
         enum {
             OPT_WINDOW, OPT_GAME, OPT_DATA, OPT_LANG, OPT_PREF
@@ -174,6 +189,17 @@ namespace
 
 AP::AP() : ArgParser (app.args.begin(), app.args.end())
 {
+//   //senquack - added joystick support
+   //DEBUG
+//   analog_deadzone = 500;
+//   gsensor_deadzone = 1250;	// Seems to also work well on the GCW Zero's g-sensor
+//   gsensor_centerx = 0;		   // The g-sensor needs a re-settable center so the user can play at a normal tilt
+//   gsensor_centery = 13100;	//	13100 is a reasonable backwards-tilt to set as default.
+//   gsensor_recently_recentered = 0;	// Other code can use this to sense when to display message 
+//                                    //  confirming recentering of g-sensor
+//   analog_enabled = 1;
+//   gsensor_enabled = 0;
+
     nosound  = nomusic = show_help = show_version = do_log = do_assert = force_window = false;
     dumpinfo = makepreview = show_fps = redirect = false;
     gamename = "";
@@ -386,6 +412,35 @@ void Application::init(int argc, char **argv)
         exit(1);
     }
     std::atexit(SDL_Quit);
+
+    //senquack - joystick support
+	printf ("Initializing joystick driver\n");
+   SDL_InitSubSystem(SDL_INIT_JOYSTICK);
+   int joyi;
+	for (joyi = 0; joyi < SDL_NumJoysticks(); joyi++)
+	{
+		printf("Joystick %u: \"%s\"\n", joyi, SDL_JoystickName(joyi));
+		if (strcmp(SDL_JoystickName(joyi), "linkdev device (Analog 2-axis 8-button 2-hat)") == 0) {
+         printf("Recognized GCW Zero's joystick controls..\n");
+			joy_gcw0 = SDL_JoystickOpen(joyi);
+			if (joy_gcw0)  {
+            printf("Axes: %d    Hats: %d\n", SDL_JoystickNumAxes(joy_gcw0), SDL_JoystickNumHats(joy_gcw0));
+         } else {
+				printf("ERROR: Failed to open GCW Zero's controls as joystick\n");
+            joy_gcw0 = NULL;
+         }
+		} else if (strcmp(SDL_JoystickName(joyi), "mxc6225") == 0) {
+         printf("Recognized GCW Zero's g-sensor..\n");
+			joy_gsensor = SDL_JoystickOpen(joyi);
+			if (joy_gsensor) {
+            printf("Axes: %d    Hats: %d\n", SDL_JoystickNumAxes(joy_gcw0), SDL_JoystickNumHats(joy_gcw0));
+         } else {
+				printf("ERROR: Failed to recognize GCW Zero's g-sensor as joystick\n");
+            joy_gsensor = NULL;
+         }
+		}
+	}
+
     SDL_EnableUNICODE(1);
     const SDL_version* vi = SDL_Linked_Version();
     Log << ecl::strf("SDL Version: %u.%u.%u\n", vi->major, vi->minor, vi->patch);

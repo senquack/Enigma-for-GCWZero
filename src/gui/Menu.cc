@@ -73,6 +73,17 @@ namespace enigma { namespace gui {
     }
     
     bool Menu::manage() {
+        //senquack - added joystick support:
+        double fjoyx, fjoyy;
+        static double old_fjoyx = 0, old_fjoyy = 0;
+        int cursorx, cursory;
+        const double accel_cutoff = 4000;       // If new axis reading is off by this much or more from the last 
+                                                //      axis reading,  reset acceleration
+        const double accel_inc = 0.1;
+        const double max_speed = 6.0;
+        const double init_speed = 1.5;
+        static double cur_speed = init_speed;
+
         quitp=abortp=false;
         SDL_Event e;
         Uint32 enterTickTime = SDL_GetTicks(); // protection against ESC D.o.S. attacks
@@ -84,6 +95,37 @@ namespace enigma { namespace gui {
                 handle_event(e);
                 if (app.bossKeyPressed) return true;
             }
+
+            //senquack - added joystick support
+            if (joy_gcw0) {
+               fjoyx=(double)SDL_JoystickGetAxis(joy_gcw0, 0);
+               fjoyy=(double)SDL_JoystickGetAxis(joy_gcw0, 1); 
+               if (abs(old_fjoyx - fjoyx) > accel_cutoff ||
+                       abs(old_fjoyy - fjoyy) > accel_cutoff) {
+                   // Reset acceleration
+                   cur_speed = init_speed;
+               } else {
+                   // Accelerate
+                   cur_speed += accel_inc;
+                   if (cur_speed > max_speed) {
+                       cur_speed = max_speed;
+                   }
+               }
+               old_fjoyx = fjoyx;
+               old_fjoyy = fjoyy;
+               fjoyx = fjoyx / 32767.0;
+               fjoyy = fjoyy / 32767.0;
+               fjoyx = fjoyx * cur_speed;
+               fjoyy = fjoyy * cur_speed;
+               SDL_GetMouseState(&cursorx, &cursory);
+               cursorx += (int)fjoyx;
+               cursory += (int)fjoyy;
+               SDL_WarpMouse(cursorx, cursory);
+               SDL_GetMouseState(&cursorx, &cursory);
+               video::MoveMouse(cursorx, cursory);
+               track_active_widget( cursorx, cursory );
+            }
+
             SDL_Delay(10);
             if(active_widget) active_widget->tick(0.01);
             if(key_focus_widget && (key_focus_widget != active_widget)) key_focus_widget->tick(0.01);
@@ -157,6 +199,10 @@ namespace enigma { namespace gui {
         if (on_event(e) && e.type != SDL_MOUSEMOTION)   // track active widgets (LevelWidget)
             return;
     
+        //senquack added joystick support:
+        int mousex = 0, mousey = 0;
+        SDL_Event new_event;
+
         switch (e.type) {
             case SDL_QUIT:
                 abort();
@@ -169,19 +215,49 @@ namespace enigma { namespace gui {
                 if (!active_widget || !active_widget->on_event(e)) {
                     // if not handled by active_widget
                     switch (e.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        abort();
-                        break;
-                    // TODO replace cursor keys with tab for gotos
-                    case SDLK_DOWN:  goto_adjacent_widget( 0,  1); break;
-                    case SDLK_UP:    goto_adjacent_widget( 0, -1); break;
-                    case SDLK_RIGHT: goto_adjacent_widget( 1,  0); break;
-                    case SDLK_LEFT:  goto_adjacent_widget(-1,  0); break;
-                    default:
-                        break;
+                        case SDLK_ESCAPE:
+                            abort();
+                            break;
+                            // TODO replace cursor keys with tab for gotos
+                        case SDLK_DOWN:  goto_adjacent_widget( 0,  1); break;
+                        case SDLK_UP:    goto_adjacent_widget( 0, -1); break;
+                        case SDLK_RIGHT: goto_adjacent_widget( 1,  0); break;
+                        case SDLK_LEFT:  goto_adjacent_widget(-1,  0); break;
+                        default:
+                                         break;
                     }
                 }
-        
+
+                break;
+
+            //senquack - added joystick support
+            case SDL_JOYBUTTONDOWN:
+            case SDL_JOYBUTTONUP:
+                if (e.jbutton.button == 0 || e.jbutton.button == 1) {
+                    // Button A(1) or B(0) pressed 
+                    SDL_GetMouseState(&mousex, &mousey);
+                    new_event.button.x = mousex;
+                    new_event.button.y = mousey;
+                    new_event.button.state = (e.type == SDL_JOYBUTTONDOWN) ? SDL_PRESSED : SDL_RELEASED;
+                    new_event.button.type = new_event.type = 
+                        (e.type == SDL_JOYBUTTONDOWN) ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
+                    new_event.button.button = (e.jbutton.button == 0) ? SDL_BUTTON_RIGHT : SDL_BUTTON_LEFT;
+                    new_event.button.which = 0;      // Don't know what else to put here
+                    track_active_widget( mousex, mousey );
+                    if (active_widget) active_widget->on_event(new_event);
+                } else if (e.jbutton.button == 6 || e.jbutton.button == 7) {
+                    // L(6) or R(7) trigger pressed; simulate mouse wheel scroll
+                    SDL_GetMouseState(&mousex, &mousey);
+                    new_event.button.x = mousex;
+                    new_event.button.y = mousey;
+                    new_event.button.state = (e.type == SDL_JOYBUTTONDOWN) ? SDL_PRESSED : SDL_RELEASED;
+                    new_event.button.type = new_event.type = 
+                        (e.type == SDL_JOYBUTTONDOWN) ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
+                    new_event.button.button = (e.jbutton.button == 7) ? SDL_BUTTON_WHEELUP : SDL_BUTTON_WHEELDOWN;
+                    new_event.button.which = 0;      // Don't know what else to put here
+                    track_active_widget(mousex, mousey);
+                    if (active_widget) active_widget->on_event(new_event);
+                }
                 break;
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:

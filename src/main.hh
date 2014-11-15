@@ -230,6 +230,10 @@ namespace enigma
         std::string userStdPathMac1_00;   // standard user data path as of Mac 1.00
         
         void init_i18n();
+
+
+        
+
     };
 
     extern Application app;
@@ -248,6 +252,10 @@ namespace enigma
     extern bool   WizardMode;
     extern bool   Nograb;
     extern bool   Robinson;
+
+    //senquack - added joystick support
+     extern SDL_Joystick *joy_gcw0;
+     extern SDL_Joystick *joy_gsensor;
 }
 
 #endif

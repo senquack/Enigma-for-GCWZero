@@ -134,6 +134,174 @@ int options::GetInt (const char *name) {
     return static_cast<int>(val);
 }
 
+//senquack - added joystick support:
+int options::GetGsensorCenterX ()
+{
+   int val = DefaultGsensorCenterX;
+   app.prefs->getProperty("GsensorCenterX", val);
+   return val;
+}
+
+int options::SetGsensorCenterX (int val)
+{
+  int oldval = GetGsensorCenterX();
+  app.prefs->setProperty("GsensorCenterX", val);
+  return oldval;
+} 
+
+int options::GetGsensorCenterY ()
+{
+   int val = DefaultGsensorCenterY;
+   app.prefs->getProperty("GsensorCenterY", val);
+   return val;
+}
+
+int options::SetGsensorCenterY (int val)
+{
+  int oldval = GetGsensorCenterY();
+  app.prefs->setProperty("GsensorCenterY", val);
+  return oldval;
+} 
+
+int options::GetGsensorDeadzone ()
+{
+   int val = DefaultGsensorDeadzone;
+   app.prefs->getProperty("GsensorDeadzone", val);
+   return val;
+}
+
+int options::SetGsensorDeadzone (int val)
+{
+  int oldval = GetGsensorDeadzone();
+  app.prefs->setProperty("GsensorDeadzone", val);
+  return oldval;
+} 
+
+int options::GetAnalogDeadzone ()
+{
+   int val = DefaultAnalogDeadzone;
+   app.prefs->getProperty("AnalogDeadzone", val);
+   return val;
+}
+
+int options::SetAnalogDeadzone (int val)
+{
+  int oldval = GetAnalogDeadzone();
+  app.prefs->setProperty("AnalogDeadzone", val);
+  return oldval;
+} 
+
+int options::GetAnalogEnabled ()
+{
+   int val = DefaultAnalogEnabled;
+   app.prefs->getProperty("AnalogEnabled", val);
+   return val;
+}
+
+int options::SetAnalogEnabled (int val)
+{
+  int oldval = GetAnalogEnabled();
+  app.prefs->setProperty("AnalogEnabled", val);
+  return oldval;
+} 
+
+int options::GetGsensorEnabled ()
+{
+   int val = DefaultGsensorEnabled;
+   app.prefs->getProperty("GsensorEnabled", val);
+   return val;
+}
+
+int options::SetGsensorEnabled (int val)
+{
+  int oldval = GetGsensorEnabled();
+  app.prefs->setProperty("GsensorEnabled", val);
+  return oldval;
+} 
+
+int options::GetGsensorSpeed ()
+{
+   int val = DefaultGsensorSpeed;
+   app.prefs->getProperty("GsensorSpeed", val);
+   return val;
+}
+
+int options::SetGsensorSpeed (int val)
+{
+  int oldval = GetGsensorSpeed();
+  app.prefs->setProperty("GsensorSpeed", val);
+  return oldval;
+} 
+
+int options::GetAnalogSpeed ()
+{
+   int val = DefaultAnalogSpeed;
+   app.prefs->getProperty("AnalogSpeed", val);
+   return val;
+}
+
+int options::SetAnalogSpeed (int val)
+{
+  int oldval = GetAnalogSpeed();
+  app.prefs->setProperty("AnalogSpeed", val);
+  return oldval;
+} 
+
+int options::GetDPADSpeed ()
+{
+   int val = DefaultDPADSpeed;
+   app.prefs->getProperty("DPADSpeed", val);
+   return val;
+}
+
+int options::SetDPADSpeed (int val)
+{
+  int oldval = GetDPADSpeed();
+  app.prefs->setProperty("DPADSpeed", val);
+  return oldval;
+} 
+
+int options::GetSpeedScale1 ()
+{
+   int val = DefaultSpeedScale1;
+   app.prefs->getProperty("SpeedScale1", val);
+   return val;
+}
+   
+int options::SetSpeedScale1 (int val)
+{
+  int oldval = GetSpeedScale1();
+  app.prefs->setProperty("SpeedScale1", val);
+  return oldval;
+} 
+
+int options::GetSpeedScale2 ()
+{
+   int val = DefaultSpeedScale2;
+   app.prefs->getProperty("SpeedScale2", val);
+   return val;
+}
+   
+int options::SetSpeedScale2 (int val)
+{
+  int oldval = GetSpeedScale2();
+  app.prefs->setProperty("SpeedScale2", val);
+  return oldval;
+} 
+
+int options::GetSpeedScale3 ()
+{
+   int val = DefaultSpeedScale3;
+   app.prefs->getProperty("SpeedScale3", val);
+   return val;
+}
+   
+int options::SetSpeedScale3 (int val)
+{
+  int oldval = GetSpeedScale3();
+  app.prefs->setProperty("SpeedScale3", val);
+  return oldval;
+} 
 
 double options::SetMouseSpeed (double speed) 
 {

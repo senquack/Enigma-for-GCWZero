@@ -207,6 +207,151 @@ void Client::network_stop ()
 void Client::handle_events()
 {
     SDL_Event e;
+
+    //senquack: added joystick support
+    int joyx = 0, joyy = 0;
+    int gsensor_movement = 0;
+    double fjoyx = 0, fjoyy = 0;
+    int analog_deadzone;
+    double analog_speed;
+    int gsensor_deadzone, gsensor_centerx, gsensor_centery;
+    double gsensor_speed;
+
+    static double speed_scale = 1.0;      // Normal speed = 1.0, fast speed = 2.0, slow speed = 0.5
+
+    // for reference for now:
+//    int GetGsensorCenterX ();
+//    int SetGsensorCenterX (int val);
+//    int GetGsensorCenterY ();
+//    int SetGsensorCenterY (int val);
+//    int GetGsensorDeadzone ();
+//    int SetGsensorDeadzone (int val);
+//    int GetAnalogDeadzone ();
+//    int SetAnalogDeadzone (int val);
+//    int GetAnalogEnabled ();
+//    int SetAnalogEnabled (int val);
+//    int GetGsensorEnabled ();
+//    int SetGsensorEnabled (int val);
+//    int GetGsensorSpeed ();
+//    int SetGsensorSpeed (int val);
+//    int GetAnalogSpeed ();
+//    int SetAnalogSpeed (int val);
+//    int GetDPADSpeed ();
+//    int SetDPADSpeed (int val);
+
+//    if (app.analog_enabled && app.joy_gcw0) {
+    
+    // WORKING ON THIS
+    if (options::GetAnalogEnabled() && joy_gcw0) {
+       analog_deadzone = options::GetAnalogDeadzone();
+       //debug - working out good values
+//       analog_speed = (double)options::GetAnalogSpeed();
+       analog_speed = 30.0;
+
+       joyx=SDL_JoystickGetAxis(joy_gcw0, 0);
+       joyy=SDL_JoystickGetAxis(joy_gcw0, 1); 
+       if (abs(joyx) > analog_deadzone || abs(joyy) > analog_deadzone) {
+          fjoyx = (double)joyx / 32767.0;
+          fjoyy = (double)joyy / 32767.0;
+          fjoyx = fjoyx * fjoyx * fjoyx;
+          fjoyy = fjoyy * fjoyy * fjoyy;
+          //            printf("scaled x: %lf    scaled y: %lf\n", fjoyx, fjoyy);
+//          server::Msg_MouseForce (options::GetDouble("MouseSpeed") *
+//                //                                     V2 (fjoyx * 20.0, fjoyy * 20.0));
+//             V2 (fjoyx * 3.0, fjoyy * 3.0));
+          server::Msg_MouseForce (
+             V2 (fjoyx * analog_speed * speed_scale, fjoyy * analog_speed * speed_scale));
+       }
+    }
+
+    //DEBUG
+//    if (options::GetGsensorEnabled && app.joy_gsensor) {
+//       gsensor_deadzone = GetGsensorDeadzone();
+//       gsensor_speed = (double)options::GetGsensorSpeed();
+//       joyx = SDL_JoystickGetAxis(app.joy_gsensor, 0);
+//       joyy = SDL_JoystickGetAxis(app.joy_gsensor, 1); 
+//             
+//   //    joyx = joyx - app.gsensor_centerx;
+//   //    joyy = joyy - app.gsensor_centery;
+//   //    if (abs(joyx) > app.gsensor_deadzone || abs(joyy) > app.gsensor_deadzone) {
+//   //       printf("gsensor movement detected\n");
+//
+//          printf("joyx: %d   joyy: %d", joyx, joyy);
+////          if (joyx > 0) {
+////             fjoyx = (double)(joyx - app.gsensor_deadzone - app.gsensor_centerx);
+////          } else {
+////             fjoyx = (double)(joyx + app.gsensor_deadzone + app.gsensor_centerx);
+////          }
+////
+////          if (joyy > 0) {
+////             fjoyy = (double)(joyy - app.gsensor_deadzone - app.gsensor_centery);
+////          } else {
+////             fjoyy = (double)(joyy + app.gsensor_deadzone + app.gsensor_centery);
+////          }
+//
+//          joyx = joyx - app.gsensor_centerx;
+//          joyy = -(joyy - app.gsensor_centery);
+//
+//          if (joyx > app.gsensor_deadzone) {
+//             fjoyx = (double)(joyx - app.gsensor_deadzone);
+//             gsensor_movement = 1;
+//          } else if (joyx < -app.gsensor_deadzone) {
+//             fjoyx = (double)(joyx + app.gsensor_deadzone);
+//             gsensor_movement = 1;
+//          }
+//
+//          if (joyy > app.gsensor_deadzone) {
+//             fjoyy = (double)(joyy - app.gsensor_deadzone);
+//             gsensor_movement = 1;
+//          } else if (joyy <  app.gsensor_deadzone) {
+//             fjoyy = (double)(joyy + app.gsensor_deadzone);
+//             gsensor_movement = 1;
+//          }
+//
+//          printf("   fjoyx: %lf   fjoyy: %lf", fjoyx, fjoyy);
+//   //       fjoyx = fjoyx / (double)app.gsensor_max;
+//   //       fjoyy = fjoyy / (double)app.gsensor_max;
+//          if ((app.gsensor_max - app.gsensor_deadzone != 0) &&
+//                gsensor_movement) {
+//             fjoyx = fjoyx / (double)(app.gsensor_max - app.gsensor_deadzone);
+//             fjoyy = fjoyy / (double)(app.gsensor_max - app.gsensor_deadzone);
+//             //            fjoyx = fjoyx * fjoyx * fjoyx;
+//             //            fjoyy = fjoyy * fjoyy * fjoyy;
+//             //            printf("scaled x: %lf    scaled y: %lf\n", fjoyx, fjoyy);
+//             printf("  fjoyx_scaled: %lf  fjoyy_scaled: %lf\n", fjoyx, fjoyy);
+//             server::Msg_MouseForce (options::GetDouble("MouseSpeed") *
+//                V2 (fjoyx * 4.0, fjoyy * 4.0));
+//          } 
+//          else {
+//             printf("\n");
+//          }
+//   }
+    
+    // KOULES CODE FOR REF.:
+//	if (gsensor_enabled && joy_gsensor) { // disabled in 2-player mode
+//		Sint16 xmove, ymove;
+//		xmove=SDL_JoystickGetAxis(joy_gsensor,0);
+//		ymove=SDL_JoystickGetAxis(joy_gsensor,1);
+//		control_state[CGSENSORLEFT] 	= (xmove < (gsensor_centerx - gsensor_deadzone));
+//		control_state[CGSENSORRIGHT] 	= (xmove > (gsensor_centerx + gsensor_deadzone));
+//		control_state[CGSENSORUP] 		= (ymove < (gsensor_centery - gsensor_deadzone));
+//		control_state[CGSENSORDOWN] 	= (ymove > (gsensor_centery + gsensor_deadzone));
+//	} else {
+//		control_state[CGSENSORUP] = control_state[CGSENSORDOWN] =
+//			control_state[CGSENSORLEFT] = control_state[CGSENSORRIGHT] = 0;
+//	}
+//        int analog_deadzone = 500;
+//        int gsensor_deadzone = 1250;	// Seems to also work well on the GCW Zero's g-sensor
+//        int gsensor_centerx = 0;		   // The g-sensor needs a re-settable center so the user can play at a normal tilt
+//        int gsensor_centery = 13100;	//	13100 is a reasonable backwards-tilt to set as default.
+//        int gsensor_recently_recentered = 0;	// Other code can use this to sense when to display message 
+//                                             //  confirming recentering of g-sensor
+//        const int gsensor_max = 26200;	// seems to be the maximum reading in any direction from the gsensor
+//        int analog_active = 1;
+//        int gsensor_active = 0;
+
+
+
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
         case SDL_KEYDOWN:
@@ -220,6 +365,48 @@ void Client::handle_events()
                 server::Msg_MouseForce (options::GetDouble("MouseSpeed") *
                                         V2 (e.motion.xrel, e.motion.yrel));
             break;
+         //senquack - added joystick support:
+        case SDL_JOYBUTTONDOWN:
+            update_mouse_button_state();
+            if (e.jbutton.button == 0) {
+               // B button is pressed ; apply speed scale #1
+               speed_scale = (double)options::GetSpeedScale1() / 100.0;
+            } else if (e.jbutton.button == 3) {
+               // X button is pressed ; apply speed scale #2
+               speed_scale = (double)options::GetSpeedScale2() / 100.0;
+            } else if (e.jbutton.button == 2) {
+               // Y button is pressed ; apply speed scale #3
+               speed_scale = (double)options::GetSpeedScale3() / 100.0;
+            } else if (e.jbutton.button == 7) {
+               // R trigger is pressed ; rotate inventory like mouse scrollwheel
+               rotate_inventory(-1);
+            } else if (e.jbutton.button == 6) {
+               // L trigger is pressed ; rotate inventory like mouse scrollwheel
+               rotate_inventory(+1);
+            } else if (e.jbutton.button == 1) {
+               // A button is pressed ; use inventory item
+               server::Msg_ActivateItem();
+            } else if (e.jbutton.button == 5) {
+               // START button is pressed ; open menu 
+               show_menu(true);
+            }
+            break;
+        case SDL_JOYBUTTONUP:
+            update_mouse_button_state();
+
+            if (e.jbutton.button == 3) {
+               // X button released ; normal marble movement
+               speed_scale = 1.0;
+            } else if (e.jbutton.button == 2) {
+               // Y button is released ; normal marble movement
+               speed_scale = 1.0;
+            } else if (e.jbutton.button == 0) {
+               // B button is released ; normal marble movement
+               speed_scale = 1.0;
+            }
+            break;
+
+
         case SDL_MOUSEBUTTONDOWN:
         case SDL_MOUSEBUTTONUP:
             on_mousebutton(e);
@@ -244,10 +431,24 @@ void Client::handle_events()
     }
 }
 
+//senquack - added joystick support
+//void Client::update_mouse_button_state()
+//{
+//    int b = SDL_GetMouseState(0, 0);
+//    player::InhibitPickup((b & SDL_BUTTON(1)) || (b & SDL_BUTTON(3)));
+//}
 void Client::update_mouse_button_state()
 {
+   //senquack - normally, you can hold the left or right mouse buttons to inhibit picking up a item..
+   //    since we aren't goint to have a right mouse button during play, we'll use the rotate-inventory-buttons for this.
     int b = SDL_GetMouseState(0, 0);
-    player::InhibitPickup((b & SDL_BUTTON(1)) || (b & SDL_BUTTON(3)));
+    int gcw_inhibit_pickup = 0;
+    if (joy_gcw0) {
+       gcw_inhibit_pickup = SDL_JoystickGetButton(joy_gcw0, 1) |
+                            SDL_JoystickGetButton(joy_gcw0, 6) |
+                            SDL_JoystickGetButton(joy_gcw0, 7);
+    }
+    player::InhibitPickup(gcw_inhibit_pickup || (b & SDL_BUTTON(1)) || (b & SDL_BUTTON(3)));
 }
 
 void Client::on_mousebutton(SDL_Event &e)
