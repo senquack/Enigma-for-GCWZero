@@ -58,16 +58,16 @@ namespace enigma_options
 
     const int DefaultGsensorCenterX = 0;
     const int DefaultGsensorCenterY = 13100;
-    const int DefaultGsensorDeadzone = 1200;
-    const int DefaultAnalogDeadzone = 1200;
+    const int DefaultGsensorDeadzone = 1;
+    const int DefaultAnalogDeadzone = 1;
     const int DefaultGsensorSpeed = 30;
     const int DefaultAnalogSpeed = 30;
     const int DefaultDPADSpeed = 30;
     const int DefaultAnalogEnabled = 1;
     const int DefaultGsensorEnabled = 0;
-    const int DefaultSpeedScale1 = 30;       // Percentage to scale speed (When pressing button B)
-    const int DefaultSpeedScale2 = 60;       // Percentage to scale speed (When pressing button X)
-    const int DefaultSpeedScale3 = 200;      // Percentage to scale speed (When pressing button Y)
+    const int DefaultSpeedScale1 = 3;       // Percentage to scale speed (When pressing button B)
+    const int DefaultSpeedScale2 = 6;       // Percentage to scale speed (When pressing button X)
+    const int DefaultSpeedScale3 = 17;      // Percentage to scale speed (When pressing button Y)
     const int GsensorMax = 26200;      // Maximum value gsensor can read
 
 /* -------------------- Variables -------------------- */

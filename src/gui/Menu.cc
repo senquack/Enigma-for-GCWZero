@@ -73,8 +73,9 @@ namespace enigma { namespace gui {
     }
     
     bool Menu::manage() {
-        //senquack - added joystick support:
-        double fjoyx, fjoyy;
+        //senquack - added joystick support (this is the GUI cursor-emulation side of it)
+        double fjoyx = 0, fjoyy = 0;
+        uint8_t hat_status;     // For reading DPAD
         static double old_fjoyx = 0, old_fjoyy = 0;
         int cursorx, cursory;
         const double accel_cutoff = 4000;       // If new axis reading is off by this much or more from the last 
@@ -98,8 +99,26 @@ namespace enigma { namespace gui {
 
             //senquack - added joystick support
             if (joy_gcw0) {
-               fjoyx=(double)SDL_JoystickGetAxis(joy_gcw0, 0);
-               fjoyy=(double)SDL_JoystickGetAxis(joy_gcw0, 1); 
+               hat_status = SDL_JoystickGetHat(joy_gcw0, 0);
+               if (hat_status) {
+                   // A direction is pressed
+                   if (hat_status & SDL_HAT_UP) {
+                       fjoyy = -32767.0;
+                   } 
+                   if (hat_status & SDL_HAT_DOWN) {
+                       fjoyy = 32767.0;
+                   } 
+                   if (hat_status & SDL_HAT_LEFT) {
+                       fjoyx = -32767.0;
+                   } 
+                   if (hat_status & SDL_HAT_RIGHT) {
+                       fjoyx = 32767.0;
+                   }
+               } else {
+                   // If DPAD is not being used, read the analog stick instead
+                   fjoyx=(double)SDL_JoystickGetAxis(joy_gcw0, 0);
+                   fjoyy=(double)SDL_JoystickGetAxis(joy_gcw0, 1); 
+               }
                if (abs(old_fjoyx - fjoyx) > accel_cutoff ||
                        abs(old_fjoyy - fjoyy) > accel_cutoff) {
                    // Reset acceleration

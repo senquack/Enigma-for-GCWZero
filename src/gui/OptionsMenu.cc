@@ -181,6 +181,116 @@ namespace enigma { namespace gui {
 //        return vi->name;
 //    }
 
+    //senquack - added numerous new controls for the GCW port:
+    class AnalogSpeedButton : public ValueButton {
+        int get_value() const     { 
+            return options::GetAnalogSpeed();
+        }
+        void set_value(int value) {
+           options::SetAnalogSpeed(value);
+        }
+
+        string get_text(int value) const {
+           return strf("%d", value);
+        }
+    public:
+        AnalogSpeedButton() : ValueButton(1, 50) { init(); }
+    };
+
+    class AnalogDeadzoneButton : public ValueButton {
+        int get_value() const     { 
+            return options::GetAnalogDeadzone();
+        }
+        void set_value(int value) {
+           options::SetAnalogDeadzone(value);
+        }
+
+        string get_text(int value) const {
+           return strf("%d", value );
+        }
+    public:
+        AnalogDeadzoneButton() : ValueButton(0, 30) { init(); }
+    };
+
+    class SpeedScale1Button : public ValueButton {
+        int get_value() const     { 
+            return options::GetSpeedScale1();
+        }
+        void set_value(int value) {
+           options::SetSpeedScale1(value);
+        }
+
+        string get_text(int value) const {
+           return strf("%d%%", value * 10);
+        }
+    public:
+        SpeedScale1Button() : ValueButton(1, 30) { init(); }
+    };
+
+    class SpeedScale2Button : public ValueButton {
+        int get_value() const     { 
+            return options::GetSpeedScale2();
+        }
+        void set_value(int value) {
+           options::SetSpeedScale2(value);
+        }
+
+        string get_text(int value) const {
+           return strf("%d%%", value * 10);
+        }
+    public:
+        SpeedScale2Button() : ValueButton(1, 30) { init(); }
+    };
+
+    class SpeedScale3Button : public ValueButton {
+        int get_value() const     { 
+            return options::GetSpeedScale3();
+        }
+        void set_value(int value) {
+           options::SetSpeedScale3(value);
+        }
+
+        string get_text(int value) const {
+           return strf("%d%%", value * 10);
+        }
+    public:
+        SpeedScale3Button() : ValueButton(1, 30) { init(); }
+    };
+
+    struct GsensorEnabledButton : public BoolOptionButton {
+       GsensorEnabledButton() : BoolOptionButton("GsensorEnabled", N_("Yes"), N_("No"), this) {}
+    };
+
+    class GsensorSpeedButton : public ValueButton {
+        int get_value() const     { 
+            return options::GetGsensorSpeed();
+        }
+        void set_value(int value) {
+           options::SetGsensorSpeed(value);
+        }
+
+        string get_text(int value) const {
+           return strf("%d", value);
+        }
+    public:
+        GsensorSpeedButton() : ValueButton(1, 50) { init(); }
+    };
+
+    class GsensorDeadzoneButton : public ValueButton {
+        int get_value() const     { 
+            return options::GetGsensorDeadzone();
+        }
+        void set_value(int value) {
+           options::SetGsensorDeadzone(value);
+        }
+
+        string get_text(int value) const {
+           return strf("%d", value );
+        }
+    public:
+        GsensorDeadzoneButton() : ValueButton(0, 24) { init(); }
+    };
+
 
     /* -------------------- SoundSetButton -------------------- */
     
@@ -342,12 +452,14 @@ namespace enigma { namespace gui {
     
     OptionsMenu::OptionsMenu(ecl::Surface *background_)
     : pagesVList(NULL), commandHList(NULL), optionsVList(NULL), back(NULL), 
-      language(NULL), but_main_options(NULL), but_video_options(NULL),
-      //senquack
+        //senquack - added numerous options specific to GCW port:
+//      language(NULL), but_main_options(NULL), but_video_options(NULL),
 //      but_audio_options(NULL), but_config_options(NULL), fullscreen(NULL),
 //      videomode(NULL), userNameTF(NULL), userPathTF(NULL),
-      but_audio_options(NULL), but_config_options(NULL), 
+      language(NULL), but_main_options(NULL), 
+      but_controls_options(NULL), but_audio_options(NULL), but_config_options(NULL), 
       userNameTF(NULL), userPathTF(NULL),
+
       userImagePathTF(NULL), menuMusicTF(NULL), 
       background(background_), previous_caption(video::GetCaption())
     {
@@ -411,8 +523,13 @@ namespace enigma { namespace gui {
         pagesVList->set_default_size(param[vtt].pageb_width, param[vtt].button_height);
         but_main_options = new StaticTextButton(N_("Main"), this);
         but_main_options->setHighlight(new_page == OPTIONS_MAIN);
-        but_video_options = new StaticTextButton(N_("Video"), this);
-        but_video_options->setHighlight(new_page == OPTIONS_VIDEO);
+
+        //senquack - added numerous options specific to GCW port:
+//        but_video_options = new StaticTextButton(N_("Video"), this);
+//        but_video_options->setHighlight(new_page == OPTIONS_VIDEO);
+        but_controls_options = new StaticTextButton(N_("Controls"), this);
+        but_controls_options->setHighlight(new_page == OPTIONS_CONTROLS);
+
         but_audio_options = new StaticTextButton(N_("Audio"), this);
         but_audio_options->setHighlight(new_page == OPTIONS_AUDIO);
         but_config_options = new StaticTextButton(N_("Config"), this);
@@ -421,7 +538,11 @@ namespace enigma { namespace gui {
         but_paths_options->setHighlight(new_page == OPTIONS_PATHS);
         pagesVList->add_back(but_main_options);
         pagesVList->add_back(new Label(""));
-        pagesVList->add_back(but_video_options);
+
+        //senquack - added numerous options specific to GCW port:
+//        pagesVList->add_back(but_video_options);
+        pagesVList->add_back(but_controls_options);
+
         pagesVList->add_back(but_audio_options);
         pagesVList->add_back(but_config_options);
         pagesVList->add_back(but_paths_options);
@@ -506,12 +627,47 @@ namespace enigma { namespace gui {
                 OPTIONS_NEW_L(N_("User name: "))
                 OPTIONS_NEW_T(userNameTF)
                 break;
-            case OPTIONS_VIDEO:
                 //senquack
+//            case OPTIONS_VIDEO:
 //                OPTIONS_NEW_LB(N_("Fullscreen: "), fullscreen = new FullscreenButton())
 //                fullscreen->set_listener(this);
 //                OPTIONS_NEW_LB(N_("Video mode: "), videomode = new VideoModeButton())
 //                OPTIONS_NEW_LB(N_("Gamma correction: "), new GammaButton())
+                break;
+//    int GetGsensorCenterX ();
+//    int SetGsensorCenterX (int val);
+//    int GetGsensorCenterY ();
+//    int SetGsensorCenterY (int val);
+//    int GetGsensorDeadzone ();
+//    int SetGsensorDeadzone (int val);
+//    int GetAnalogDeadzone ();
+//    int SetAnalogDeadzone (int val);
+//    int GetAnalogEnabled ();
+//    int SetAnalogEnabled (int val);
+//    int GetGsensorEnabled ();
+//    int SetGsensorEnabled (int val);
+//    int GetGsensorSpeed ();
+//    int SetGsensorSpeed (int val);
+//    int GetAnalogSpeed ();
+//    int SetAnalogSpeed (int val);
+//    int GetDPADSpeed ();
+//    int SetDPADSpeed (int val);
+//    int GetSpeedScale1 ();
+//    int SetSpeedScale1 (int val);
+//    int GetSpeedScale2 ();
+//    int SetSpeedScale2 (int val);
+//    int GetSpeedScale3 ();
+//    int SetSpeedScale3 (int val);
+            case OPTIONS_CONTROLS:
+                OPTIONS_NEW_LB(N_("Analog speed:"), new AnalogSpeedButton())
+                OPTIONS_NEW_LB(N_("Analog deadzone:"), new AnalogDeadzoneButton())
+                OPTIONS_NEW_LB(N_("B speed scale:"), new SpeedScale1Button())
+                OPTIONS_NEW_LB(N_("X speed scale:"), new SpeedScale2Button())
+                OPTIONS_NEW_LB(N_("Y speed scale:"), new SpeedScale3Button())
+                OPTIONS_NEW_LB(N_("G-sensor enabled:"), new GsensorEnabledButton())
+                OPTIONS_NEW_LB(N_("G-sensor speed:"), new GsensorSpeedButton())
+                OPTIONS_NEW_LB(N_("G-sensor deadzone:"), new GsensorDeadzoneButton())
+//                OPTIONS_NEW_LB(N_("Center G-sensor"), new GsensorRecenterButton())
                 break;
             case OPTIONS_AUDIO:
                 OPTIONS_NEW_LB(N_("Sound set: "), new SoundSetButton())
@@ -597,7 +753,11 @@ namespace enigma { namespace gui {
             pagesVList = NULL;
         }
         but_main_options = NULL;
-        but_video_options = NULL;
+
+        //senquack - added numerous options specific to GCW port:
+//        but_video_options = NULL;
+        but_controls_options = NULL;
+
         but_audio_options = NULL;
         but_config_options = NULL;
         if (commandHList != NULL) {
@@ -665,9 +825,13 @@ namespace enigma { namespace gui {
         } else if (w == but_main_options) {
             close_page();
             open_page(OPTIONS_MAIN);
-        } else if (w == but_video_options) {
+        //senquack - added numerous options specific to GCW port:
+//        } else if (w == but_video_options) {
+//            close_page();
+//            open_page(OPTIONS_VIDEO);
+        } else if (w == but_controls_options) {
             close_page();
-            open_page(OPTIONS_VIDEO);
+            open_page(OPTIONS_CONTROLS);
         } else if (w == but_audio_options) {
             close_page();
             open_page(OPTIONS_AUDIO);

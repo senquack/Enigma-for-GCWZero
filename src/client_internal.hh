@@ -160,6 +160,7 @@ namespace
         void draw_screen();
 
         // Event handling
+
         void handle_events();
         void on_keydown(SDL_Event &e);
         void on_mousebutton(SDL_Event &e);

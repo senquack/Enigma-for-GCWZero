@@ -204,6 +204,22 @@ void Client::network_stop ()
 
 /* ---------- Event handling ---------- */
 
+////senquack - added this so users can re-center the g-sensor on-the-fly in-game
+//void Client::recenter_gsensor()
+//{
+//   int joyx = 0, joyy = 0;
+//   char msg[] = "G-Sensor re-centered.";
+//   joyx = SDL_JoystickGetAxis(joy_gsensor, 0);
+//   joyy = SDL_JoystickGetAxis(joy_gsensor, 1); 
+//   options::SetGsensorCenterX (joyx);
+//   options::SetGsensorCenterY (joyy);
+//   Msg_ShowText(msg, false);
+//   //debug
+//   printf("Gsensor re-centered at: %d, %d\n", joyx, joyy);
+//}
+
+
+
 void Client::handle_events()
 {
     SDL_Event e;
@@ -217,7 +233,7 @@ void Client::handle_events()
     int gsensor_deadzone, gsensor_centerx, gsensor_centery;
     double gsensor_speed;
 
-    static double speed_scale = 1.0;      // Normal speed = 1.0, fast speed = 2.0, slow speed = 0.5
+    static double speed_scale = 1.0;      // Can be modified on-the-fly when certain buttons are pressed
 
     // for reference for now:
 //    int GetGsensorCenterX ();
@@ -243,10 +259,10 @@ void Client::handle_events()
     
     // WORKING ON THIS
     if (options::GetAnalogEnabled() && joy_gcw0) {
-       analog_deadzone = options::GetAnalogDeadzone();
+       analog_deadzone = options::GetAnalogDeadzone() * 1000;
        //debug - working out good values
-//       analog_speed = (double)options::GetAnalogSpeed();
-       analog_speed = 30.0;
+       analog_speed = (double)options::GetAnalogSpeed();
+//       analog_speed = 30.0;
 
        joyx=SDL_JoystickGetAxis(joy_gcw0, 0);
        joyy=SDL_JoystickGetAxis(joy_gcw0, 1); 
@@ -264,10 +280,20 @@ void Client::handle_events()
        }
     }
 
-    //DEBUG
-//    if (options::GetGsensorEnabled && app.joy_gsensor) {
-//       gsensor_deadzone = GetGsensorDeadzone();
+//    //DEBUG
+//    if (options::GetGsensorEnabled() && joy_gsensor) {
+//       // First, see if a g-sensor recalibration is requested:
+//       if (joy_gcw0) {
+//          if (SDL_JoystickGetButton(joy_gcw0, 0) &&
+//                SDL_JoystickGetButton(joy_gcw0, 2) &&
+//                SDL_JoystickGetButton(joy_gcw0, 3)) {
+//             recenter_gsensor();
+//          }
+//       }
+//       gsensor_deadzone = options::GetGsensorDeadzone();
 //       gsensor_speed = (double)options::GetGsensorSpeed();
+//    }
+
 //       joyx = SDL_JoystickGetAxis(app.joy_gsensor, 0);
 //       joyy = SDL_JoystickGetAxis(app.joy_gsensor, 1); 
 //             
@@ -370,21 +396,21 @@ void Client::handle_events()
             update_mouse_button_state();
             if (e.jbutton.button == 0) {
                // B button is pressed ; apply speed scale #1
-               speed_scale = (double)options::GetSpeedScale1() / 100.0;
+               speed_scale = (double)options::GetSpeedScale1() / 10.0;
             } else if (e.jbutton.button == 3) {
                // X button is pressed ; apply speed scale #2
-               speed_scale = (double)options::GetSpeedScale2() / 100.0;
+               speed_scale = (double)options::GetSpeedScale2() / 10.0;
             } else if (e.jbutton.button == 2) {
                // Y button is pressed ; apply speed scale #3
-               speed_scale = (double)options::GetSpeedScale3() / 100.0;
-            } else if (e.jbutton.button == 7) {
-               // R trigger is pressed ; rotate inventory like mouse scrollwheel
+               speed_scale = (double)options::GetSpeedScale3() / 10.0;
+            } else if (e.jbutton.button == 4) {
+               // SELECT is pressed ; rotate inventory like mouse scrollwheel
                rotate_inventory(-1);
             } else if (e.jbutton.button == 6) {
                // L trigger is pressed ; rotate inventory like mouse scrollwheel
                rotate_inventory(+1);
-            } else if (e.jbutton.button == 1) {
-               // A button is pressed ; use inventory item
+            } else if (e.jbutton.button == 1 || e.jbutton.button == 7) {
+               // A button or R trigger is pressed ; use inventory item
                server::Msg_ActivateItem();
             } else if (e.jbutton.button == 5) {
                // START button is pressed ; open menu 
