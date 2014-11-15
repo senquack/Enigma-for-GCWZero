@@ -379,6 +379,7 @@ ecl::Screen::~Screen() {
 
 void ecl::Screen::update_all()
 {
+   //senquack - this was commented out in the original code (wasn't me!):
     //SDL_UpdateRect(get_surface(), 0, 0, 0, 0);
     update_all_p = true;
 }
@@ -399,7 +400,10 @@ void ecl::Screen::set_caption(const char* str)
 void ecl::Screen::flush_updates()
 {
     if (update_all_p) {
+       //senquack
         SDL_UpdateRect(m_sdlsurface, 0, 0, 0, 0);	// update everything
+       //senquack
+//        SDL_Flip(m_sdlsurface);
         update_all_p=false;
     }
     else if (!m_dirtyrects.empty()) {
@@ -411,6 +415,8 @@ void ecl::Screen::flush_updates()
         for (unsigned i=0; i<rects.size(); ++i, ++j)
             sdl::copy_rect (rects[i], *j);
         SDL_UpdateRects (m_sdlsurface, rects.size(), &rects[0]);
+        //senquack
+//        SDL_Flip(m_sdlsurface);
     }
     m_dirtyrects.clear();
 }
