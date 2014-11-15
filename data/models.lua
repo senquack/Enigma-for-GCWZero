@@ -28,7 +28,9 @@ function Progress(percent, text)
     local background = enigma.GetImage ("menu_bg", ".jpg")
     local logo       = enigma.GetImage("enigma_logo3")
     local x          = (d:width()  - logo:width())/2
-    local y          = (d:height() - logo:height())/2
+--senquack - on 320x240 devices, this draws way too high for some reason, fixing:
+--    local y          = (d:height() - logo:height())/2
+    local y          = 110
     local gs         = ecl.GS:new(d:size())
     local font2      = enigma.GetFont("menufontsel")
 
