@@ -62,8 +62,6 @@ namespace enigma_options
     const int DefaultAnalogDeadzone = 1;
     const int DefaultGsensorSpeed = 30;
     const int DefaultAnalogSpeed = 30;
-    const int DefaultDPADSpeed = 30;
-    const int DefaultAnalogEnabled = 1;
     const int DefaultGsensorEnabled = 0;
     const int DefaultSpeedScale1 = 3;       // Percentage to scale speed (When pressing button B)
     const int DefaultSpeedScale2 = 6;       // Percentage to scale speed (When pressing button X)

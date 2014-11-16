@@ -418,6 +418,35 @@ namespace enigma { namespace gui {
         init();
         inInit = false;
     }
+
+    //senquack - added button to recalibrate gsensor:
+    int GsensorCalibrateButton::get_value() const
+    {
+       return 0;
+    }
+    
+    void GsensorCalibrateButton::set_value(int value)
+    {
+        if (not inInit) {
+            // only calibrate on user action
+            myListener->on_action(this);
+        }
+    }
+    
+    string GsensorCalibrateButton::get_text(int value) const
+    {
+       char msg[80];
+       sprintf(msg, "X:%d Y:%d", options::GetGsensorCenterX(), options::GetGsensorCenterY());
+       return _(msg);
+    }
+    
+    GsensorCalibrateButton::GsensorCalibrateButton (ActionListener *al)
+    : ValueButton(0, 1), myListener(al)
+    {
+        inInit = true;
+        init();
+        inInit = false;
+    }
     
     /* -------------------- GammaButton -------------------- */
     
@@ -456,10 +485,13 @@ namespace enigma { namespace gui {
 //      language(NULL), but_main_options(NULL), but_video_options(NULL),
 //      but_audio_options(NULL), but_config_options(NULL), fullscreen(NULL),
 //      videomode(NULL), userNameTF(NULL), userPathTF(NULL),
-      language(NULL), but_main_options(NULL), 
+//      language(NULL), but_main_options(NULL), 
+
+      //senquack - added button to recalibrate gsensor:
+      language(NULL), but_recalibrate_gsensor(NULL), but_main_options(NULL), 
+
       but_controls_options(NULL), but_audio_options(NULL), but_config_options(NULL), 
       userNameTF(NULL), userPathTF(NULL),
-
       userImagePathTF(NULL), menuMusicTF(NULL), 
       background(background_), previous_caption(video::GetCaption())
     {
@@ -634,32 +666,8 @@ namespace enigma { namespace gui {
 //                OPTIONS_NEW_LB(N_("Video mode: "), videomode = new VideoModeButton())
 //                OPTIONS_NEW_LB(N_("Gamma correction: "), new GammaButton())
                 break;
-//    int GetGsensorCenterX ();
-//    int SetGsensorCenterX (int val);
-//    int GetGsensorCenterY ();
-//    int SetGsensorCenterY (int val);
-//    int GetGsensorDeadzone ();
-//    int SetGsensorDeadzone (int val);
-//    int GetAnalogDeadzone ();
-//    int SetAnalogDeadzone (int val);
-//    int GetAnalogEnabled ();
-//    int SetAnalogEnabled (int val);
-//    int GetGsensorEnabled ();
-//    int SetGsensorEnabled (int val);
-//    int GetGsensorSpeed ();
-//    int SetGsensorSpeed (int val);
-//    int GetAnalogSpeed ();
-//    int SetAnalogSpeed (int val);
-//    int GetDPADSpeed ();
-//    int SetDPADSpeed (int val);
-//    int GetSpeedScale1 ();
-//    int SetSpeedScale1 (int val);
-//    int GetSpeedScale2 ();
-//    int SetSpeedScale2 (int val);
-//    int GetSpeedScale3 ();
-//    int SetSpeedScale3 (int val);
             case OPTIONS_CONTROLS:
-                OPTIONS_NEW_LB(N_("Analog speed:"), new AnalogSpeedButton())
+                OPTIONS_NEW_LB(N_("Analog / DPAD speed:"), new AnalogSpeedButton())
                 OPTIONS_NEW_LB(N_("Analog deadzone:"), new AnalogDeadzoneButton())
                 OPTIONS_NEW_LB(N_("B speed scale:"), new SpeedScale1Button())
                 OPTIONS_NEW_LB(N_("X speed scale:"), new SpeedScale2Button())
@@ -667,7 +675,7 @@ namespace enigma { namespace gui {
                 OPTIONS_NEW_LB(N_("G-sensor enabled:"), new GsensorEnabledButton())
                 OPTIONS_NEW_LB(N_("G-sensor speed:"), new GsensorSpeedButton())
                 OPTIONS_NEW_LB(N_("G-sensor deadzone:"), new GsensorDeadzoneButton())
-//                OPTIONS_NEW_LB(N_("Center G-sensor"), new GsensorRecenterButton())
+                OPTIONS_NEW_LB(N_("Calibrate G-sensor"), but_recalibrate_gsensor = new GsensorCalibrateButton(this))
                 break;
             case OPTIONS_AUDIO:
                 OPTIONS_NEW_LB(N_("Sound set: "), new SoundSetButton())
@@ -781,6 +789,9 @@ namespace enigma { namespace gui {
         userNameTF = NULL;
         userPathTF = NULL;
         userImagePathTF = NULL;
+
+        //senquack - added button to recalibrate gsensor:
+        but_recalibrate_gsensor = NULL;
     }
 
     void OptionsMenu::quit() {
@@ -803,6 +814,15 @@ namespace enigma { namespace gui {
 //        }
         return handled;
     }
+
+    //senquack - added button to recalibrate gsensor:
+    void recalibrate_gsensor() {
+       int joyx = 0, joyy = 0;
+       joyx = SDL_JoystickGetAxis(joy_gsensor, 0);
+       joyy = SDL_JoystickGetAxis(joy_gsensor, 1); 
+       options::SetGsensorCenterX (joyx);
+       options::SetGsensorCenterY (joyy);
+    }
     
     void OptionsMenu::on_action(Widget *w)
     {
@@ -822,6 +842,9 @@ namespace enigma { namespace gui {
         else if (w == language) {
             // language changed - retranslate and redraw everything
             invalidate_all();
+        } else if (w == but_recalibrate_gsensor) {
+           //senquack - added button to recalibrate gsensor:
+           recalibrate_gsensor();
         } else if (w == but_main_options) {
             close_page();
             open_page(OPTIONS_MAIN);

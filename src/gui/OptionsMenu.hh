@@ -56,6 +56,9 @@ namespace enigma { namespace gui {
         HList *commandHList;
         VList *optionsVList;
         gui::Widget *back, *language;
+        //senquack - added button to recalibrate gsensor:
+        gui::Widget *but_recalibrate_gsensor;
+
         gui::StaticTextButton *but_main_options;
         //senquack - added numerous options specific to GCW port:
 //        gui::StaticTextButton *but_video_options;
@@ -127,6 +130,18 @@ namespace enigma { namespace gui {
     public:
         // second user action listener: first one is misused by ValueButton 
         LanguageButton (ActionListener *al = 0);        
+    };
+
+    //senquack - added button to recalibrate gsensor:
+    class GsensorCalibrateButton : public ValueButton {
+        int get_value() const;
+        void set_value(int value);
+        std::string get_text(int value) const;
+        bool inInit;
+        ActionListener *myListener;
+    public:
+        // second user action listener: first one is misused by ValueButton 
+        GsensorCalibrateButton (ActionListener *al = 0);        
     };
 
     class GammaButton : public ValueButton {
