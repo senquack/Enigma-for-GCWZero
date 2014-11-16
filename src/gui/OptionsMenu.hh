@@ -55,7 +55,10 @@ namespace enigma { namespace gui {
         VList *pagesVList;
         HList *commandHList;
         VList *optionsVList;
-        gui::Widget *back, *language;
+        //senquack - got rid of language button (useless on GCW's firmware lacking LOCALE)
+//        gui::Widget *back, *language;
+        gui::Widget *back;
+
         //senquack - added button to recalibrate gsensor:
         gui::Widget *but_recalibrate_gsensor;
 
@@ -121,16 +124,17 @@ namespace enigma { namespace gui {
         std::string get_text(int value) const;
     };
     
-    class LanguageButton : public ValueButton {
-        int get_value() const;
-        void set_value(int value);
-        std::string get_text(int value) const;
-        bool inInit;
-        ActionListener *myListener;
-    public:
-        // second user action listener: first one is misused by ValueButton 
-        LanguageButton (ActionListener *al = 0);        
-    };
+    //senquack - got rid of language button (useless on GCW's firmware lacking LOCALE)
+//    class LanguageButton : public ValueButton {
+//        int get_value() const;
+//        void set_value(int value);
+//        std::string get_text(int value) const;
+//        bool inInit;
+//        ActionListener *myListener;
+//    public:
+//        // second user action listener: first one is misused by ValueButton 
+//        LanguageButton (ActionListener *al = 0);        
+//    };
 
     //senquack - added button to recalibrate gsensor:
     class GsensorCalibrateButton : public ValueButton {

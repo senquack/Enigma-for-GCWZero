@@ -191,19 +191,19 @@ int options::SetAnalogDeadzone (int val)
   return oldval;
 } 
 
-int options::GetAnalogEnabled ()
-{
-   int val = DefaultAnalogEnabled;
-   app.prefs->getProperty("AnalogEnabled", val);
-   return val;
-}
-
-int options::SetAnalogEnabled (int val)
-{
-  int oldval = GetAnalogEnabled();
-  app.prefs->setProperty("AnalogEnabled", val);
-  return oldval;
-} 
+//int options::GetAnalogEnabled ()
+//{
+//   int val = DefaultAnalogEnabled;
+//   app.prefs->getProperty("AnalogEnabled", val);
+//   return val;
+//}
+//
+//int options::SetAnalogEnabled (int val)
+//{
+//  int oldval = GetAnalogEnabled();
+//  app.prefs->setProperty("AnalogEnabled", val);
+//  return oldval;
+//} 
 
 int options::GetGsensorEnabled ()
 {
@@ -247,19 +247,19 @@ int options::SetAnalogSpeed (int val)
   return oldval;
 } 
 
-int options::GetDPADSpeed ()
-{
-   int val = DefaultDPADSpeed;
-   app.prefs->getProperty("DPADSpeed", val);
-   return val;
-}
-
-int options::SetDPADSpeed (int val)
-{
-  int oldval = GetDPADSpeed();
-  app.prefs->setProperty("DPADSpeed", val);
-  return oldval;
-} 
+//int options::GetDPADSpeed ()
+//{
+//   int val = DefaultDPADSpeed;
+//   app.prefs->getProperty("DPADSpeed", val);
+//   return val;
+//}
+//
+//int options::SetDPADSpeed (int val)
+//{
+//  int oldval = GetDPADSpeed();
+//  app.prefs->setProperty("DPADSpeed", val);
+//  return oldval;
+//} 
 
 int options::GetSpeedScale1 ()
 {

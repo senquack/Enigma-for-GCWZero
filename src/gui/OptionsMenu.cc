@@ -378,46 +378,47 @@ namespace enigma { namespace gui {
 //    }
     
     /* -------------------- LanguageButton -------------------- */
-    
-    int LanguageButton::get_value() const
-    {
-        string localename; //  = ecl::DefaultMessageLocale ();
-        options::GetOption ("Language", localename);
-    
-        int lang = 0;                  // unknown language
-        for (size_t i=0; i<NUMENTRIES(nls::languages); ++i) {
-            if (localename == nls::languages[i].localename)
-                lang = int(i);
-        }
-        return lang;
-    }
-    
-    void LanguageButton::set_value(int value)
-    {
-        options::SetOption ("Language", nls::languages[value].localename);
-        
-        if (not inInit) {
-            // change language only on user action
-            app.setLanguage(nls::languages[value].localename);
-            myListener->on_action(this);
-        }
-    }
-    
-    string LanguageButton::get_text(int value) const
-    {
-        if (value == -1)
-            return _("unknown");
-        else
-            return nls::languages[value].name;
-    }
-    
-    LanguageButton::LanguageButton (ActionListener *al)
-    : ValueButton(0, NUMENTRIES(nls::languages)-1), myListener(al)
-    {
-        inInit = true;
-        init();
-        inInit = false;
-    }
+    //senquack - got rid of language button (useless on GCW's firmware lacking LOCALE)
+//    
+//    int LanguageButton::get_value() const
+//    {
+//        string localename; //  = ecl::DefaultMessageLocale ();
+//        options::GetOption ("Language", localename);
+//    
+//        int lang = 0;                  // unknown language
+//        for (size_t i=0; i<NUMENTRIES(nls::languages); ++i) {
+//            if (localename == nls::languages[i].localename)
+//                lang = int(i);
+//        }
+//        return lang;
+//    }
+//    
+//    void LanguageButton::set_value(int value)
+//    {
+//        options::SetOption ("Language", nls::languages[value].localename);
+//        
+//        if (not inInit) {
+//            // change language only on user action
+//            app.setLanguage(nls::languages[value].localename);
+//            myListener->on_action(this);
+//        }
+//    }
+//    
+//    string LanguageButton::get_text(int value) const
+//    {
+//        if (value == -1)
+//            return _("unknown");
+//        else
+//            return nls::languages[value].name;
+//    }
+//    
+//    LanguageButton::LanguageButton (ActionListener *al)
+//    : ValueButton(0, NUMENTRIES(nls::languages)-1), myListener(al)
+//    {
+//        inInit = true;
+//        init();
+//        inInit = false;
+//    }
 
     //senquack - added button to recalibrate gsensor:
     int GsensorCalibrateButton::get_value() const
@@ -487,8 +488,8 @@ namespace enigma { namespace gui {
 //      videomode(NULL), userNameTF(NULL), userPathTF(NULL),
 //      language(NULL), but_main_options(NULL), 
 
-      //senquack - added button to recalibrate gsensor:
-      language(NULL), but_recalibrate_gsensor(NULL), but_main_options(NULL), 
+      //senquack - added button to recalibrate gsensor, removed language button
+      but_recalibrate_gsensor(NULL), but_main_options(NULL), 
 
       but_controls_options(NULL), but_audio_options(NULL), but_config_options(NULL), 
       userNameTF(NULL), userPathTF(NULL),
@@ -642,11 +643,13 @@ namespace enigma { namespace gui {
 
         switch (new_page) {
             case OPTIONS_MAIN:
-                OPTIONS_NEW_LB(N_("Language: "), language = new LanguageButton(this))
                    //senquack
+//                OPTIONS_NEW_LB(N_("Language: "), language = new LanguageButton(this))
 //                OPTIONS_NEW_LB(N_("Fullscreen: "), fullscreen = new FullscreenButton(this))
 //                OPTIONS_NEW_LB(N_("Video mode: "), videomode = new VideoModeButton())
-                OPTIONS_NEW_LB(N_("Mouse speed: "), new MouseSpeedButton())
+               //senquack - altered for GCW:
+//                OPTIONS_NEW_LB(N_("Mouse speed: "), new MouseSpeedButton())
+                OPTIONS_NEW_LB(N_("USB Mouse speed: "), new MouseSpeedButton())
                 OPTIONS_NEW_LB(N_("Sound volume: "), new SoundVolumeButton())
                 OPTIONS_NEW_LB(N_("Music volume: "), new MusicVolumeButton())
                 OPTIONS_NEW_LB(N_("Ratings update: "), new RatingsUpdateButton())
@@ -686,8 +689,11 @@ namespace enigma { namespace gui {
                 OPTIONS_NEW_LB(N_("Stereo: "), new StereoButton())
                 break;
             case OPTIONS_CONFIG:
-                OPTIONS_NEW_LB(N_("Language: "), language = new LanguageButton(this))
-                OPTIONS_NEW_LB(N_("Mouse speed: "), new MouseSpeedButton())
+        //senquack - got rid of language button (useless on GCW's firmware lacking LOCALE)
+//                OPTIONS_NEW_LB(N_("Language: "), language = new LanguageButton(this))
+                //senquack - altered for GCW:
+//                OPTIONS_NEW_LB(N_("Mouse speed: "), new MouseSpeedButton())
+                OPTIONS_NEW_LB(N_("USB Mouse speed: "), new MouseSpeedButton())
                 OPTIONS_NEW_LB(N_("Text speed: "), new TextSpeedButton())
                 OPTIONS_NEW_LB(N_("Ratings update: "), new RatingsUpdateButton())
                 userNameTF = new TextField(app.state->getString("UserName"));
@@ -781,8 +787,8 @@ namespace enigma { namespace gui {
             delete optionsVList;
             optionsVList = NULL;
         }
-        language = NULL;
         //senquack
+//        language = NULL;
 //        fullscreen = NULL;
 //        videomode = NULL;
         menuMusicTF = NULL;
@@ -839,10 +845,7 @@ namespace enigma { namespace gui {
 //            // update the video mode button to the modes available
 //            videomode->reinit();
 //            invalidate_all();
-        else if (w == language) {
-            // language changed - retranslate and redraw everything
-            invalidate_all();
-        } else if (w == but_recalibrate_gsensor) {
+        if (w == but_recalibrate_gsensor) {
            //senquack - added button to recalibrate gsensor:
            recalibrate_gsensor();
         } else if (w == but_main_options) {

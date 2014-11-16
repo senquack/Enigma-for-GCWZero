@@ -258,7 +258,7 @@ void Client::handle_events()
 //    if (app.analog_enabled && app.joy_gcw0) {
     
     // WORKING ON THIS
-    if (options::GetAnalogEnabled() && joy_gcw0) {
+    if (joy_gcw0) {
        analog_deadzone = options::GetAnalogDeadzone() * 1000;
        //debug - working out good values
        analog_speed = (double)options::GetAnalogSpeed();
