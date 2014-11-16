@@ -101,9 +101,9 @@ namespace enigma { namespace gui {
 
     //senquack - added port-specific help:
     static const char *controls_text[] = {
-       N_("GCW port by senquack (Dan Silsby)"),
+       N_("       GCW Zero port controls"),
        " ",
-       N_("Controls:"),
+       N_("In-game Controls:"),
        "  A or Right Trigger:    Use inventory item",
        "  Left Trigger or Select:    Cycle inventory left/right",
        "  Start:    In-game menu",
@@ -111,6 +111,13 @@ namespace enigma { namespace gui {
        "  B:    Move with speed scale #1",
        "  X:    Move with speed scale #2",
        "  Y:    Move with speed scale #3",
+       " ",
+       N_("Menu Controls:"),
+       "  Analog Nub:    Move cursor",
+       "  DPAD:    Keyboard arrow keys",
+       "  A:    Mouse left-click / Enter key",
+       "  B:    Mouse right-click",
+       "  Left/Right Trigger:    Mouse wheel",
        0
     };
 
@@ -503,6 +510,8 @@ namespace enigma { namespace gui {
 #endif
         blit(gc, x0, y0[vminfo->tt], logo);
         f->render (gc, 5, vminfo->height - 20, app.getVersionInfo().c_str());
+        //senquack - added gcw port credit:
+        f->render (gc, 200, vminfo->height - 20, "GCW Zero port by senquack");
     }
 
     bool MainMenu::on_event (const SDL_Event &e) {

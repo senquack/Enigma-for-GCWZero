@@ -191,10 +191,10 @@ namespace enigma { namespace gui {
         }
 
         string get_text(int value) const {
-           return strf("%d", value);
+           return strf("%d", value * 5);
         }
     public:
-        AnalogSpeedButton() : ValueButton(1, 50) { init(); }
+        AnalogSpeedButton() : ValueButton(1, 40) { init(); }
     };
 
     class AnalogDeadzoneButton : public ValueButton {
@@ -206,7 +206,7 @@ namespace enigma { namespace gui {
         }
 
         string get_text(int value) const {
-           return strf("%d", value );
+           return strf("%d", value * 500);
         }
     public:
         AnalogDeadzoneButton() : ValueButton(0, 30) { init(); }
@@ -270,10 +270,10 @@ namespace enigma { namespace gui {
         }
 
         string get_text(int value) const {
-           return strf("%d", value);
+           return strf("%d", value * 5);
         }
     public:
-        GsensorSpeedButton() : ValueButton(1, 50) { init(); }
+        GsensorSpeedButton() : ValueButton(1, 60) { init(); }
     };
 
     class GsensorDeadzoneButton : public ValueButton {
@@ -285,10 +285,10 @@ namespace enigma { namespace gui {
         }
 
         string get_text(int value) const {
-           return strf("%d", value );
+           return strf("%d", value * 500);
         }
     public:
-        GsensorDeadzoneButton() : ValueButton(0, 24) { init(); }
+        GsensorDeadzoneButton() : ValueButton(0, 30) { init(); }
     };
 
 
@@ -492,7 +492,10 @@ namespace enigma { namespace gui {
       but_recalibrate_gsensor(NULL), but_main_options(NULL), 
 
       but_controls_options(NULL), but_audio_options(NULL), but_config_options(NULL), 
-      userNameTF(NULL), userPathTF(NULL),
+    //senquack - don't want to display username on GCW port:
+//      userNameTF(NULL), userPathTF(NULL),
+      userPathTF(NULL),
+
       userImagePathTF(NULL), menuMusicTF(NULL), 
       background(background_), previous_caption(video::GetCaption())
     {
@@ -656,11 +659,12 @@ namespace enigma { namespace gui {
 #ifdef ENABLE_EXPERIMENTAL
                 OPTIONS_NEW_LB(N_("Score upload: "), new ScoreUploadButton())
 #endif
-                userNameTF = new TextField(app.state->getString("UserName"));
-                userNameTF->setMaxChars(20);
-                userNameTF->setInvalidChars("+");
-                OPTIONS_NEW_L(N_("User name: "))
-                OPTIONS_NEW_T(userNameTF)
+                //senquack - don't want to display username on gcw port:
+//                userNameTF = new TextField(app.state->getString("UserName"));
+//                userNameTF->setMaxChars(20);
+//                userNameTF->setInvalidChars("+");
+//                OPTIONS_NEW_L(N_("User name: "))
+//                OPTIONS_NEW_T(userNameTF)
                 break;
                 //senquack
 //            case OPTIONS_VIDEO:
@@ -696,11 +700,12 @@ namespace enigma { namespace gui {
                 OPTIONS_NEW_LB(N_("USB Mouse speed: "), new MouseSpeedButton())
                 OPTIONS_NEW_LB(N_("Text speed: "), new TextSpeedButton())
                 OPTIONS_NEW_LB(N_("Ratings update: "), new RatingsUpdateButton())
-                userNameTF = new TextField(app.state->getString("UserName"));
-                userNameTF->setMaxChars(20);
-                userNameTF->setInvalidChars("+");
-                OPTIONS_NEW_L(N_("User name: "))
-                OPTIONS_NEW_T(userNameTF)
+                //senquack - don't want to display username on gcw port:
+//                userNameTF = new TextField(app.state->getString("UserName"));
+//                userNameTF->setMaxChars(20);
+//                userNameTF->setInvalidChars("+");
+//                OPTIONS_NEW_L(N_("User name: "))
+//                OPTIONS_NEW_T(userNameTF)
                 break;
             case OPTIONS_PATHS:
                 userPathTF = new TextField(XMLtoUtf8(LocalToXML(app.userPath.c_str()).x_str()).c_str());
@@ -731,20 +736,21 @@ namespace enigma { namespace gui {
         // and we don't want any ticks for them anymore.
         reset_active_widget();
         reset_key_focus_widget();
-        // Evaluate and save text field entries (if existing).
-        if(userNameTF) {
-            if (app.state->getString("UserName") != userNameTF->getText())
-                // ensure that enigma.score is saved with new Username or to new location
-                lev::ScoreManager::instance()->markModified();
-            // strip off leading and trailing whitespace from user name
-            std::string userName = userNameTF->getText();
-            std::string::size_type firstChar = userName.find_first_not_of(" ");
-            std::string::size_type lastChar = userName.find_last_not_of(" ");
-            if (firstChar != std::string::npos)
-                app.state->setProperty("UserName", userName.substr(firstChar, lastChar - firstChar + 1));
-            else
-                app.state->setProperty("UserName", std::string(""));
-        }
+       //senquack - don't want to display username on gcw port:
+//        // Evaluate and save text field entries (if existing).
+//        if(userNameTF) {
+//            if (app.state->getString("UserName") != userNameTF->getText())
+//                // ensure that enigma.score is saved with new Username or to new location
+//                lev::ScoreManager::instance()->markModified();
+//            // strip off leading and trailing whitespace from user name
+//            std::string userName = userNameTF->getText();
+//            std::string::size_type firstChar = userName.find_first_not_of(" ");
+//            std::string::size_type lastChar = userName.find_last_not_of(" ");
+//            if (firstChar != std::string::npos)
+//                app.state->setProperty("UserName", userName.substr(firstChar, lastChar - firstChar + 1));
+//            else
+//                app.state->setProperty("UserName", std::string(""));
+//        }
         if(userPathTF) {
             std::string tfUserPathLocal = XMLtoLocal(Utf8ToXML(userPathTF->getText().c_str()).x_str()).c_str();
             if (app.userPath != tfUserPathLocal)
@@ -792,7 +798,8 @@ namespace enigma { namespace gui {
 //        fullscreen = NULL;
 //        videomode = NULL;
         menuMusicTF = NULL;
-        userNameTF = NULL;
+       //senquack - don't want to display username on gcw port:
+//        userNameTF = NULL;
         userPathTF = NULL;
         userImagePathTF = NULL;
 
@@ -823,11 +830,16 @@ namespace enigma { namespace gui {
 
     //senquack - added button to recalibrate gsensor:
     void recalibrate_gsensor() {
-       int joyx = 0, joyy = 0;
-       joyx = SDL_JoystickGetAxis(joy_gsensor, 0);
-       joyy = SDL_JoystickGetAxis(joy_gsensor, 1); 
-       options::SetGsensorCenterX (joyx);
-       options::SetGsensorCenterY (joyy);
+       if (joy_gsensor) {
+          int joyx = 0, joyy = 0;
+          joyx = SDL_JoystickGetAxis(joy_gsensor, 0);
+          joyy = SDL_JoystickGetAxis(joy_gsensor, 1); 
+          // If the x axis is off-center only by a tiny amount, assume the user is trying to
+          //      get it close to 0 and will be frustrated if it's not:
+          if (abs(joyx) < 512) joyx = 0;
+          options::SetGsensorCenterX (joyx);
+          options::SetGsensorCenterY (joyy);
+       }
     }
     
     void OptionsMenu::on_action(Widget *w)

@@ -57,16 +57,15 @@ namespace enigma_options
     const int MAX_MouseSpeed = 15;
 
     const int DefaultGsensorCenterX = 0;
-    const int DefaultGsensorCenterY = 13100;
-    const int DefaultGsensorDeadzone = 1;
-    const int DefaultAnalogDeadzone = 1;
-    const int DefaultGsensorSpeed = 30;
-    const int DefaultAnalogSpeed = 30;
+    const int DefaultGsensorCenterY = 12000;
+    const int DefaultGsensorDeadzone = 2;
+    const int DefaultAnalogDeadzone = 0;
+    const int DefaultGsensorSpeed = 20;      // Multiplied by 5 in the code that uses it
+    const int DefaultAnalogSpeed = 6;        // Multiplied by 5 in the code that uses it
     const int DefaultGsensorEnabled = 0;
-    const int DefaultSpeedScale1 = 3;       // Percentage to scale speed (When pressing button B)
-    const int DefaultSpeedScale2 = 6;       // Percentage to scale speed (When pressing button X)
+    const int DefaultSpeedScale1 = 5;       // Percentage to scale speed (When pressing button B)
+    const int DefaultSpeedScale2 = 7;       // Percentage to scale speed (When pressing button X)
     const int DefaultSpeedScale3 = 17;      // Percentage to scale speed (When pressing button Y)
-    const int GsensorMax = 26200;      // Maximum value gsensor can read
 
 /* -------------------- Variables -------------------- */
 

@@ -204,21 +204,6 @@ void Client::network_stop ()
 
 /* ---------- Event handling ---------- */
 
-////senquack - added this so users can re-center the g-sensor on-the-fly in-game
-//void Client::recenter_gsensor()
-//{
-//   int joyx = 0, joyy = 0;
-//   char msg[] = "G-Sensor re-centered.";
-//   joyx = SDL_JoystickGetAxis(joy_gsensor, 0);
-//   joyy = SDL_JoystickGetAxis(joy_gsensor, 1); 
-//   options::SetGsensorCenterX (joyx);
-//   options::SetGsensorCenterY (joyy);
-//   Msg_ShowText(msg, false);
-//   //debug
-//   printf("Gsensor re-centered at: %d, %d\n", joyx, joyy);
-//}
-
-
 
 void Client::handle_events()
 {
@@ -226,157 +211,71 @@ void Client::handle_events()
 
     //senquack: added joystick support
     int joyx = 0, joyy = 0;
-    int gsensor_movement = 0;
     double fjoyx = 0, fjoyy = 0;
+    uint8_t hat_status;     // For reading DPAD
     int analog_deadzone;
     double analog_speed;
     int gsensor_deadzone, gsensor_centerx, gsensor_centery;
+    const double gsensor_max = 26200.0;   // Maximum reading the gsensor on GCW can report
     double gsensor_speed;
-
     static double speed_scale = 1.0;      // Can be modified on-the-fly when certain buttons are pressed
 
-    // for reference for now:
-//    int GetGsensorCenterX ();
-//    int SetGsensorCenterX (int val);
-//    int GetGsensorCenterY ();
-//    int SetGsensorCenterY (int val);
-//    int GetGsensorDeadzone ();
-//    int SetGsensorDeadzone (int val);
-//    int GetAnalogDeadzone ();
-//    int SetAnalogDeadzone (int val);
-//    int GetAnalogEnabled ();
-//    int SetAnalogEnabled (int val);
-//    int GetGsensorEnabled ();
-//    int SetGsensorEnabled (int val);
-//    int GetGsensorSpeed ();
-//    int SetGsensorSpeed (int val);
-//    int GetAnalogSpeed ();
-//    int SetAnalogSpeed (int val);
-//    int GetDPADSpeed ();
-//    int SetDPADSpeed (int val);
+    // Use only the g-sensor if it is enabled
+    if (options::GetGsensorEnabled() && joy_gsensor) {
+       gsensor_deadzone = options::GetGsensorDeadzone() * 500;
+       gsensor_speed = (double)options::GetGsensorSpeed() * 5.0;
 
-//    if (app.analog_enabled && app.joy_gcw0) {
-    
-    // WORKING ON THIS
-    if (joy_gcw0) {
-       analog_deadzone = options::GetAnalogDeadzone() * 1000;
-       //debug - working out good values
-       analog_speed = (double)options::GetAnalogSpeed();
-//       analog_speed = 30.0;
+       joyx = SDL_JoystickGetAxis(joy_gsensor, 0);
+       joyy = SDL_JoystickGetAxis(joy_gsensor, 1); 
 
-       joyx=SDL_JoystickGetAxis(joy_gcw0, 0);
-       joyy=SDL_JoystickGetAxis(joy_gcw0, 1); 
-       if (abs(joyx) > analog_deadzone || abs(joyy) > analog_deadzone) {
-          fjoyx = (double)joyx / 32767.0;
-          fjoyy = (double)joyy / 32767.0;
-          fjoyx = fjoyx * fjoyx * fjoyx;
-          fjoyy = fjoyy * fjoyy * fjoyy;
-          //            printf("scaled x: %lf    scaled y: %lf\n", fjoyx, fjoyy);
-//          server::Msg_MouseForce (options::GetDouble("MouseSpeed") *
-//                //                                     V2 (fjoyx * 20.0, fjoyy * 20.0));
-//             V2 (fjoyx * 3.0, fjoyy * 3.0));
+       //Translate readings to the calibrated center for x and y 
+       gsensor_centerx = options::GetGsensorCenterX();
+       gsensor_centery = options::GetGsensorCenterY();
+       joyx -= gsensor_centerx;
+       joyy -= gsensor_centery;
+
+       if (abs(joyx) > gsensor_deadzone || abs(joyy) > gsensor_deadzone) {
+          fjoyx = (double)joyx / gsensor_max;
+          fjoyy = (double)joyy / gsensor_max;
           server::Msg_MouseForce (
-             V2 (fjoyx * analog_speed * speed_scale, fjoyy * analog_speed * speed_scale));
+                V2 (fjoyx * gsensor_speed * speed_scale, fjoyy * gsensor_speed * speed_scale));
+       }
+    } else if (joy_gcw0) {
+       // Note: we also use the analog speed for the DPAD
+       analog_speed = (double)options::GetAnalogSpeed() * 5.0;
+       analog_deadzone = options::GetAnalogDeadzone() * 500;
+
+       // First, try reading the DPAD, and if it is pressed, bypass reading the analog
+       hat_status = SDL_JoystickGetHat(joy_gcw0, 0);
+       if (hat_status) {
+          // A direction is pressed
+          if (hat_status & SDL_HAT_UP) {
+             joyy = -32767.0;
+          } 
+          if (hat_status & SDL_HAT_DOWN) {
+             joyy = 32767.0;
+          } 
+          if (hat_status & SDL_HAT_LEFT) {
+             joyx = -32767.0;
+          } 
+          if (hat_status & SDL_HAT_RIGHT) {
+             joyx = 32767.0;
+          }
+       } else {
+          joyx=SDL_JoystickGetAxis(joy_gcw0, 0);
+          joyy=SDL_JoystickGetAxis(joy_gcw0, 1); 
+       }
+
+       if (abs(joyx) > analog_deadzone || abs(joyy) > analog_deadzone) {
+             fjoyx = (double)joyx / 32767.0;
+             fjoyy = (double)joyy / 32767.0;
+             // This can help alleviate the non-linear sensitivity of the stick, but ultimately I went without it:
+//             fjoyx = fjoyx * fjoyx * fjoyx;
+//             fjoyy = fjoyy * fjoyy * fjoyy;
+             server::Msg_MouseForce (
+                   V2 (fjoyx * analog_speed * speed_scale, fjoyy * analog_speed * speed_scale));
        }
     }
-
-//    //DEBUG
-//    if (options::GetGsensorEnabled() && joy_gsensor) {
-//       // First, see if a g-sensor recalibration is requested:
-//       if (joy_gcw0) {
-//          if (SDL_JoystickGetButton(joy_gcw0, 0) &&
-//                SDL_JoystickGetButton(joy_gcw0, 2) &&
-//                SDL_JoystickGetButton(joy_gcw0, 3)) {
-//             recenter_gsensor();
-//          }
-//       }
-//       gsensor_deadzone = options::GetGsensorDeadzone();
-//       gsensor_speed = (double)options::GetGsensorSpeed();
-//    }
-
-//       joyx = SDL_JoystickGetAxis(app.joy_gsensor, 0);
-//       joyy = SDL_JoystickGetAxis(app.joy_gsensor, 1); 
-//             
-//   //    joyx = joyx - app.gsensor_centerx;
-//   //    joyy = joyy - app.gsensor_centery;
-//   //    if (abs(joyx) > app.gsensor_deadzone || abs(joyy) > app.gsensor_deadzone) {
-//   //       printf("gsensor movement detected\n");
-//
-//          printf("joyx: %d   joyy: %d", joyx, joyy);
-////          if (joyx > 0) {
-////             fjoyx = (double)(joyx - app.gsensor_deadzone - app.gsensor_centerx);
-////          } else {
-////             fjoyx = (double)(joyx + app.gsensor_deadzone + app.gsensor_centerx);
-////          }
-////
-////          if (joyy > 0) {
-////             fjoyy = (double)(joyy - app.gsensor_deadzone - app.gsensor_centery);
-////          } else {
-////             fjoyy = (double)(joyy + app.gsensor_deadzone + app.gsensor_centery);
-////          }
-//
-//          joyx = joyx - app.gsensor_centerx;
-//          joyy = -(joyy - app.gsensor_centery);
-//
-//          if (joyx > app.gsensor_deadzone) {
-//             fjoyx = (double)(joyx - app.gsensor_deadzone);
-//             gsensor_movement = 1;
-//          } else if (joyx < -app.gsensor_deadzone) {
-//             fjoyx = (double)(joyx + app.gsensor_deadzone);
-//             gsensor_movement = 1;
-//          }
-//
-//          if (joyy > app.gsensor_deadzone) {
-//             fjoyy = (double)(joyy - app.gsensor_deadzone);
-//             gsensor_movement = 1;
-//          } else if (joyy <  app.gsensor_deadzone) {
-//             fjoyy = (double)(joyy + app.gsensor_deadzone);
-//             gsensor_movement = 1;
-//          }
-//
-//          printf("   fjoyx: %lf   fjoyy: %lf", fjoyx, fjoyy);
-//   //       fjoyx = fjoyx / (double)app.gsensor_max;
-//   //       fjoyy = fjoyy / (double)app.gsensor_max;
-//          if ((app.gsensor_max - app.gsensor_deadzone != 0) &&
-//                gsensor_movement) {
-//             fjoyx = fjoyx / (double)(app.gsensor_max - app.gsensor_deadzone);
-//             fjoyy = fjoyy / (double)(app.gsensor_max - app.gsensor_deadzone);
-//             //            fjoyx = fjoyx * fjoyx * fjoyx;
-//             //            fjoyy = fjoyy * fjoyy * fjoyy;
-//             //            printf("scaled x: %lf    scaled y: %lf\n", fjoyx, fjoyy);
-//             printf("  fjoyx_scaled: %lf  fjoyy_scaled: %lf\n", fjoyx, fjoyy);
-//             server::Msg_MouseForce (options::GetDouble("MouseSpeed") *
-//                V2 (fjoyx * 4.0, fjoyy * 4.0));
-//          } 
-//          else {
-//             printf("\n");
-//          }
-//   }
-    
-    // KOULES CODE FOR REF.:
-//	if (gsensor_enabled && joy_gsensor) { // disabled in 2-player mode
-//		Sint16 xmove, ymove;
-//		xmove=SDL_JoystickGetAxis(joy_gsensor,0);
-//		ymove=SDL_JoystickGetAxis(joy_gsensor,1);
-//		control_state[CGSENSORLEFT] 	= (xmove < (gsensor_centerx - gsensor_deadzone));
-//		control_state[CGSENSORRIGHT] 	= (xmove > (gsensor_centerx + gsensor_deadzone));
-//		control_state[CGSENSORUP] 		= (ymove < (gsensor_centery - gsensor_deadzone));
-//		control_state[CGSENSORDOWN] 	= (ymove > (gsensor_centery + gsensor_deadzone));
-//	} else {
-//		control_state[CGSENSORUP] = control_state[CGSENSORDOWN] =
-//			control_state[CGSENSORLEFT] = control_state[CGSENSORRIGHT] = 0;
-//	}
-//        int analog_deadzone = 500;
-//        int gsensor_deadzone = 1250;	// Seems to also work well on the GCW Zero's g-sensor
-//        int gsensor_centerx = 0;		   // The g-sensor needs a re-settable center so the user can play at a normal tilt
-//        int gsensor_centery = 13100;	//	13100 is a reasonable backwards-tilt to set as default.
-//        int gsensor_recently_recentered = 0;	// Other code can use this to sense when to display message 
-//                                             //  confirming recentering of g-sensor
-//        const int gsensor_max = 26200;	// seems to be the maximum reading in any direction from the gsensor
-//        int analog_active = 1;
-//        int gsensor_active = 0;
-
-
 
     while (SDL_PollEvent(&e)) {
         switch (e.type) {
@@ -419,7 +318,6 @@ void Client::handle_events()
             break;
         case SDL_JOYBUTTONUP:
             update_mouse_button_state();
-
             if (e.jbutton.button == 3) {
                // X button released ; normal marble movement
                speed_scale = 1.0;

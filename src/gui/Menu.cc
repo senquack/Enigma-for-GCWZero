@@ -36,6 +36,9 @@ using namespace std;
 #define SCREEN ecl::Screen::get_instance()
 
 namespace enigma { namespace gui {
+    //senquack - added to facilitate joystick-driven cursor w/ DPAD acting as keyboard arrow keys
+    static int dpad_used_last = 0;
+
     /* -------------------- Menu -------------------- */
     
     Menu::Menu()
@@ -74,9 +77,10 @@ namespace enigma { namespace gui {
     
     bool Menu::manage() {
         //senquack - added joystick support (this is the GUI cursor-emulation side of it)
+        int joyx = 0, joyy = 0;
+        static int old_joyx = 0, old_joyy = 0;
         double fjoyx = 0, fjoyy = 0;
-        uint8_t hat_status;     // For reading DPAD
-        static double old_fjoyx = 0, old_fjoyy = 0;
+//        uint8_t hat_status;     // For reading DPAD
         int cursorx, cursory;
         const double accel_cutoff = 4000;       // If new axis reading is off by this much or more from the last 
                                                 //      axis reading,  reset acceleration
@@ -99,50 +103,38 @@ namespace enigma { namespace gui {
 
             //senquack - added joystick support
             if (joy_gcw0) {
-               hat_status = SDL_JoystickGetHat(joy_gcw0, 0);
-               if (hat_status) {
-                   // A direction is pressed
-                   if (hat_status & SDL_HAT_UP) {
-                       fjoyy = -32767.0;
-                   } 
-                   if (hat_status & SDL_HAT_DOWN) {
-                       fjoyy = 32767.0;
-                   } 
-                   if (hat_status & SDL_HAT_LEFT) {
-                       fjoyx = -32767.0;
-                   } 
-                   if (hat_status & SDL_HAT_RIGHT) {
-                       fjoyx = 32767.0;
-                   }
-               } else {
-                   // If DPAD is not being used, read the analog stick instead
-                   fjoyx=(double)SDL_JoystickGetAxis(joy_gcw0, 0);
-                   fjoyy=(double)SDL_JoystickGetAxis(joy_gcw0, 1); 
+               // If DPAD is not being used, read the analog stick instead
+               joyx=(double)SDL_JoystickGetAxis(joy_gcw0, 0);
+               joyy=(double)SDL_JoystickGetAxis(joy_gcw0, 1); 
+
+               // Only move cursor if stick has been moved at least a little bit
+               if (abs(joyx) > 500 || abs(joyy) > 500) {
+                  dpad_used_last = 0;
+                  if (abs(old_joyx - joyx) > accel_cutoff ||
+                        abs(old_joyy - joyy) > accel_cutoff) {
+                     // Reset acceleration
+                     cur_speed = init_speed;
+                  } else {
+                     // Accelerate
+                     cur_speed += accel_inc;
+                     if (cur_speed > max_speed) {
+                        cur_speed = max_speed;
+                     }
+                  }
+                  old_joyx = joyx; old_joyy = joyy;
+                  fjoyx = (double)joyx; fjoyy = (double)joyy;
+                  fjoyx = fjoyx / 32767.0; fjoyy = fjoyy / 32767.0;
+                  fjoyx = fjoyx * cur_speed; fjoyy = fjoyy * cur_speed;
+                  SDL_GetMouseState(&cursorx, &cursory);
+                  cursorx += (int)fjoyx;
+                  cursory += (int)fjoyy;
+                  SDL_WarpMouse(cursorx, cursory);
+                  SDL_GetMouseState(&cursorx, &cursory);
+                  video::MoveMouse(cursorx, cursory);
+                  // We now let SDL_MOUSEMOTION in the handle_events() function deal with this:
+                  // (or else DPAD controlling the arrow keys doesn't work)
+                  // track_active_widget( cursorx, cursory );
                }
-               if (abs(old_fjoyx - fjoyx) > accel_cutoff ||
-                       abs(old_fjoyy - fjoyy) > accel_cutoff) {
-                   // Reset acceleration
-                   cur_speed = init_speed;
-               } else {
-                   // Accelerate
-                   cur_speed += accel_inc;
-                   if (cur_speed > max_speed) {
-                       cur_speed = max_speed;
-                   }
-               }
-               old_fjoyx = fjoyx;
-               old_fjoyy = fjoyy;
-               fjoyx = fjoyx / 32767.0;
-               fjoyy = fjoyy / 32767.0;
-               fjoyx = fjoyx * cur_speed;
-               fjoyy = fjoyy * cur_speed;
-               SDL_GetMouseState(&cursorx, &cursory);
-               cursorx += (int)fjoyx;
-               cursory += (int)fjoyy;
-               SDL_WarpMouse(cursorx, cursory);
-               SDL_GetMouseState(&cursorx, &cursory);
-               video::MoveMouse(cursorx, cursory);
-               track_active_widget( cursorx, cursory );
             }
 
             SDL_Delay(10);
@@ -188,23 +180,61 @@ namespace enigma { namespace gui {
     }
     
     void Menu::handle_event(const SDL_Event &e) {
+        //senquack - added to facilitate joystick support:
+        int mousex = 0, mousey = 0;
+        SDL_Event new_event;
         
-        // Alt && Return for Fullscreen Toggle on Linux only
-        if (e.type == SDL_KEYDOWN &&  e.key.keysym.sym == SDLK_RETURN && 
-                e.key.keysym.mod & KMOD_ALT) {
-            video::ToggleFullscreen();
-            return;
-        }
-        
-        // Boss quit key Shift && ESC or Mac OS X application quit sequence
-        if (e.type == SDL_KEYDOWN && ((e.key.keysym.sym == SDLK_ESCAPE && 
-                (e.key.keysym.mod & KMOD_SHIFT)) || (e.key.keysym.sym == SDLK_q && 
-                (e.key.keysym.mod & KMOD_META)))) {
-            abort();
-            app.bossKeyPressed = true;
-            return;
-        }
-        
+        //senquack - don't need this on GCW:
+//        // Alt && Return for Fullscreen Toggle on Linux only
+//        if (e.type == SDL_KEYDOWN &&  e.key.keysym.sym == SDLK_RETURN && 
+//                e.key.keysym.mod & KMOD_ALT) {
+//            video::ToggleFullscreen();
+//            return;
+//        }
+//        
+//        // Boss quit key Shift && ESC or Mac OS X application quit sequence
+//        if (e.type == SDL_KEYDOWN && ((e.key.keysym.sym == SDLK_ESCAPE && 
+//                (e.key.keysym.mod & KMOD_SHIFT)) || (e.key.keysym.sym == SDLK_q && 
+//                (e.key.keysym.mod & KMOD_META)))) {
+//            abort();
+//            app.bossKeyPressed = true;
+//            return;
+//        }
+
+        //senquack - added to allow DPAD to simulate keyboard arrow keys:
+        if (e.type == SDL_JOYHATMOTION && e.jhat.value) {
+            dpad_used_last = 1;  // So we know to now simulate ENTER key with A button, not mouse click
+
+            //First, simulate the key down event:
+            new_event.key.type = new_event.type = SDL_KEYDOWN;
+            new_event.key.state = SDL_PRESSED;
+            new_event.key.keysym.mod = KMOD_NONE;
+            switch (e.jhat.value) {
+                case SDL_HAT_DOWN:  new_event.key.keysym.sym = SDLK_DOWN; break;
+                case SDL_HAT_UP:    new_event.key.keysym.sym = SDLK_UP; break;
+                case SDL_HAT_RIGHT: new_event.key.keysym.sym = SDLK_RIGHT; break;
+                case SDL_HAT_LEFT:  new_event.key.keysym.sym = SDLK_LEFT; break;
+                default: break;
+            }
+            if (active_widget && active_widget->on_event(new_event)) return;
+            if (key_focus_widget && key_focus_widget->on_event(new_event)) return;
+            if (on_event(new_event)) return;   // track active widgets (LevelWidget)
+
+            // Then, simulate the matching key-up event:
+            new_event.key.type = new_event.type = SDL_KEYUP;
+            new_event.key.state = SDL_RELEASED;
+            switch (e.jhat.value) {
+                case SDL_HAT_DOWN:  new_event.key.keysym.sym = SDLK_DOWN; break;
+                case SDL_HAT_UP:    new_event.key.keysym.sym = SDLK_UP; break;
+                case SDL_HAT_RIGHT: new_event.key.keysym.sym = SDLK_RIGHT; break;
+                case SDL_HAT_LEFT:  new_event.key.keysym.sym = SDLK_LEFT; break;
+                default: break;
+            }
+
+            if (active_widget && active_widget->on_event(new_event)) return;
+            if (key_focus_widget && key_focus_widget->on_event(new_event)) return;
+            if (on_event(new_event)) return;   // track active widgets (LevelWidget)
+        } else {
         
         // first allow active widget to handle event
         if (active_widget && active_widget->on_event(e))
@@ -217,11 +247,11 @@ namespace enigma { namespace gui {
         // menu subclass with special handling
         if (on_event(e) && e.type != SDL_MOUSEMOTION)   // track active widgets (LevelWidget)
             return;
-    
-        //senquack added joystick support:
-        int mousex = 0, mousey = 0;
-        SDL_Event new_event;
 
+        }
+    
+        //debug
+        printf("dpad_used_last: %d\n", dpad_used_last);
         switch (e.type) {
             case SDL_QUIT:
                 abort();
@@ -246,24 +276,50 @@ namespace enigma { namespace gui {
                                          break;
                     }
                 }
-
                 break;
-
-            //senquack - added joystick support
+            //senquack - added joystick support:
+            case SDL_JOYAXISMOTION:
+                // is this is an event from the analog stick?
+                if (e.jaxis.which == 0) {
+                    dpad_used_last = 0;  // So we know to NOT simulate ENTER key with A button, but instead, mouse click
+                }
+                break;
+            case SDL_JOYHATMOTION:
+                dpad_used_last = 1;  // So we know to now simulate ENTER key with A button, not mouse click
+                switch (e.jhat.value) {
+                    case SDL_HAT_DOWN:  goto_adjacent_widget( 0,  1); break;
+                    case SDL_HAT_UP:    goto_adjacent_widget( 0, -1); break;
+                    case SDL_HAT_RIGHT: goto_adjacent_widget( 1,  0); break;
+                    case SDL_HAT_LEFT:  goto_adjacent_widget(-1,  0); break;
+                    default: break;
+                }
+                break;
             case SDL_JOYBUTTONDOWN:
             case SDL_JOYBUTTONUP:
                 if (e.jbutton.button == 0 || e.jbutton.button == 1) {
                     // Button A(1) or B(0) pressed 
-                    SDL_GetMouseState(&mousex, &mousey);
-                    new_event.button.x = mousex;
-                    new_event.button.y = mousey;
-                    new_event.button.state = (e.type == SDL_JOYBUTTONDOWN) ? SDL_PRESSED : SDL_RELEASED;
-                    new_event.button.type = new_event.type = 
-                        (e.type == SDL_JOYBUTTONDOWN) ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
-                    new_event.button.button = (e.jbutton.button == 0) ? SDL_BUTTON_RIGHT : SDL_BUTTON_LEFT;
-                    new_event.button.which = 0;      // Don't know what else to put here
-                    track_active_widget( mousex, mousey );
-                    if (active_widget) active_widget->on_event(new_event);
+                    if (e.jbutton.button == 1 && dpad_used_last) {
+                        // A button is handled specially: it can either be the "enter key" or left-mouse-click,
+                        //    depending on whether the analog stick or the DPAD was the most recently used control.
+                        new_event.key.type = new_event.type = (e.type == SDL_JOYBUTTONDOWN) ? SDL_KEYDOWN : SDL_KEYUP;
+                        new_event.key.state = (e.type == SDL_JOYBUTTONDOWN) ? SDL_PRESSED : SDL_RELEASED;
+                        new_event.key.keysym.sym = SDLK_RETURN;
+                        new_event.key.keysym.mod = KMOD_NONE;
+                        on_event(new_event); // <- If I didn't add this, things didn't work right
+                        if (active_widget) active_widget->on_event(new_event);
+                    } else {
+                        // Simulate mouse clicks
+                        SDL_GetMouseState(&mousex, &mousey);
+                        new_event.button.x = mousex;
+                        new_event.button.y = mousey;
+                        new_event.button.state = (e.type == SDL_JOYBUTTONDOWN) ? SDL_PRESSED : SDL_RELEASED;
+                        new_event.button.type = new_event.type = 
+                            (e.type == SDL_JOYBUTTONDOWN) ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
+                        new_event.button.button = (e.jbutton.button == 0) ? SDL_BUTTON_RIGHT : SDL_BUTTON_LEFT;
+                        new_event.button.which = 0;      // Don't know what else to put here
+                        track_active_widget( mousex, mousey );
+                        if (active_widget) active_widget->on_event(new_event);
+                    }
                 } else if (e.jbutton.button == 6 || e.jbutton.button == 7) {
                     // L(6) or R(7) trigger pressed; simulate mouse wheel scroll
                     SDL_GetMouseState(&mousex, &mousey);

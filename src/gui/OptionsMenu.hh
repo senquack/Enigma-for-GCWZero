@@ -73,7 +73,7 @@ namespace enigma { namespace gui {
         //senquack
 //        gui::BoolOptionButton *fullscreen;
 //        gui::VideoModeButton *videomode;
-        gui::TextField *userNameTF;
+//        gui::TextField *userNameTF;
         gui::TextField *userPathTF;
         gui::TextField *userImagePathTF;
         gui::TextField *menuMusicTF;
