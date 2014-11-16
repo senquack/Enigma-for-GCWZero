@@ -570,8 +570,9 @@ namespace enigma { namespace gui {
         but_audio_options->setHighlight(new_page == OPTIONS_AUDIO);
         but_config_options = new StaticTextButton(N_("Config"), this);
         but_config_options->setHighlight(new_page == OPTIONS_CONFIG);
-        but_paths_options = new StaticTextButton(N_("Paths"), this);
-        but_paths_options->setHighlight(new_page == OPTIONS_PATHS);
+        //senquack - removed PATHS part of options
+//        but_paths_options = new StaticTextButton(N_("Paths"), this);
+//        but_paths_options->setHighlight(new_page == OPTIONS_PATHS);
         pagesVList->add_back(but_main_options);
         pagesVList->add_back(new Label(""));
 
@@ -581,7 +582,8 @@ namespace enigma { namespace gui {
 
         pagesVList->add_back(but_audio_options);
         pagesVList->add_back(but_config_options);
-        pagesVList->add_back(but_paths_options);
+        //senquack - removed PATHS part of options
+//        pagesVList->add_back(but_paths_options);
         this->add(pagesVList, Rect(param[vtt].hmargin + vh,
                                    param[vtt].vmargin + vv, 
                                    param[vtt].pageb_width,
@@ -707,14 +709,15 @@ namespace enigma { namespace gui {
 //                OPTIONS_NEW_L(N_("User name: "))
 //                OPTIONS_NEW_T(userNameTF)
                 break;
-            case OPTIONS_PATHS:
-                userPathTF = new TextField(XMLtoUtf8(LocalToXML(app.userPath.c_str()).x_str()).c_str());
-                OPTIONS_NEW_L(N_("User path: "))
-                OPTIONS_NEW_T(userPathTF)
-                userImagePathTF = new TextField(XMLtoUtf8(LocalToXML(app.userImagePath.c_str()).x_str()).c_str());
-                OPTIONS_NEW_L(N_("User image path: "))
-                OPTIONS_NEW_T(userImagePathTF)
-                break;
+        //senquack - removed PATHS part of options
+//            case OPTIONS_PATHS:
+//                userPathTF = new TextField(XMLtoUtf8(LocalToXML(app.userPath.c_str()).x_str()).c_str());
+//                OPTIONS_NEW_L(N_("User path: "))
+//                OPTIONS_NEW_T(userPathTF)
+//                userImagePathTF = new TextField(XMLtoUtf8(LocalToXML(app.userImagePath.c_str()).x_str()).c_str());
+//                OPTIONS_NEW_L(N_("User image path: "))
+//                OPTIONS_NEW_T(userImagePathTF)
+//                break;
         }
 #undef OPTIONS_NEW_L
 #undef OPTIONS_NEW_LB
@@ -876,9 +879,10 @@ namespace enigma { namespace gui {
         } else if (w == but_config_options) {
             close_page();
             open_page(OPTIONS_CONFIG);
-        } else if (w == but_paths_options) {
-            close_page();
-            open_page(OPTIONS_PATHS);
+        //senquack - removed PATHS part of options
+//        } else if (w == but_paths_options) {
+//            close_page();
+//            open_page(OPTIONS_PATHS);
         }
     }
     

@@ -116,7 +116,8 @@ namespace enigma { namespace gui {
        "  Analog Nub:    Move cursor",
        "  DPAD:    Keyboard arrow keys",
        "  A:    Mouse left-click / Enter key",
-       "  B:    Mouse right-click",
+       "  Y:    Mouse right-click",
+       "  B:    Previous menu",
        "  Left/Right Trigger:    Mouse wheel",
        0
     };

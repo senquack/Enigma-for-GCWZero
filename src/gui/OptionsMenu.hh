@@ -43,11 +43,11 @@ namespace enigma { namespace gui {
         void tick(double dtime) {}
 
         // Page structure.
-        //senquack - added numerous controls specific to GCW port:
+        //senquack - added numerous controls specific to GCW port, removed PATHS options
 //        enum OptionsPage { OPTIONS_MAIN, OPTIONS_VIDEO, OPTIONS_AUDIO,
 //                           OPTIONS_CONFIG, OPTIONS_PATHS };
         enum OptionsPage { OPTIONS_MAIN, OPTIONS_CONTROLS, OPTIONS_AUDIO,
-                           OPTIONS_CONFIG, OPTIONS_PATHS };
+                           OPTIONS_CONFIG };
         void open_page(OptionsPage new_page);
         void close_page();
 
@@ -69,8 +69,8 @@ namespace enigma { namespace gui {
 
         gui::StaticTextButton *but_audio_options;
         gui::StaticTextButton *but_config_options;
-        gui::StaticTextButton *but_paths_options;
-        //senquack
+        //senquack - removed PATHS part of option, as well as others:
+//        gui::StaticTextButton *but_paths_options;
 //        gui::BoolOptionButton *fullscreen;
 //        gui::VideoModeButton *videomode;
 //        gui::TextField *userNameTF;

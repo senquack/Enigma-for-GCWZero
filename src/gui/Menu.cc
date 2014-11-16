@@ -29,6 +29,9 @@
 #include <algorithm>
 #include <iostream>
 
+//senquack - for helping with quitting menus with joystick controls:
+#include <typeinfo>
+#include "gui/MainMenu.hh"
 
 using namespace ecl;
 using namespace std;
@@ -250,8 +253,6 @@ namespace enigma { namespace gui {
 
         }
     
-        //debug
-        printf("dpad_used_last: %d\n", dpad_used_last);
         switch (e.type) {
             case SDL_QUIT:
                 abort();
@@ -264,6 +265,7 @@ namespace enigma { namespace gui {
                 if (!active_widget || !active_widget->on_event(e)) {
                     // if not handled by active_widget
                     switch (e.key.keysym.sym) {
+                       //senquack - don't want this on GCW:
                         case SDLK_ESCAPE:
                             abort();
                             break;
@@ -296,8 +298,8 @@ namespace enigma { namespace gui {
                 break;
             case SDL_JOYBUTTONDOWN:
             case SDL_JOYBUTTONUP:
-                if (e.jbutton.button == 0 || e.jbutton.button == 1) {
-                    // Button A(1) or B(0) pressed 
+                if (e.jbutton.button == 2 || e.jbutton.button == 1) {
+                    // Button A(1) or Y(2) pressed 
                     if (e.jbutton.button == 1 && dpad_used_last) {
                         // A button is handled specially: it can either be the "enter key" or left-mouse-click,
                         //    depending on whether the analog stick or the DPAD was the most recently used control.
@@ -315,7 +317,7 @@ namespace enigma { namespace gui {
                         new_event.button.state = (e.type == SDL_JOYBUTTONDOWN) ? SDL_PRESSED : SDL_RELEASED;
                         new_event.button.type = new_event.type = 
                             (e.type == SDL_JOYBUTTONDOWN) ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
-                        new_event.button.button = (e.jbutton.button == 0) ? SDL_BUTTON_RIGHT : SDL_BUTTON_LEFT;
+                        new_event.button.button = (e.jbutton.button == 2) ? SDL_BUTTON_RIGHT : SDL_BUTTON_LEFT;
                         new_event.button.which = 0;      // Don't know what else to put here
                         track_active_widget( mousex, mousey );
                         if (active_widget) active_widget->on_event(new_event);
@@ -332,7 +334,14 @@ namespace enigma { namespace gui {
                     new_event.button.which = 0;      // Don't know what else to put here
                     track_active_widget(mousex, mousey);
                     if (active_widget) active_widget->on_event(new_event);
+                } else if (e.jbutton.button == 0 && e.jbutton.type == SDL_JOYBUTTONDOWN) {
+                   //senquack - simulate "Escape" with B button for exiting current menu
+                   // (but not for the main menu, so use RTTI to determine what menu we're in):
+                   if (typeid(*this) != typeid(MainMenu)) {
+                      quitp = true;       
+                   }
                 }
+
                 break;
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:
