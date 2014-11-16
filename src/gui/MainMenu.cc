@@ -99,6 +99,20 @@ namespace enigma { namespace gui {
     {
     }
 
+    //senquack - added port-specific help:
+    static const char *controls_text[] = {
+       N_("GCW port by senquack (Dan Silsby)"),
+       " ",
+       N_("Controls:"),
+       "  A or Right Trigger:    Use inventory item",
+       "  Left Trigger or Select:    Cycle inventory left/right",
+       "  Start:    In-game menu",
+       "  Analog Nub or DPAD:    Move marble at normal speed",
+       "  B:    Move with speed scale #1",
+       "  X:    Move with speed scale #2",
+       "  Y:    Move with speed scale #3",
+       0
+    };
 
     /* -------------------- Help menu -------------------- */
     static const char *credit_text[] = {
@@ -283,11 +297,13 @@ namespace enigma { namespace gui {
         BuildVList br = vshrink? BuildVList(this, Rect(180, 40, 100, 25), 4) : BuildVList(this, Rect(0, 0, 0, 0), 0);
         BuildVList *brp = vshrink? &br : &b;
 
-        homepage = b.add(new StaticTextButton(N_("Homepage"), this));
-        docs = b.add(new StaticTextButton(N_("Documentation"), this));
+        //senquack - disabling stuff not applicable on GCW and adding port-specific help:
+        controls = b.add(new StaticTextButton(N_("GCW Zero Controls"), this));
+//        homepage = b.add(new StaticTextButton(N_("Homepage"), this));
+//        docs = b.add(new StaticTextButton(N_("Documentation"), this));
         paths = b.add(new StaticTextButton(N_("Paths"), this));
-        autofolder = brp->add(new StaticTextButton(N_("Locate Auto"), this));
-        scorefolder = brp->add(new StaticTextButton(N_("Locate Score"), this));
+//        autofolder = brp->add(new StaticTextButton(N_("Locate Auto"), this));
+//        scorefolder = brp->add(new StaticTextButton(N_("Locate Score"), this));
         credits = brp->add(new StaticTextButton(N_("Credits"), this));
         back = brp->add(new StaticTextButton(N_("Back"), this));
     }
@@ -300,20 +316,26 @@ namespace enigma { namespace gui {
     }
 
     void MainHelpMenu::on_action(gui::Widget *w) {
-        if (w == homepage) {
-            video::SetFullscreen(false);
-            ecl::BrowseUrl("http://www.enigma-game.org");
-        } else if (w == docs) {
-            video::SetFullscreen(false);
-            ecl::BrowseUrl("file://" + app.docPath + "/index.html");
+       //senquack - removing non-functional things on GCW:
+//        if (w == homepage) {
+//            video::SetFullscreen(false);
+//            ecl::BrowseUrl("http://www.enigma-game.org");
+//        } else if (w == docs) {
+//            video::SetFullscreen(false);
+//            ecl::BrowseUrl("file://" + app.docPath + "/index.html");
+//        } else if (w == paths) {
+//            showPaths();
+//        } else if (w == autofolder) {
+//            video::SetFullscreen(false);
+//            ecl::ExploreFolder(ecl::BeautifyPath(app.userPath + "/levels/auto"));
+//        } else if (w == scorefolder) {
+//            video::SetFullscreen(false);
+//            ecl::ExploreFolder(ecl::BeautifyPath(app.userPath));
+        if (w == controls) {
+           displayInfo(controls_text, 1);
         } else if (w == paths) {
             showPaths();
-        } else if (w == autofolder) {
-            video::SetFullscreen(false);
-            ecl::ExploreFolder(ecl::BeautifyPath(app.userPath + "/levels/auto"));
-        } else if (w == scorefolder) {
-            video::SetFullscreen(false);
-            ecl::ExploreFolder(ecl::BeautifyPath(app.userPath));
+
         } else if (w == credits) {
             displayInfo(credit_text, 9);
         } else if (w == back) {

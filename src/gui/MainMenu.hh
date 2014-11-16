@@ -77,11 +77,13 @@ namespace enigma { namespace gui {
         void showPaths();
 
         // Variables.
-        gui::Widget *homepage;
-        gui::Widget *docs;
+       //senquack - removing non-functional things on GCW and adding port-specific help:
+        gui::Widget *controls;
+//        gui::Widget *homepage;
+//        gui::Widget *docs;
         gui::Widget *paths;
-        gui::Widget *autofolder;
-        gui::Widget *scorefolder;
+//        gui::Widget *autofolder;
+//        gui::Widget *scorefolder;
         gui::Widget *credits;
         gui::Widget *back;
     };
