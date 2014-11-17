@@ -7,6 +7,8 @@ DefineFont ("modesfont", "DejaVuSansCondensed.ttf", 9, "menufont", 70, 120, 255)
 DefineFont ("menufont", "DejaVuSansCondensed.ttf", 9, "menufont")
 DefineFont ("levelmenu", "DejaVuSansCondensed.ttf", 9, "levelmenu")
 DefineFont ("menufontsel", "DejaVuSansCondensed.ttf", 10, "menufont", 180, 180, 180)
-DefineFont ("statusbarfont", "DejaVuSansCondensed.ttf", 7, "dreamorp24")
+--senquack - modified for GCW zero:
+--DefineFont ("statusbarfont", "DejaVuSansCondensed.ttf", 7, "dreamorp24")
+DefineFont ("statusbarfont", "DejaVuSansCondensed.ttf", 10, "dreamorp24")
 
 dofile(FindDataFile("models-2d.lua"))

@@ -4,7 +4,7 @@
   <properties>
     <property key="MouseSpeed" value="7.0"/>
     <property key="FullScreen" value="0"/>
-    <property key="InGameMusic" value="0"/>
+    <property key="InGameMusic" value="1"/>
     <property key="VideoMode" value="0"/>
     <property key="Gamma" value="1.0"/>
     <property key="SoundSet" value="0"/>
