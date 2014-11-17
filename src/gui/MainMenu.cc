@@ -399,36 +399,37 @@ namespace enigma { namespace gui {
             work = work.substr(breakPos);
             i++;
         } while(!work.empty() );
-        pathtext[i++] = " ";
-        pathtext[i++] = N_("System Path:");
-        work = ecl::BeautifyPath(app.systemFS->getDataPath());
-        do {
-            std::string::size_type breakPos = breakString(menufont, work, ecl::PathSeparators, width);
-            pathstrings[i] = "    " + work.substr(0,breakPos);
-            pathtext[i] = pathstrings[i].c_str();
-            work = work.substr(breakPos);
-            i++;
-        } while(!work.empty() );
-        pathtext[i++] = " ";
-        pathtext[i++] = N_("Resource Paths:");
-        work = ecl::BeautifyPath(app.resourceFS->getDataPath());
-        do {
-            std::string::size_type breakPos = breakString(menufont, work, ecl::PathSeparators, width);
-            pathstrings[i] = "    " + work.substr(0,breakPos);
-            pathtext[i] = pathstrings[i].c_str();
-            work = work.substr(breakPos);
-            i++;
-        } while(!work.empty() );
-        pathtext[i++] = " ";
-        pathtext[i++] = N_("L10n Path:");
-        work = ecl::BeautifyPath(app.l10nPath);
-        do {
-            std::string::size_type breakPos = breakString(menufont, work, ecl::PathSeparators, width);
-            pathstrings[i] = "    " + work.substr(0,breakPos);
-            pathtext[i] = pathstrings[i].c_str();
-            work = work.substr(breakPos);
-            i++;
-        } while(!work.empty() );
+        //senquack - does not apply to GCW zero port:
+//        pathtext[i++] = " ";
+//        pathtext[i++] = N_("System Path:");
+//        work = ecl::BeautifyPath(app.systemFS->getDataPath());
+//        do {
+//            std::string::size_type breakPos = breakString(menufont, work, ecl::PathSeparators, width);
+//            pathstrings[i] = "    " + work.substr(0,breakPos);
+//            pathtext[i] = pathstrings[i].c_str();
+//            work = work.substr(breakPos);
+//            i++;
+//        } while(!work.empty() );
+//        pathtext[i++] = " ";
+//        pathtext[i++] = N_("Resource Paths:");
+//        work = ecl::BeautifyPath(app.resourceFS->getDataPath());
+//        do {
+//            std::string::size_type breakPos = breakString(menufont, work, ecl::PathSeparators, width);
+//            pathstrings[i] = "    " + work.substr(0,breakPos);
+//            pathtext[i] = pathstrings[i].c_str();
+//            work = work.substr(breakPos);
+//            i++;
+//        } while(!work.empty() );
+//        pathtext[i++] = " ";
+//        pathtext[i++] = N_("L10n Path:");
+//        work = ecl::BeautifyPath(app.l10nPath);
+//        do {
+//            std::string::size_type breakPos = breakString(menufont, work, ecl::PathSeparators, width);
+//            pathstrings[i] = "    " + work.substr(0,breakPos);
+//            pathtext[i] = pathstrings[i].c_str();
+//            work = work.substr(breakPos);
+//            i++;
+//        } while(!work.empty() );
         pathtext[i++] = 0;
         displayInfo(pathtext, 1);
     }
