@@ -17,6 +17,10 @@ TOLUA_API int  tolua_px_open (lua_State* tolua_S);
 #include "ecl.hh"
 using namespace ecl;
 
+
+//senquack - NEW: support for copying backbuffer to our hidden real SDL screen (to allow double buffering):
+#include "video.hh"
+
 /* function to release collected object via destructor */
 #ifdef __cplusplus
 
@@ -1290,6 +1294,9 @@ static int tolua_px_ecl_Screen_flush_updates00(lua_State* tolua_S)
 #endif
   {
    self->flush_updates();
+
+   //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+   video::FlipBackbuffer();
   }
  }
  return 0;

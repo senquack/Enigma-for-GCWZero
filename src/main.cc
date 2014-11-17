@@ -546,6 +546,8 @@ void Application::init(int argc, char **argv)
         vline(gc, 470, 280, 20);
         scr->update_all ();
         scr->flush_updates();
+       //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+        video::FlipBackbuffer();
 
         int i = 0;
         for (int m=0; m<3; m++) {
@@ -562,6 +564,8 @@ void Application::init(int argc, char **argv)
                 vline(gc, 170 + i*100 / size, 280, 20);
                 scr->update_all ();
                 scr->flush_updates();
+                //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+                video::FlipBackbuffer();
             }
         }
         Log << "Make preview finished succesfully\n";

@@ -84,6 +84,10 @@ namespace video
         std::string    fallback_fullscreen;
     };
 
+    //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+    void FlipBackbuffer();
+
+
     void Init();
     void Shutdown();
 

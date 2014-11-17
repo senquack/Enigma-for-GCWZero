@@ -99,6 +99,10 @@ namespace enigma { namespace gui {
         draw_all();
         while (!(quitp || abortp)) {
             SCREEN->flush_updates();
+
+            //senquack - copy backbuffer to our hidden real SDL screen (to allow double buffering):
+            video::FlipBackbuffer();
+
             while (SDL_PollEvent(&e)) {
                 handle_event(e);
                 if (app.bossKeyPressed) return true;

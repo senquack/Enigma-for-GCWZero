@@ -2170,6 +2170,9 @@ void GameDisplay::redraw (ecl::Screen *screen) {
         draw_borders(gc);
     screen->flush_updates();
     redraw_everything = false;
+
+    //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+    video::FlipBackbuffer();
 }
 
 void GameDisplay::draw_all (GC &gc) {

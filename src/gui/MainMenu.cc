@@ -118,7 +118,7 @@ namespace enigma { namespace gui {
        "  A:    Mouse left-click / Enter key",
        "  Y:    Mouse right-click",
        "  B:    Previous menu",
-       "  Left/Right Trigger:    Mouse wheel",
+       "  Left & Right Trigger:    Mouse wheel",
        0
     };
 

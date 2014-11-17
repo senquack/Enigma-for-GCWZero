@@ -748,6 +748,10 @@ void Client::draw_screen()
         }
         scr->update_all();
         scr->flush_updates();
+
+        //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+        video::FlipBackbuffer();
+
         break;
     }
     default:

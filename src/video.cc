@@ -53,12 +53,18 @@ namespace
 {
     class Video_SDL {
         SDL_Surface*    sdlScreen;
+        //senquack - our hidden real SDL screen (to allow double buffering):
+        SDL_Surface*    real_sdlScreen;
+
         string          caption;
         ecl::Screen*     screen;
         bool            initialized;
     public:
         Video_SDL();
         ~Video_SDL();
+
+        //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+        void flip_backbuffer();
 
         bool init(int w, int h, int bpp, bool fullscreen);
         void toggle_fullscreen();
@@ -121,6 +127,14 @@ Video_SDL::~Video_SDL()
     delete screen;
 }
 
+//senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+void Video_SDL::flip_backbuffer()
+{
+   SDL_BlitSurface(sdlScreen, NULL, real_sdlScreen, NULL);
+   SDL_Flip(real_sdlScreen);
+}
+
+
 void Video_SDL::set_caption(const char *str) {
     caption = str;
     if (initialized)
@@ -156,9 +170,8 @@ bool Video_SDL::init(int w, int h, int bpp, bool fullscreen)
 //    Uint32 flags = SDL_SWSURFACE;
 //    if (fullscreen)
 //        flags |= SDL_FULLSCREEN;
-//    Uint32 flags = SDL_HWSURFACE | SDL_FULLSCREEN;
-//    Uint32 flags = SDL_HWSURFACE | SDL_FULLSCREEN | SDL_DOUBLEBUF;
-    Uint32 flags = SDL_SWSURFACE | SDL_FULLSCREEN;  // WORKS with no flicker
+    //Note: SDL_DOUBLEBUF doesn't play nice with the menu (slow), must use SDL_TRIPLEBUF:
+    Uint32 flags = SDL_HWSURFACE | SDL_FULLSCREEN | SDL_TRIPLEBUF;     
 
     // Try to initialize vide mode, return error code on failure
     sdlScreen = 0;
@@ -167,9 +180,27 @@ bool Video_SDL::init(int w, int h, int bpp, bool fullscreen)
     bpp = 16;
     if (bpp == 0)
         return false;
-    sdlScreen = SDL_SetVideoMode(w, h, bpp, flags);
-    if (sdlScreen == 0) 
-        return false;
+    //senquack - sdl screen is now a virtual screen we blit once per frame to the real screen, to facilitate
+    //            smooth double-buffering
+//    sdlScreen = SDL_SetVideoMode(w, h, bpp, flags);
+    real_sdlScreen = SDL_SetVideoMode(w, h, bpp, flags);
+    sdlScreen = SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, bpp, 
+          real_sdlScreen->format->Rmask,
+          real_sdlScreen->format->Gmask,
+          real_sdlScreen->format->Bmask,
+          real_sdlScreen->format->Amask);
+    if (real_sdlScreen == 0) {
+       printf("Error: Failed to create %d x %d %dbpp SDL surface from SDL_SetVideoMode\n", w, h, bpp);
+       return false;
+    }
+
+    if (sdlScreen == 0) {
+       printf("Error: Failed to create %d x %d %dbpp virtual SDL backbuffer\n", w, h, bpp);
+       return false;
+    }
+    
+//    if (sdlScreen == 0) 
+//        return false;
 
     // Video mode could be set
     screen = new Screen(sdlScreen);
@@ -734,6 +765,11 @@ bool video::ModeAvailable (VideoModes vm)
     return (vminfo->w_available && app.systemFS->findFile (vminfo->initscript, fname));
 }
 
+//senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+void video::FlipBackbuffer()
+{
+   video_engine->flip_backbuffer();
+}
 
 void video::Init() 
 {
@@ -934,6 +970,9 @@ void video::FX_Fade(FadeMode mode)
         screen->update_all();
         screen->flush_updates();
 
+        //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+        video::FlipBackbuffer();
+
         dt = (SDL_GetTicks()-otime)/1000.0;
         if (mode==FADEIN && (a+=v*dt) > 255)
             break;
@@ -948,6 +987,10 @@ void video::FX_Fade(FadeMode mode)
         box (gc, d->size());
     screen->update_all();
     screen->flush_updates();
+
+    //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+    video::FlipBackbuffer();
+
     delete buffer;
 }
 
@@ -975,6 +1018,9 @@ void video::FX_Fly (Surface *newscr, int originx, int originy)
 
         scr->update_rect(r);
         scr->flush_updates();
+
+        //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+        video::FlipBackbuffer();
 
         double dt = (SDL_GetTicks()-otime)/1000.0;
         if (dt > rest_time)
@@ -1042,11 +1088,17 @@ void Effect_Push::tick (double dtime)
 
         scr->update_all();
         scr->flush_updates();
+
+        //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+        video::FlipBackbuffer();
     }
     else {
         blit(scrgc, 0,0, newscr);
         scr->update_all();
         scr->flush_updates();
+
+        //senquack - NEW: copy backbuffer to our hidden real SDL screen (to allow double buffering):
+        video::FlipBackbuffer();
     }
 }
 
