@@ -43,11 +43,10 @@ namespace enigma { namespace gui {
         void tick(double dtime) {}
 
         // Page structure.
-        //senquack - added numerous controls specific to GCW port, removed PATHS options
+        //senquack - added numerous controls specific to GCW port, removed PATHS and CONFIG screens
 //        enum OptionsPage { OPTIONS_MAIN, OPTIONS_VIDEO, OPTIONS_AUDIO,
 //                           OPTIONS_CONFIG, OPTIONS_PATHS };
-        enum OptionsPage { OPTIONS_MAIN, OPTIONS_CONTROLS, OPTIONS_AUDIO,
-                           OPTIONS_CONFIG };
+        enum OptionsPage { OPTIONS_MAIN, OPTIONS_CONTROLS, OPTIONS_AUDIO, OPTIONS_DEFAULTS };
         void open_page(OptionsPage new_page);
         void close_page();
 
@@ -59,6 +58,9 @@ namespace enigma { namespace gui {
 //        gui::Widget *back, *language;
         gui::Widget *back;
 
+        //senquack - added new "load control defaults" button
+        gui::Widget *control_defaults;
+
         //senquack - added button to recalibrate gsensor:
         gui::Widget *but_recalibrate_gsensor;
 
@@ -68,15 +70,19 @@ namespace enigma { namespace gui {
         gui::StaticTextButton *but_controls_options;
 
         gui::StaticTextButton *but_audio_options;
-        gui::StaticTextButton *but_config_options;
+
+        //senquack - added new "defaults" page to options
+        gui::StaticTextButton *but_defaults_options;
+
         //senquack - removed PATHS part of option, as well as others:
+//        gui::StaticTextButton *but_config_options;
 //        gui::StaticTextButton *but_paths_options;
 //        gui::BoolOptionButton *fullscreen;
 //        gui::VideoModeButton *videomode;
 //        gui::TextField *userNameTF;
-        gui::TextField *userPathTF;
-        gui::TextField *userImagePathTF;
-        gui::TextField *menuMusicTF;
+//        gui::TextField *userPathTF;
+//        gui::TextField *userImagePathTF;
+//        gui::TextField *menuMusicTF;
         ecl::Surface *background;
         std::string  previous_caption;
     };
@@ -146,6 +152,18 @@ namespace enigma { namespace gui {
     public:
         // second user action listener: first one is misused by ValueButton 
         GsensorCalibrateButton (ActionListener *al = 0);        
+    };
+
+     //senquack - added new "load controls defaults" button
+    class ControlDefaultsButton : public ValueButton {
+        int get_value() const;
+        void set_value(int value);
+        std::string get_text(int value) const;
+        bool inInit;
+        ActionListener *myListener;
+    public:
+        // second user action listener: first one is misused by ValueButton 
+        ControlDefaultsButton (ActionListener *al = 0);        
     };
 
     class GammaButton : public ValueButton {

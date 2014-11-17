@@ -420,6 +420,34 @@ namespace enigma { namespace gui {
 //        inInit = false;
 //    }
 
+    //senquack - added button to reset controls defaults
+    int ControlDefaultsButton::get_value() const
+    {
+       return 0;
+    }
+    
+    void ControlDefaultsButton::set_value(int value)
+    {
+        if (not inInit) {
+            // only calibrate on user action
+            myListener->on_action(this);
+        }
+    }
+    
+    string ControlDefaultsButton::get_text(int value) const
+    {
+       char msg[] = "Load defaults";
+       return _(msg);
+    }
+    
+    ControlDefaultsButton::ControlDefaultsButton (ActionListener *al)
+    : ValueButton(0, 1), myListener(al)
+    {
+        inInit = true;
+        init();
+        inInit = false;
+    }
+
     //senquack - added button to recalibrate gsensor:
     int GsensorCalibrateButton::get_value() const
     {
@@ -486,17 +514,21 @@ namespace enigma { namespace gui {
 //      language(NULL), but_main_options(NULL), but_video_options(NULL),
 //      but_audio_options(NULL), but_config_options(NULL), fullscreen(NULL),
 //      videomode(NULL), userNameTF(NULL), userPathTF(NULL),
+
 //      language(NULL), but_main_options(NULL), 
 
       //senquack - added button to recalibrate gsensor, removed language button
       but_recalibrate_gsensor(NULL), but_main_options(NULL), 
 
-      but_controls_options(NULL), but_audio_options(NULL), but_config_options(NULL), 
-    //senquack - don't want to display username on GCW port:
-//      userNameTF(NULL), userPathTF(NULL),
-      userPathTF(NULL),
+      but_controls_options(NULL), but_audio_options(NULL),  
 
-      userImagePathTF(NULL), menuMusicTF(NULL), 
+       //senquack - added new "defaults" page to options
+       but_defaults_options(NULL), 
+
+    //senquack - don't want to display username or paths: on GCW port:
+//      userNameTF(NULL), userPathTF(NULL),
+//      userImagePathTF(NULL), menuMusicTF(NULL), 
+
       background(background_), previous_caption(video::GetCaption())
     {
         center();
@@ -524,6 +556,10 @@ namespace enigma { namespace gui {
                 17, 100, 70, 50,
                 7, 5,
                 10, 10, 10
+//                9,
+//                17, 130, 70, 50,
+//                7, 5,
+//                10, 10, 10
             },
             {  // VTS_32 (640x480)
                 9,
@@ -568,11 +604,16 @@ namespace enigma { namespace gui {
 
         but_audio_options = new StaticTextButton(N_("Audio"), this);
         but_audio_options->setHighlight(new_page == OPTIONS_AUDIO);
-        but_config_options = new StaticTextButton(N_("Config"), this);
-        but_config_options->setHighlight(new_page == OPTIONS_CONFIG);
-        //senquack - removed PATHS part of options
+        //senquack - removed PATHS and CONFIG screens in options
+//        but_config_options = new StaticTextButton(N_("Config"), this);
+//        but_config_options->setHighlight(new_page == OPTIONS_CONFIG);
 //        but_paths_options = new StaticTextButton(N_("Paths"), this);
 //        but_paths_options->setHighlight(new_page == OPTIONS_PATHS);
+
+        //senquack - added new "defaults" page to options
+        but_defaults_options = new StaticTextButton(N_("Defaults"), this);
+        but_defaults_options->setHighlight(new_page == OPTIONS_DEFAULTS);
+
         pagesVList->add_back(but_main_options);
         pagesVList->add_back(new Label(""));
 
@@ -581,9 +622,14 @@ namespace enigma { namespace gui {
         pagesVList->add_back(but_controls_options);
 
         pagesVList->add_back(but_audio_options);
-        pagesVList->add_back(but_config_options);
-        //senquack - removed PATHS part of options
+        //senquack - removed PATHS and CONFIG part of options
+//        pagesVList->add_back(but_config_options);
 //        pagesVList->add_back(but_paths_options);
+
+        //senquack - added new "defaults" page to options
+        pagesVList->add_back(but_defaults_options);
+
+
         this->add(pagesVList, Rect(param[vtt].hmargin + vh,
                                    param[vtt].vmargin + vv, 
                                    param[vtt].pageb_width,
@@ -654,10 +700,11 @@ namespace enigma { namespace gui {
 //                OPTIONS_NEW_LB(N_("Video mode: "), videomode = new VideoModeButton())
                //senquack - altered for GCW:
 //                OPTIONS_NEW_LB(N_("Mouse speed: "), new MouseSpeedButton())
-                OPTIONS_NEW_LB(N_("USB Mouse speed: "), new MouseSpeedButton())
                 OPTIONS_NEW_LB(N_("Sound volume: "), new SoundVolumeButton())
                 OPTIONS_NEW_LB(N_("Music volume: "), new MusicVolumeButton())
+                OPTIONS_NEW_LB(N_("Text speed: "), new TextSpeedButton())
                 OPTIONS_NEW_LB(N_("Ratings update: "), new RatingsUpdateButton())
+                OPTIONS_NEW_LB(N_("USB Mouse speed: "), new MouseSpeedButton())
 #ifdef ENABLE_EXPERIMENTAL
                 OPTIONS_NEW_LB(N_("Score upload: "), new ScoreUploadButton())
 #endif
@@ -694,21 +741,22 @@ namespace enigma { namespace gui {
                 OPTIONS_NEW_LB(N_("Music volume: "), new MusicVolumeButton())
                 OPTIONS_NEW_LB(N_("Stereo: "), new StereoButton())
                 break;
-            case OPTIONS_CONFIG:
-        //senquack - got rid of language button (useless on GCW's firmware lacking LOCALE)
-//                OPTIONS_NEW_LB(N_("Language: "), language = new LanguageButton(this))
-                //senquack - altered for GCW:
-//                OPTIONS_NEW_LB(N_("Mouse speed: "), new MouseSpeedButton())
-                OPTIONS_NEW_LB(N_("USB Mouse speed: "), new MouseSpeedButton())
-                OPTIONS_NEW_LB(N_("Text speed: "), new TextSpeedButton())
-                OPTIONS_NEW_LB(N_("Ratings update: "), new RatingsUpdateButton())
-                //senquack - don't want to display username on gcw port:
-//                userNameTF = new TextField(app.state->getString("UserName"));
-//                userNameTF->setMaxChars(20);
-//                userNameTF->setInvalidChars("+");
-//                OPTIONS_NEW_L(N_("User name: "))
-//                OPTIONS_NEW_T(userNameTF)
-                break;
+                //senquack - doing away with this whole category actually, moved TextSpeed to the default screen
+//            case OPTIONS_CONFIG:
+//        //senquack - got rid of language button (useless on GCW's firmware lacking LOCALE)
+////                OPTIONS_NEW_LB(N_("Language: "), language = new LanguageButton(this))
+//                //senquack - altered for GCW:
+////                OPTIONS_NEW_LB(N_("Mouse speed: "), new MouseSpeedButton())
+//                OPTIONS_NEW_LB(N_("USB Mouse speed: "), new MouseSpeedButton())
+//                OPTIONS_NEW_LB(N_("Text speed: "), new TextSpeedButton())
+//                OPTIONS_NEW_LB(N_("Ratings update: "), new RatingsUpdateButton())
+//                //senquack - don't want to display username on gcw port:
+////                userNameTF = new TextField(app.state->getString("UserName"));
+////                userNameTF->setMaxChars(20);
+////                userNameTF->setInvalidChars("+");
+////                OPTIONS_NEW_L(N_("User name: "))
+////                OPTIONS_NEW_T(userNameTF)
+//                break;
         //senquack - removed PATHS part of options
 //            case OPTIONS_PATHS:
 //                userPathTF = new TextField(XMLtoUtf8(LocalToXML(app.userPath.c_str()).x_str()).c_str());
@@ -718,6 +766,10 @@ namespace enigma { namespace gui {
 //                OPTIONS_NEW_L(N_("User image path: "))
 //                OPTIONS_NEW_T(userImagePathTF)
 //                break;
+            case OPTIONS_DEFAULTS:
+                //senquack - added new "defaults" page to options
+                OPTIONS_NEW_LB(N_("Controls settings:"), control_defaults = new ControlDefaultsButton(this));
+                break;
         }
 #undef OPTIONS_NEW_L
 #undef OPTIONS_NEW_LB
@@ -754,20 +806,20 @@ namespace enigma { namespace gui {
 //            else
 //                app.state->setProperty("UserName", std::string(""));
 //        }
-        if(userPathTF) {
-            std::string tfUserPathLocal = XMLtoLocal(Utf8ToXML(userPathTF->getText().c_str()).x_str()).c_str();
-            if (app.userPath != tfUserPathLocal)
-                // ensure that enigma.score is saved with new Username or to new location
-                lev::ScoreManager::instance()->markModified();
-            app.setUserPath(tfUserPathLocal.c_str());
-        }
-        if(userImagePathTF) {
-            std::string tfUserImageLocal = XMLtoLocal(Utf8ToXML(userImagePathTF->getText().c_str()).x_str()).c_str();
-            if (app.userImagePath != tfUserImageLocal)
-                // ensure that enigma.score is saved with new Username or to new location
-                lev::ScoreManager::instance()->markModified();
-            app.setUserImagePath(tfUserImageLocal.c_str());
-        }
+//        if(userPathTF) {
+//            std::string tfUserPathLocal = XMLtoLocal(Utf8ToXML(userPathTF->getText().c_str()).x_str()).c_str();
+//            if (app.userPath != tfUserPathLocal)
+//                // ensure that enigma.score is saved with new Username or to new location
+//                lev::ScoreManager::instance()->markModified();
+//            app.setUserPath(tfUserPathLocal.c_str());
+//        }
+//        if(userImagePathTF) {
+//            std::string tfUserImageLocal = XMLtoLocal(Utf8ToXML(userImagePathTF->getText().c_str()).x_str()).c_str();
+//            if (app.userImagePath != tfUserImageLocal)
+//                // ensure that enigma.score is saved with new Username or to new location
+//                lev::ScoreManager::instance()->markModified();
+//            app.setUserImagePath(tfUserImageLocal.c_str());
+//        }
         // Delete widgets.
         if (pagesVList != NULL) {
             pagesVList->clear();
@@ -782,7 +834,12 @@ namespace enigma { namespace gui {
         but_controls_options = NULL;
 
         but_audio_options = NULL;
-        but_config_options = NULL;
+        //senquack - disabled:
+//        but_config_options = NULL;
+
+        //senquack - added new "defaults" page to options
+        but_defaults_options = NULL;
+
         if (commandHList != NULL) {
             commandHList->clear();
             remove_child(commandHList);
@@ -800,11 +857,13 @@ namespace enigma { namespace gui {
 //        language = NULL;
 //        fullscreen = NULL;
 //        videomode = NULL;
-        menuMusicTF = NULL;
-       //senquack - don't want to display username on gcw port:
+//        menuMusicTF = NULL;
 //        userNameTF = NULL;
-        userPathTF = NULL;
-        userImagePathTF = NULL;
+//        userPathTF = NULL;
+//        userImagePathTF = NULL;
+
+        //senquack - added new "defaults" page to options
+        control_defaults = NULL;
 
         //senquack - added button to recalibrate gsensor:
         but_recalibrate_gsensor = NULL;
@@ -876,13 +935,30 @@ namespace enigma { namespace gui {
         } else if (w == but_audio_options) {
             close_page();
             open_page(OPTIONS_AUDIO);
-        } else if (w == but_config_options) {
-            close_page();
-            open_page(OPTIONS_CONFIG);
-        //senquack - removed PATHS part of options
+        //senquack - removed PATHS and CONFIG part of options
+//        } else if (w == but_config_options) {
+//            close_page();
+//            open_page(OPTIONS_CONFIG);
 //        } else if (w == but_paths_options) {
 //            close_page();
 //            open_page(OPTIONS_PATHS);
+
+        //senquack - added new "defaults" page to options and button inside to reset control defaults:
+        } else if (w == but_defaults_options) {
+            close_page();
+            open_page(OPTIONS_DEFAULTS);
+        } else if (w == control_defaults) {
+           printf("Loading defaults for controls options..\n");
+           options::SetAnalogSpeed(options::DefaultAnalogSpeed);
+           options::SetAnalogDeadzone(options::DefaultAnalogDeadzone);
+           options::SetSpeedScale1(options::DefaultSpeedScale1);
+           options::SetSpeedScale2(options::DefaultSpeedScale2);
+           options::SetSpeedScale3(options::DefaultSpeedScale3);
+           options::SetGsensorEnabled(options::DefaultGsensorEnabled);
+           options::SetGsensorSpeed(options::DefaultGsensorSpeed);
+           options::SetGsensorDeadzone(options::DefaultGsensorDeadzone);
+           options::SetGsensorCenterX(options::DefaultGsensorCenterX);
+           options::SetGsensorCenterY(options::DefaultGsensorCenterY);
         }
     }
     
