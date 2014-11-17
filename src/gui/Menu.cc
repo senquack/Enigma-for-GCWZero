@@ -88,7 +88,7 @@ namespace enigma { namespace gui {
         const double accel_cutoff = 4000;       // If new axis reading is off by this much or more from the last 
                                                 //      axis reading,  reset acceleration
         const double accel_inc = 0.1;
-        const double max_speed = 6.0;
+        const double max_speed = 9.0;
         const double init_speed = 1.5;
         static double cur_speed = init_speed;
 
