@@ -72,8 +72,9 @@ namespace enigma { namespace gui {
         ImageButton *scrollDown;        
         VList       *groupsVList;
         HList       *commandHList;
-        Widget      *but_search;
-        Widget      *but_new;
+        //senquack - disabling for GCW zero port:
+//        Widget      *but_search;
+//        Widget      *but_new;
         Widget      *but_level;
         Widget      *but_main;
         

@@ -61,8 +61,9 @@ namespace enigma { namespace gui {
         vv = (vminfo.height - vminfo.area.h)/2;
        
         // Create buttons - positioning identical to Levelmenu
-        but_new = new StaticTextButton(N_("New Group"), this);
-        but_search = new StaticTextButton(N_("Search"), this);
+        //senquack - disabling for GCW zero port:
+//        but_new = new StaticTextButton(N_("New Group"), this);
+//        but_search = new StaticTextButton(N_("Search"), this);
         but_level = new StaticTextButton(N_("Start Game"), this);
         but_main = new StaticTextButton(N_("Main Menu"), this);
         
@@ -70,8 +71,9 @@ namespace enigma { namespace gui {
         commandHList->set_spacing(vshrink ? 5 : 10);
         commandHList->set_alignment(HALIGN_CENTER, VALIGN_TOP);
         commandHList->set_default_size(vshrink ? 70 : 140, vshrink ? 17 : 35);
-        commandHList->add_back(but_new);
-        commandHList->add_back(but_search);
+        //senquack - disabling for GCW zero port:
+//        commandHList->add_back(but_new);
+//        commandHList->add_back(but_search);
         commandHList->add_back(but_level);
         commandHList->add_back(but_main);
         this->add(commandHList, Rect(vshrink ? 5 : 10, vminfo.height-(vshrink ? 25 : 50), vminfo.width-(vshrink ? 10 : 20), vminfo.height < 320 ? 17 : 35));
@@ -358,12 +360,13 @@ namespace enigma { namespace gui {
     void LevelPackMenu::on_action(Widget *w) {
         if (w == but_main) {
             Menu::quit();
-        } else if (w == but_new) {
-            LPGroupConfig m("");
-            m.manage();
-            setupMenu();
-            updateHighlight();
-            invalidate_all();
+        //senquack - disabling for GCW zero port:
+//        } else if (w == but_new) {
+//            LPGroupConfig m("");
+//            m.manage();
+//            setupMenu();
+//            updateHighlight();
+//            invalidate_all();
         } else if (w == but_level) {
             LevelMenu m;
             if ((!m.manage() && isLevelMenuSubmenu) || m.isMainQuit()) {
@@ -374,21 +377,22 @@ namespace enigma { namespace gui {
             setupMenu();
             updateHighlight();
             invalidate_all();            
-        } else if (w == but_search) {
-            SearchMenu ml;
-            ml.manage();
-            if (ml.isSearchQuit()) {
-                // show search result levelpack
-                LevelMenu ml;
-                if ((!ml.manage() && isLevelMenuSubmenu) || ml.isMainQuit()) {
-                    // ESC in LevelMenu in cade we are a submenu of LevelMenu or
-                    // Main button has been pressed in LevelMenu
-                    Menu::quit();
-                }
-            }
-            setupMenu();
-            updateHighlight();
-            invalidate_all();            
+        //senquack - disabling for GCW zero port:
+//        } else if (w == but_search) {
+//            SearchMenu ml;
+//            ml.manage();
+//            if (ml.isSearchQuit()) {
+//                // show search result levelpack
+//                LevelMenu ml;
+//                if ((!ml.manage() && isLevelMenuSubmenu) || ml.isMainQuit()) {
+//                    // ESC in LevelMenu in cade we are a submenu of LevelMenu or
+//                    // Main button has been pressed in LevelMenu
+//                    Menu::quit();
+//                }
+//            }
+//            setupMenu();
+//            updateHighlight();
+//            invalidate_all();            
         } else if (w == scrollUp) {
             firstDisplayedGroup--;
             reset_active_widget();  // we will delete it with setup
